@@ -1,23 +1,20 @@
 import coqueLogo from './assets/coque-logo-vertical.png'
-import './App.css'
-
 function App() {
 
   return (
-    <>
+    <div className='flex flex-col items-center justify-center p-5 mt-7 gap-5'>
       <div>
-        <a href="http://www.coqueconnecta.ong.br" target="_blank">
-          <img src={coqueLogo} className="logo react" alt="React logo" />
+        <a href='http://www.coqueconnecta.ong.br' target='_blank'>
+          <img 
+            className='w-48 h-auto mb-4' 
+            src={coqueLogo} 
+            alt='Logo da Coque Connecta' 
+          />
         </a>
       </div>
-      <h1>Site Coque Connecta</h1>
-      <h2>Em construção!</h2>
-      <div className="card">
-        <p>
-          Em breve você poderá acessar o site da Coque Connecta
-        </p>
-      </div>
-    </>
+      <h2 className='text-2xl'>Site em construção 🚧</h2>
+      <p className=' text-lg text-center'>Em breve você poderá acessar o novo site da Coque Connecta</p>
+    </div>
   )
 }
 
