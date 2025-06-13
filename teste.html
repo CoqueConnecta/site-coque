@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coque Connecta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Nunito Sans', sans-serif;
+    }
+    body {
+      background: #fff;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background: #fff;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #eee;
+    }
+    nav a {
+      margin: 0 12px;
+      text-decoration: none;
+      color: #EC263C;
+      font-weight: 600;
+    }
+    .btn {
+      background: #EC263C;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .hero {
+      background: #FFEFF0;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .sections {
+      display: flex;
+      justify-content: space-around;
+      padding: 40px 20px;
+      background: #fafafa;
+    }
+    .section-card {
+      width: 22%;
+      text-align: center;
+    }
+    .section-card img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    .projects {
+      padding: 40px 20px;
+      background: #fff;
+    }
+    .project-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .project-card {
+      width: 30%;
+      background: #f3f3f3;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .cta-section {
+      background: linear-gradient(90deg, #EC263C, #F58634);
+      padding: 40px 20px;
+      color: #fff;
+      display: flex;
+      justify-content: space-around;
+    }
+    .cta-box {
+      text-align: center;
+    }
+    .contacts {
+      padding: 40px 20px;
+      background: #fafafa;
+      display: flex;
+      justify-content: space-between;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Coque Connecta</h2>
+    <nav>
+      <a href="#">Quem somos</a>
+      <a href="#">Missão</a>
+      <a href="#">Visão</a>
+      <a href="#">Valores</a>
+      <a href="#">Nossos Projetos</a>
+      <a href="#">Contatos</a>
+    </nav>
+    <a href="#" class="btn">Quero ajudar</a>
+  </header>
+  <section class="hero">
+    <h1>Conectando pessoas, multiplicando horizontes.</h1>
+    <a href="#" class="btn">Conheça nossos projetos</a>
+  </section>
+  <section class="sections">
+    <div class="section-card">
+      <img src="https://img.icons8.com/ios-filled/50/EC263C/conference-call.png" alt="Quem somos">
+      <h3>Quem somos</h3>
+      <p>Saiba mais sobre nossa história.</p>
+    </div>
+    <div class="section-card">
+      <img src="https://img.icons8.com/ios-filled/50/F58634/goal.png" alt="Missão">
+      <h3>Missão</h3>
+      <p>Nossos objetivos principais.</p>
+    </div>
+    <div class="section-card">
+      <img src="https://img.icons8.com/ios-filled/50/00A859/spiral-bound-booklet.png" alt="Visão">
+      <h3>Visão</h3>
+      <p>O que queremos transformar.</p>
+    </div>
+    <div class="section-card">
+      <img src="https://img.icons8.com/ios-filled/50/EC263C/like.png" alt="Valores">
+      <h3>Valores</h3>
+      <p>Princípios que nos guiam.</p>
+    </div>
+  </section>
+  <section class="projects">
+    <h2>Nossos Projetos</h2>
+    <div class="project-grid">
+      <div class="project-card">
+        <h3>Projeto 1</h3>
+        <p>Descrição curta do projeto.</p>
+        <a href="#">Ver mais</a>
+      </div>
+      <div class="project-card">
+        <h3>Projeto 2</h3>
+        <p>Descrição curta do projeto.</p>
+        <a href="#">Ver mais</a>
+      </div>
+      <div class="project-card">
+        <h3>Projeto 3</h3>
+        <p>Descrição curta do projeto.</p>
+        <a href="#">Ver mais</a>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="cta-box">
+      <h3>Voluntariado</h3>
+    </div>
+    <div class="cta-box">
+      <h3>Doações</h3>
+    </div>
+    <div class="cta-box">
+      <h3>Sponsorship</h3>
+    </div>
+  </section>
+  <section class="contacts">
+    <div>
+      <h3>Contatos</h3>
+      <p>Rua AX, 224 – Ilha de Joana Bezerra – Recife</p>
+      <p>contato@coqueconnecta.com.br</p>
+      <p>+55 81 98236598</p>
+    </div>
+    <form>
+      <input type="text" placeholder="Seu nome" /><br>
+      <input type="email" placeholder="Seu email" /><br>
+      <textarea placeholder="Sua mensagem"></textarea><br>
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+  <footer>
+    © 2025 Coque Connecta. Todos os direitos reservados.
+  </footer>
+</body>
+</html>
