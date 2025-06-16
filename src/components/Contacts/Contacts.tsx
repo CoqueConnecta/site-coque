@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import gps from '../../assets/gps_15949802.png'
 
 const Contacts = () => {
+  const { t } = useTranslation();
     return (
         <section
             className="mt-10 mx-4 md:mx-12"
@@ -23,8 +25,8 @@ const Contacts = () => {
                     />
                 </div>
                 <div className="text-center sm:text-left w-full">
-                    <p className="text-4xl font-bold mb-4" tabIndex={0}>Contatos</p>
-                    <p className="text-lg md:text-2xl mb-2" tabIndex={0}>Rua AX: 224, the Joana Bezerra - Recife</p>
+                    <p className="text-4xl font-bold mb-4" tabIndex={0}>{t('contatos.titulo')}</p>
+                    <p className="text-lg md:text-2xl mb-2" tabIndex={0}>{t('contatos.endereco')}</p>
                     <p className="text-lg md:text-2xl mb-2" tabIndex={0}>contato@coqueconnecta.com.br</p>
                     <p className="text-lg md:text-2xl mb-0" tabIndex={0}>+55 8798238988</p>
                 </div>

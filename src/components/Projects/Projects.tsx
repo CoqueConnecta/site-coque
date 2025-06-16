@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const Projects = () => {
+  const { t } = useTranslation();
     return (
         <section className="mt-6 text-start mx-4 md:mx-12" id="projects" aria-labelledby="projects-title">
             <h2
@@ -6,7 +9,7 @@ const Projects = () => {
             className="text-5xl font-bold pt-10 mb-6 text-center"
                 tabIndex={-1}
             >
-                Nossos Projetos
+                {t('projetos.titulo')}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pb-10">
                 {/* <div>

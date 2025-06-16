@@ -1,0 +1,33 @@
+{
+  "header": {
+    "quem_somos": "Quem somos",
+    "nossos_projetos": "Nossos Projetos",
+    "contatos": "Contatos",
+    "quero_ajudar": "Quero ajudar"
+  },
+  "banner": {
+    "conectando": "Conectando",
+    "pessoas": "pessoas, multiplicando",
+    "horizontes": "horizontes.",
+    "conheca_projetos": "Conheça nossos projetos"
+  },
+  "quem_somos": {
+    "titulo": "Quem Somos",
+    "descricao": "Lorem Ipsum tem sido o texto padrão da indústria desde 1500, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de amostras."
+  },
+  "missao": {
+    "titulo": "Missão",
+    "descricao": "Lorem Ipsum tem sido o texto padrão da indústria desde 1500, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de amostras."
+  },
+  "visao": {
+    "titulo": "Visão",
+    "descricao": "Lorem Ipsum tem sido o texto padrão da indústria desde 1500, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de amostras."
+  },
+  "contatos": {
+    "titulo": "Contatos",
+    "endereco": "Av. Central, 1847 - São José, Recife - PE, 50090-700"
+  },
+  "projetos": {
+    "titulo": "Nossos Projetos"
+  }
+}
