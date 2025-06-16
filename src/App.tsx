@@ -10,7 +10,7 @@ function App() {
 
   return (
     <>
-    <LanguageToggle/>
+      <LanguageToggle/>
       <Header/>
       <Banner/>
       <WhoWeAre/>
