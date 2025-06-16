@@ -1,0 +1,33 @@
+{
+  "header": {
+    "quem_somos": "Who we are",
+    "nossos_projetos": "Our Projects",
+    "contatos": "Contacts",
+    "quero_ajudar": "I want to help"
+  },
+  "banner": {
+    "conectando": "Connecting",
+    "pessoas": "people, multiplying",
+    "horizontes": "horizons.",
+    "conheca_projetos": "See our projects"
+  },
+  "quem_somos": {
+    "titulo": "Who We Are",
+    "descricao": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+  },
+  "missao": {
+    "titulo": "Mission",
+    "descricao": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+  },
+  "visao": {
+    "titulo": "Vision",
+    "descricao": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+  },
+  "contatos": {
+    "titulo": "Contacts",
+    "endereco": "Av. Central, 1847 - São José, Recife - PE, 50090-700"
+  },
+  "projetos": {
+    "titulo": "Our Projects"
+  }
+}

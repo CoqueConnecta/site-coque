@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import lighthouse from '../../assets/lighthouse.png'
 import user from '../../assets/user.png'
 import vision from '../../assets/vision.png'
 
 const WhoWeAre = () => {
+  const { t } = useTranslation();
     return (
         <section
             className="mt-12 mx-4 md:mx-12"
@@ -33,10 +35,10 @@ const WhoWeAre = () => {
                         id="quem-somos-title"
                         className="text-2xl font-bold mt-2 mb-2 text-center"
                     >
-                        Quem somos
+                        {t('quem_somos.titulo')}
                     </h3>
                     <p className="text-center text-base">
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                        {t('quem_somos.descricao')}
                     </p>
                 </article>
                 <article
@@ -55,10 +57,10 @@ const WhoWeAre = () => {
                         id="missao-title"
                         className="text-2xl font-bold mt-2 mb-2 text-center"
                     >
-                        Missão
+                        {t('missao.titulo')}
                     </h3>
                     <p className="text-center text-base">
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                        {t('missao.descricao')}
                     </p>
                 </article>
                 <article
@@ -77,10 +79,10 @@ const WhoWeAre = () => {
                         id="visao-title"
                         className="text-2xl font-bold mt-2 mb-2 text-center"
                     >
-                        Visão
+                        {t('visao.titulo')}
                     </h3>
                     <p className="text-center text-base">
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                        {t('visao.descricao')}
                     </p>
                 </article>
             </div>
