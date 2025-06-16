@@ -1,0 +1,8 @@
+.initial-banner {
+    background: url(../../assets/banner.jpg);
+}
+
+.banner-content {
+    color: #FFFFFF;
+    padding: 6rem 0 0 4rem;
+}

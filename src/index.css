@@ -5,8 +5,10 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* color: rgba(255, 255, 255, 0.87); */
+  /* background-color: #242424; */
+  background-color: Rgba(255, 255, 255, 0.87);
+  color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,4 +23,35 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+  padding: 1rem 0rem;
+}
+
+.btn-primary {
+  color: #FFFFFF;
+  background-color: #E60A7F;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  opacity: 0.5;
+}
+
+.btn-secundary {
+  color: #000000;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.btn-secundary:hover {
+  opacity: 0.5;
 }
