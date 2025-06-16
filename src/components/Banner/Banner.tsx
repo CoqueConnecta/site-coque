@@ -2,14 +2,31 @@ import './Banner.css'
 
 const Banner = () => {
     return (
-        <div className="mt-6 h-120 initial-banner mr-12 ml-12">
-            <div className='text-left banner-content'>
-                <p className='text-6xl font-bold'>Conectando</p>
-                <p className='text-6xl font-bold'>pessoas, mutiplicando</p>
-                <p className='text-6xl font-bold mb-4'>horizontes.</p>
-                <button className='btn-primary h-10'>Conheça nossos projetos</button>
+        <section
+            className="mt-6 h-120 initial-banner mr-4 ml-4 md:mr-12 md:ml-12 flex items-center"
+            aria-label="Banner institucional"
+        >
+            <div className="text-left banner-content w-full">
+                <h1 className="text-3xl md:text-6xl font-bold leading-tight mb-2" tabIndex={0}>
+                    Conectando
+                </h1>
+                <h2 className="text-2xl md:text-6xl font-bold leading-tight mb-2" tabIndex={0}>
+                    pessoas, multiplicando
+                </h2>
+                <h2 className="text-2xl md:text-6xl font-bold leading-tight mb-4" tabIndex={0}>
+                    horizontes.
+                </h2>
+                <a
+                    href="#projects"
+                    className="btn-primary h-12 px-6 text-base md:text-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Conheça nossos projetos"
+                >
+                    Conheça nossos projetos
+                </a>
             </div>
-        </div>
+        </section>
     )
 }
 
