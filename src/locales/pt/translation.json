@@ -13,15 +13,25 @@
   },
   "quem_somos": {
     "titulo": "Quem Somos",
-    "descricao": "Lorem Ipsum tem sido o texto padrão da indústria desde 1500, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de amostras."
+    "descricao": "A Coque Connecta é uma organização social fundada em 2018 no coração da comunidade do Coque, no Recife. Tudo começou com uma ideia potente, nascida do encontro entre dois líderes locais, um jovem sonhador e sua mãe, que acreditavam que a educação podia reescrever destinos e transformar realidades. Marcone Ribeiro e Dona Danda, inspirados por suas próprias vivências, transformaram visão em ação, criando um espaço onde juventudes periféricas e suas famílias pudessem se enxergar, reconhecer seu valor e construir novos caminhos. Desde então, a Coque Connecta tornou-se um movimento coletivo de transformação, um espaço vivo feito de escuta, cuidado e formação cidadã.",
+    "sub_titulo": "Somos a ponte que conecta para um futuro melhor!",
+    "sub_descricao": "Ao longo dos anos, mais de 2.000 pessoas foram impactadas pelos nossos programas educacionais, construindo uma rede de fortalecimento comunitário. Nosso trabalho já foi reconhecido por diferentes instituições e premiações. Ainda em 2018, representamos o Brasil na Youth Assembly da ONU, já em 2019 fomos selecionados pelo Porto Social e, em 2020 recebemos o Prêmio Semeadores de Políticas Públicas da Juventude, concedido pela Prefeitura do Recife. Hoje, a Coque Connecta se afirma como uma organização comprometida com a transformação social enraizada no território e guiada pela transparência, escuta e construção coletiva."
   },
   "missao": {
     "titulo": "Missão",
-    "descricao": "Lorem Ipsum tem sido o texto padrão da indústria desde 1500, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de amostras."
+    "descricao": "Transformar a realidade de comunidades periféricas através de oportunidades educacionais que promovam o autoconhecimento, a capacitação profissional e o desenvolvimento local."
   },
   "visao": {
     "titulo": "Visão",
-    "descricao": "Lorem Ipsum tem sido o texto padrão da indústria desde 1500, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de amostras."
+    "descricao": "Transformar o Coque Connecta em um hub de inovação periférica, sendo referência de educação (inter)nacional."
+  },
+  "valores": {
+    "titulo": "Valores",
+    "descricao_1": "Respeito - Valorizamos a diversidade e a dignidade de todas as pessoas.",
+    "descricao_2": "Comunidade - Acreditamos na força do coletivo para transformar realidades.",
+    "descricao_3": "Pertencimento - Criamos espaços onde cada indivíduo se sente valorizado e parte essencial da mudança.",
+    "descricao_4": "Compromisso Social - Atuamos para enfrentar desigualdades e fortalecer as potências das periferias com justiça e equidade.",
+    "descricao_5": "Responsabilidade - Nos guiamos por uma ética de cuidado, transparência e corresponsabilidade em tudo o que fazemos."
   },
   "contatos": {
     "titulo": "Contatos",

@@ -13,15 +13,25 @@
   },
   "quem_somos": {
     "titulo": "Who We Are",
-    "descricao": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+    "descricao": "Coque Connecta is a social organization founded in 2018 in the heart of the Coque community, in Recife, Brazil. It began with a powerful idea born from the connection between two local leaders—a young dreamer and his mother—who believed that education could rewrite destinies and transform realities. Inspired by their own life experiences, Marcone Ribeiro and Dona Danda turned vision into action, creating a space where youth from the periphery and their families could see themselves, recognize their worth, and forge new paths. Since then, Coque Connecta has evolved into a collective movement for transformation, a living space built on listening, care, and civic education.",
+    "sub_titulo": "We are the bridge that connects people to a brighter future.",
+    "sub_descricao": "Over the years, more than 2,000 people have been impacted by our educational programs, building a vibrant network of community-strengthening initiatives. Our work has been recognized by multiple institutions and awards. In 2018, we represented Brazil at the United Nations Youth Assembly; in 2019, we were selected by Porto Social; and in 2020, we received the Youth Public Policy Sowers Award, granted by the Recife City Hall. Today, Coque Connecta stands as an organization deeply committed to grassroots social transformation—guided by transparency, active listening, and collective action."
   },
   "missao": {
     "titulo": "Mission",
-    "descricao": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+    "descricao": "To transform the reality of marginalized communities through educational opportunities that foster self-awareness, civic engagement, professional training, and local development."
   },
   "visao": {
     "titulo": "Vision",
-    "descricao": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+    "descricao": "To make Coque Connecta a hub for social innovation in the peripheries, a (inter)national reference in transformative education."
+  },
+  "valores": {
+    "titulo": "Values",
+    "descricao_1": "Respect - We value the dignity, identity, and diversity of every person and their journey.",
+    "descricao_2": "Community - We believe in the strength of collective action, listening, and collaboration to drive social change.",
+    "descricao_3": "Belonging - We cultivate spaces where everyone feels seen, welcomed, and essential to the process of transformation.",
+    "descricao_4": "Social Commitment - We work to reduce inequalities and amplify the power of peripheral communities with fairness and justice.",
+    "descricao_5": "Responsibility - We act with care, transparency, and shared accountability in everything we do."
   },
   "contatos": {
     "titulo": "Contacts",
