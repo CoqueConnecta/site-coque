@@ -6,7 +6,7 @@ import LanguageToggle from './components/LanguageToggle/LanguageToggle'
 import MissionVisionValues from './components/MissionVisionValues/MissionVisionValues'
 import Projects from './components/Projects/Projects'
 import WantHelp from './components/WantHelp/WantHelp'
-import WhoWeAre from './components/WhoWeAre/WhoWeAre'
+
 function App() {
 
   return (

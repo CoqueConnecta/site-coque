@@ -1,18 +1,21 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import en from './locales/en/translation.json'
-import pt from './locales/pt/translation.json'
+import HttpApi from 'i18next-http-backend'
 
 i18n
   .use(initReactI18next)
+  .use(HttpApi)
   .init({
-    resources: {
-      en: { translation: en },
-      pt: { translation: pt }
-    },
-    lng: 'pt', // idioma padrão
+    lng: 'pt',
     fallbackLng: 'pt',
-    interpolation: { escapeValue: false }
-  })
+    ns: ['translation'],
+    defaultNS: 'translation',
+    interpolation: {
+      escapeValue: false,
+    },
+    backend: {
+      loadPath: 'https://site-coque-default-rtdb.firebaseio.com/locales/{{lng}}/{{ns}}.json',
+    },
+  });
 
 export default i18n
