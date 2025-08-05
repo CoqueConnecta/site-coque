@@ -1,25 +1,83 @@
 // src/components/ProtectedRoute/index.tsx
 import type { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import  { useState, useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../../../firebase';
+import { ref, get } from 'firebase/database';
+import { auth, database } from '../../../firebase';
+import { signOut } from 'firebase/auth';
 
 type ProtectedRouteProps = {
   children: ReactNode;
 };
 
+type AdminEntry = {
+  email: string;
+  isAdmin: boolean;
+};
+
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   // O hook useAuthState cuida de verificar o status do usuário em tempo real
-  const [user, loading] = useAuthState(auth);
+  const [user, authLoading] = useAuthState(auth);
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+  const navigate = useNavigate();
 
-  if (loading) {
-    // Mostra uma tela de carregamento enquanto verifica a autenticação
+  useEffect(() => {
+    if (user) {
+      setIsAuthorized(null);
+      const checkAdminStatus = async () => {
+        const adminsRef = ref(database, 'admins');
+
+        try {
+          const snapshot = await get(adminsRef);
+          let isAdmin = false;
+          if (snapshot.exists()) {
+            // 2. Pegamos todos os admins da lista.
+            const adminList: AdminEntry[] = snapshot.val();
+            // 3. Verificamos se algum item na lista tem o email do usuário logado.
+            isAdmin = adminList.some(admin => admin.email === user.email && admin.isAdmin === true);
+          }
+          setIsAuthorized(isAdmin);
+
+        } catch (error) {
+          console.error("Erro ao verificar permissão de admin:", error);
+          setIsAuthorized(false);
+        }
+      };
+      checkAdminStatus();
+    }
+  }, [user]);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate('/login');
+  };
+
+  // Se a autenticação do Firebase ainda está carregando, espere.
+  if (authLoading) {
     return <div>Verificando autenticação...</div>;
   }
 
+  // Se não há usuário, redireciona para a página de login.
   if (!user) {
-    // Se não houver usuário, redireciona para a página de login
     return <Navigate to="/login" />;
+  }
+
+  // Se o usuário está logado, mas a verificação de admin ainda está em andamento.
+  if (isAuthorized === null) {
+    return <div>Verificando permissões...</div>;
+  }
+
+
+  // Se o usuário está logado, mas NÃO está autorizado.
+  if (isAuthorized === false) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <h1>Acesso Negado</h1>
+        <p>Você não tem permissão para acessar esta página.</p>
+        <button onClick={handleLogout}>Fazer login com outra conta</button>
+      </div>
+    );
   }
 
   // Se houver um usuário, renderiza o componente filho (a página de admin)
