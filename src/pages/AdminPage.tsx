@@ -4,68 +4,66 @@ import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { ref, get, set } from 'firebase/database';
 import { auth, database } from '../../firebase';
+import toast from 'react-hot-toast';
 
-type Translations = {
-  [key: string]: string | Translations;
+// Tipos de dados (sem alterações)
+type TranslationContent = {
+  [key: string]: string | TranslationContent;
+};
+type LocaleData = {
+  translation: TranslationContent;
+};
+type FullTranslations = {
+  pt: LocaleData;
+  en: LocaleData;
 };
 
 export default function AdminPage() {
+  // Hooks de estado (sem alterações)
   const navigate = useNavigate();
-  const [translations, setTranslations] = useState<{ pt: Translations; en: Translations } | null>(null);
-  const [statusMessage, setStatusMessage] = useState('');
+  const [translations, setTranslations] = useState<FullTranslations | null>(null);
+  const [activeSection, setActiveSection] = useState<string>('');
 
+  // Lógica de busca e salvamento (sem alterações)
   useEffect(() => {
     const fetchData = async () => {
-      // Cria uma referência para o nó 'locales' no Realtime Database
       const localesRef = ref(database, 'locales');
       try {
-        // Faz a leitura dos dados desse nó
         const snapshot = await get(localesRef);
         if (snapshot.exists()) {
-          // Se os dados existem, atualiza o estado com eles
-          setTranslations(snapshot.val());
-        } else {
-          console.log("Nenhum dado encontrado em /locales");
+          const data = snapshot.val();
+          setTranslations(data);
+          if (data.pt?.translation) {
+            setActiveSection(Object.keys(data.pt.translation)[0]);
+          }
         }
       } catch (error) {
+        toast.error("Falha ao carregar os dados do painel.");
         console.error("Erro ao buscar dados do Firebase:", error);
       }
     };
-
     fetchData();
   }, []);
 
   const handleInputChange = (lang: 'pt' | 'en', path: string[], value: string) => {
     if (!translations) return;
-
-    // Cria uma cópia profunda do estado para evitar mutação direta
     const newTranslations = JSON.parse(JSON.stringify(translations));
-
-    // Navega no objeto para encontrar o local exato a ser atualizado
-    let current = newTranslations[lang].translation;
+    let current: any = newTranslations[lang].translation;
     for (let i = 0; i < path.length - 1; i++) {
       current = current[path[i]];
     }
     current[path[path.length - 1]] = value;
-
     setTranslations(newTranslations);
   };
 
-  // Função para salvar os dados de volta no Firebase
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!translations) return;
-    setStatusMessage('Salvando...');
-    const localesRef = ref(database, 'locales');
-    try {
-      // A função 'set' sobrescreve todos os dados no nó 'locales' com os novos dados
-      await set(localesRef, translations);
-      setStatusMessage('Traduções salvas com sucesso!');
-      // Limpa a mensagem após alguns segundos
-      setTimeout(() => setStatusMessage(''), 3000);
-    } catch (error) {
-      setStatusMessage('Erro ao salvar. Tente novamente.');
-      console.error("Erro ao salvar no Firebase:", error);
-    }
+    const savePromise = set(ref(database, 'locales'), translations);
+    toast.promise(savePromise, {
+      loading: 'Salvando...',
+      success: <b>Traduções salvas com sucesso!</b>,
+      error: <b>Erro ao salvar. Tente novamente.</b>,
+    });
   };
 
   const handleLogout = async () => {
@@ -73,71 +71,105 @@ export default function AdminPage() {
     navigate('/login');
   };
 
-  // Função auxiliar para renderizar os campos do formulário recursivamente
-  const renderFormFields = (obj: Translations, lang: 'pt' | 'en', path: string[] = []) => {
+  // --- FUNÇÃO DE RENDERIZAÇÃO COM O POLIMENTO ESTÉTICO ---
+  const renderFormFields = (obj: TranslationContent, lang: 'pt' | 'en', path: string[] = []) => {
     return Object.entries(obj).map(([key, value]) => {
       const currentPath = [...path, key];
       if (typeof value === 'string') {
-        // Se o valor é uma string, renderiza um input
+        const isTextarea = key.toLowerCase().includes('descricao');
         return (
-          <div key={currentPath.join('-')} style={{ marginBottom: '10px' }}>
-            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '4px' }}>
-              {currentPath.join(' > ')}
+          <div key={currentPath.join('-')} className="mb-5"> {/* Aumentamos a margem inferior */}
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"> {/* Rótulo menor, cinza e com espaçamento entre letras */}
+              {key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
             </label>
-            <input
-              type="text"
-              value={value}
-              onChange={(e) => handleInputChange(lang, currentPath, e.target.value)}
-              style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-            />
+            {isTextarea ? (
+              <textarea
+                value={value}
+                onChange={(e) => handleInputChange(lang, currentPath, e.target.value)}
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
+                rows={6}
+              />
+            ) : (
+              <input
+                type="text"
+                value={value}
+                onChange={(e) => handleInputChange(lang, currentPath, e.target.value)}
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
+              />
+            )}
           </div>
         );
       }
-      // Se o valor é um objeto, renderiza um título para a seção e chama a função novamente
+      // Renderização de sub-seções (se houver)
       return (
-        <fieldset key={currentPath.join('-')} style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0' }}>
-          <legend style={{ fontWeight: 'bold', fontSize: '1.2em' }}>{key.toUpperCase()}</legend>
+        <div key={currentPath.join('-')} className="border-t mt-8 pt-6">
+          <h4 className="text-lg font-semibold text-gray-700 mb-4">{key.toUpperCase()}</h4>
           {renderFormFields(value, lang, currentPath)}
-        </fieldset>
+        </div>
       );
     });
   };
 
-  // Se os dados ainda não foram carregados, mostra uma mensagem
   if (!translations) {
-    return <div>Carregando traduções...</div>;
+    return <div className="flex justify-center items-center h-screen bg-gray-100 text-gray-600">Carregando painel...</div>;
   }
 
+  // --- JSX PRINCIPAL COM O POLIMENTO ESTÉTICO ---
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Painel de Edição de Conteúdo</h1>
-        <button onClick={handleLogout} style={{ padding: '10px 15px', background: '#dc3545', color: 'white', border: 'none', borderRadius: '5px' }}>
-          Sair
-        </button>
-      </div>
-
-      <div style={{ display: 'flex', gap: '20px' }}>
-        {/* Coluna para Português */}
-        <div style={{ flex: 1 }}>
-          <h2>Português (PT)</h2>
-          {renderFormFields(translations.pt.translation as Translations, 'pt')}
+    <div className="flex h-screen bg-gray-100 font-sans">
+      <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
+        <div className="p-5 border-b border-gray-200">
+          <h1 className="text-xl font-bold text-gray-800">Seções</h1>
         </div>
-        {/* Coluna para Inglês */}
-        <div style={{ flex: 1 }}>
-          <h2>Inglês (EN)</h2>
-          {renderFormFields(translations.en.translation as Translations, 'en')}
+        <nav className="p-3">
+          <ul>
+            {Object.keys(translations.pt.translation).map((section) => (
+              <li key={section}>
+                <button
+                  onClick={() => setActiveSection(section)}
+                  className={`w-full text-left p-3 my-1 rounded-lg text-sm font-medium transition-all duration-150 ${
+                    activeSection === section
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  {section.charAt(0).toUpperCase() + section.slice(1).replace(/_/g, ' ')}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <header className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-800">
+            Editando: <span className="text-blue-600">{activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/_/g, ' ')}</span>
+          </h2>
+          <div className="flex items-center">
+            <button onClick={handleSave} className="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-sm transition-all duration-150 transform hover:scale-105">
+              Salvar Alterações
+            </button>
+            <button onClick={handleLogout} className="ml-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 shadow-sm transition-all duration-150 transform hover:scale-105">
+              Sair
+            </button>
+          </div>
+        </header>
+
+        <div className="flex-1 p-8 overflow-y-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Português (PT)</h3>
+              {renderFormFields(translations.pt.translation[activeSection] as TranslationContent, 'pt', [activeSection])}
+            </div>
+
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Inglês (EN)</h3>
+              {renderFormFields(translations.en.translation[activeSection] as TranslationContent, 'en', [activeSection])}
+            </div>
+          </div>
         </div>
-      </div>
-
-      <hr style={{ margin: '20px 0' }} />
-
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={handleSave} style={{ padding: '15px 30px', fontSize: '18px', background: '#28a745', color: 'white', border: 'none', borderRadius: '5px' }}>
-          Salvar Todas as Alterações
-        </button>
-        {statusMessage && <p style={{ marginTop: '10px', fontSize: '16px' }}>{statusMessage}</p>}
-      </div>
+      </main>
     </div>
   );
 }
