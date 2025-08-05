@@ -1,6 +1,6 @@
 // src/components/ProtectedRoute/index.tsx
 import type { ReactNode } from 'react';
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { ref, get } from 'firebase/database';
@@ -27,7 +27,6 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
       setIsAuthorized(null);
       const checkAdminStatus = async () => {
         const adminsRef = ref(database, 'admins');
-
         try {
           const snapshot = await get(adminsRef);
           let isAdmin = false;
@@ -55,7 +54,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   // Se a autenticação do Firebase ainda está carregando, espere.
   if (authLoading) {
-    return <div>Verificando autenticação...</div>;
+    return <div style={{ textAlign: 'center', marginTop: '50px' }}>Verificando autenticação...</div>;
   }
 
   // Se não há usuário, redireciona para a página de login.
@@ -65,17 +64,55 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   // Se o usuário está logado, mas a verificação de admin ainda está em andamento.
   if (isAuthorized === null) {
-    return <div>Verificando permissões...</div>;
+    return <div style={{ textAlign: 'center', marginTop: '50px' }}>Verificando permissões...</div>;
   }
 
 
   // Se o usuário está logado, mas NÃO está autorizado.
   if (isAuthorized === false) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h1>Acesso Negado</h1>
-        <p>Você não tem permissão para acessar esta página.</p>
-        <button onClick={handleLogout}>Fazer login com outra conta</button>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontFamily: 'sans-serif',
+        background: '#f4f4f4'
+      }}>
+        <div style={{
+          textAlign: 'center',
+          padding: '40px',
+          background: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+        }}>
+          {user.photoURL && (
+            <img
+              src={user.photoURL}
+              alt="Foto de perfil"
+              style={{ width: '80px', height: '80px', borderRadius: '50%', marginBottom: '20px' }}
+            />
+          )}
+          <h1 style={{ color: '#333' }}>Acesso Negado</h1>
+          <p style={{ color: '#666', marginTop: '10px' }}>
+            A conta <strong style={{ color: '#d9534f' }}>{user.email}</strong> não tem permissão para acessar esta página.
+          </p>
+          <button
+            onClick={handleLogout}
+            style={{
+              marginTop: '30px',
+              padding: '12px 25px',
+              fontSize: '16px',
+              color: 'white',
+              background: '#007bff',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer'
+            }}
+          >
+            Fazer login com outra conta
+          </button>
+        </div>
       </div>
     );
   }
