@@ -62,22 +62,43 @@ Entregas:
 - Todas as stories criadas com casos de uso (Default, WithActive, Interactive, FullDemo).
 - Validacoes: npm run lint ✅, npm run build ✅ (107 modules), npm run build-storybook ✅ (203 modules).
 
+### Fase 4 - Sections da Landing Page
+
+Status: concluida
+
+Entregas:
+
+- src/data/mockData.ts: Mock consolidado com interfaces tipadas, dados PT/EN e helper getMockData().
+- HeroSection: Banner de entrada com headline, subheadline e CTA sobre fundo gradiente orange.
+- AboutSection: Quem somos com layout 2 colunas (texto + cards Missao/Visao) + grid de valores.
+- GallerySection: Grid 2x2 de projetos com imagem placeholder, tags e hover CTA.
+- StatsSection: Faixa laranja com 4 números de impacto em grid.
+- HelpSection: CTA centralizado com destaque e botao de acao.
+- NewsletterSection: Formulario de email com Surface newsletter e feedback de confirmacao.
+- FooterSection: Rodapé 4 colunas (marca, links rapidos, contato, newsletter), bottom bar com copyright.
+- Site.tsx refatorado para usar todos os novos componentes com HeaderBar + MobileMenuOverlay integrado.
+- Validacoes: npm run lint ✅, npm run build ✅ (129 modules), npm run build-storybook ✅ (todas as stories).
+
 ## Decisoes Recentes
 
 - Manter assets do prototipo dentro da pasta framer-coque durante implementacao inicial.
 - Evitar reaproveitar HTML exportado do Framer como base estrutural de codigo.
 - Usar o prototipo como referencia visual e semantica.
 - Imports com caminhos relativos em lugar de aliases @ para melhor compatibilidade com tsc.
-- HeaderBar usa `<a>` diretamente em lugar de Button componente (Button nao suporta `as` prop).
-- IconButton com prop `icon` (ReactNode) em lugar de children para consistencia com design.
+- onEmailSubmit em lugar de onSubmit no NewsletterSection (conflito com HTMLAttributes).
+- Variante "h4" nao existe no Typography; usar "h3" para headings menores.
+- Site.tsx agora usa mockDataPT diretamente (i18n sera integrado pos-V1).
 
 ## Backlog Imediato
 
-1. Definir mock consolidado da landing (textos, links placeholder e imagens) para composicao das sections.
-2. Iniciar Fase 4 com sections: HeroSection, AboutSection, GallerySection, StatsSection, HelpSection, NewsletterSection, FooterSection.
-3. Integrar HeaderBar + MobileMenuOverlay em Site.tsx.
+1. Revisao visual de fidelidade ao prototipo Framer para cada section.
+2. Inserir imagens reais de projetos e substituir placeholders.
+3. Criar ContactSection nativa (atualmente o footer serve como âncora #contact).
+4. Integrar i18n com os mocks PT/EN ja preparados em mockData.ts.
+5. Revisao mobile: ajustes responsivos seção a seção.
 
 ## Riscos/Atencoes
 
 - Diferencas entre fontes reais do Framer e fallback no navegador podem gerar pequenas variacoes de layout.
 - Mobile sera refeito com criterio de produto; nao copiar bugs do prototipo.
+- Componentes legados (Banner, Header, WantHelp, etc.) ainda existem mas nao sao mais usados em Site.tsx; remover na fase de limpeza.
