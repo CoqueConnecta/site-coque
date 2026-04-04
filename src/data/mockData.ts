@@ -108,9 +108,10 @@ export interface LandingPageData {
 // PORTUGUÊS - PT-BR
 export const mockDataPT: LandingPageData = {
   hero: {
-    headline: "Conectando pessoas,\nmultiplicando horizontes.",
-    subheadline: "Transformando realidades através da educação e oportunidades.",
-    ctaText: "Conheça nossos projetos",
+    headline: "Conectando Pessoas,\nMultiplicando Horizontes.",
+    subheadline:
+      "Uma oportunidade de trabalhar com uma ferramenta tangível, de curto prazo e de triplo impacto, que gera valor para sua empresa, para a comunidade e seus colaboradores.",
+    ctaText: "Faça Parte",
     backgroundImage: "/assets/banner.jpg",
   },
   about: {
@@ -263,9 +264,10 @@ export const mockDataPT: LandingPageData = {
 // ENGLISH - EN-US
 export const mockDataEN: LandingPageData = {
   hero: {
-    headline: "Connecting people,\nmultiplying horizons.",
-    subheadline: "Transforming realities through education and opportunities.",
-    ctaText: "See our projects",
+    headline: "Connecting People,\nMultiplying Horizons.",
+    subheadline:
+      "An opportunity to work with a tangible, short-term tool with triple impact — creating value for your company, the community, and your employees.",
+    ctaText: "Join Us",
     backgroundImage: "/assets/banner.jpg",
   },
   about: {

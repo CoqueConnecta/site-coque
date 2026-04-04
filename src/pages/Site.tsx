@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { HeaderBar } from '../components/composites/HeaderBar';
 import { MobileMenuOverlay } from '../components/composites/MobileMenuOverlay';
 import { HeroSection } from '../components/sections/HeroSection';
@@ -10,16 +10,39 @@ import { NewsletterSection } from '../components/sections/NewsletterSection';
 import { FooterSection } from '../components/sections/FooterSection';
 import { mockDataPT } from '../data/mockData';
 
+// Nav links matching the Framer prototype
 const navLinks = [
-  { label: 'Sobre nós', href: '#about', id: 'about' },
+  { label: 'Início', href: '#hero', id: 'inicio' },
+  { label: 'Quem Somos', href: '#about', id: 'about' },
   { label: 'Nossos Projetos', href: '#projects', id: 'projects' },
-  { label: 'Contato', href: '#contact', id: 'contact' },
+  { label: 'Faça Parte', href: '#help', id: 'help' },
 ];
 
 function Site() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string | undefined>(undefined);
+  const [headerTransparent, setHeaderTransparent] = useState(true);
+  const heroRef = useRef<HTMLElement | null>(null);
   const data = mockDataPT;
+
+  // IntersectionObserver: header is transparent while hero is visible
+  useEffect(() => {
+    heroRef.current = document.getElementById('hero');
+    if (!heroRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setHeaderTransparent(entry.isIntersecting);
+      },
+      {
+        // Trigger when less than 10% of hero is still visible
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(heroRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const handleNavClick = (href: string) => {
     setActiveLink(href);
@@ -31,8 +54,9 @@ function Site() {
       <HeaderBar
         navLinks={navLinks}
         activeLink={activeLink}
-        ctaText="Quero ajudar"
+        ctaText="DOE AGORA"
         ctaHref="#help"
+        isTransparent={headerTransparent}
         onNavClick={handleNavClick}
         onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         showMobileMenu={mobileMenuOpen}
@@ -45,7 +69,7 @@ function Site() {
         onNavClick={handleNavClick}
         onClose={() => setMobileMenuOpen(false)}
         showNewsletter
-        ctaText="Quero ajudar"
+        ctaText="Faça Parte"
         ctaHref="#help"
       />
 
