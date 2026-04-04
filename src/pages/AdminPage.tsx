@@ -48,9 +48,11 @@ export default function AdminPage() {
   const handleInputChange = (lang: 'pt' | 'en', path: string[], value: string) => {
     if (!translations) return;
     const newTranslations = JSON.parse(JSON.stringify(translations));
-    let current: any = newTranslations[lang].translation;
+    let current: TranslationContent = newTranslations[lang].translation;
     for (let i = 0; i < path.length - 1; i++) {
-      current = current[path[i]];
+      const nextNode = current[path[i]];
+      if (typeof nextNode === 'string') return;
+      current = nextNode;
     }
     current[path[path.length - 1]] = value;
     setTranslations(newTranslations);

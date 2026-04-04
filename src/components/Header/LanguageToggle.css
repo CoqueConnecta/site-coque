@@ -76,8 +76,6 @@ input.check-toggle-round-flat + label:before {
   bottom: 2px;
   right: 2px;
   background-color: #E60A7F;
-  -webkit-
-  
   -moz-border-radius: 60px;
   -ms-border-radius: 60px;
   -o-border-radius: 60px;

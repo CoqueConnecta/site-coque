@@ -280,3 +280,15 @@ Iniciar por **Fase 0 + Fase 1** imediatamente:
 3. Primeiro bloco UI (`Button`, `Typography`, `Input`) com stories.
 
 Com isso pronto, o restante da landing passa a ser montagem previsivel.
+
+---
+
+## 9) Controle de Contexto da Refatoracao
+
+- O arquivo components-roadmap.md deve permanecer como guia estrategico (fases, escopo e criterios).
+- O acompanhamento operacional continuo deve ser feito em refactor-context.md.
+- Ao final de cada bloco relevante, atualizar o refactor-context.md com:
+  - O que foi entregue
+  - Decisoes tomadas
+  - Pendencias imediatas
+  - Riscos e observacoes
