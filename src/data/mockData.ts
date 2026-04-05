@@ -254,10 +254,10 @@ export const mockDataPT: LandingPageData = {
     buttonText: "RECEBER",
   },
   footer: {
-    copyright: "© 2024 Coque Connecta. Todos os direitos reservados.",
+    copyright: "© 2025 Coque Connecta. Todos os direitos reservados.",
     address: "Av. Central, 1847 - São José, Recife - PE, 50090-700",
-    phone: "(81) 3222-1234",
-    email: "contato@coqueconnecta.org",
+    phone: "+55 8798238988",
+    email: "contato@coqueconnecta.com.br",
     socialLinks: [
       {
         platform: "instagram",
@@ -265,21 +265,28 @@ export const mockDataPT: LandingPageData = {
         icon: "instagram",
       },
       {
-        platform: "facebook",
-        url: "https://facebook.com/coqueconnecta",
-        icon: "facebook",
+        platform: "globe",
+        url: "https://coqueconnecta.com.br",
+        icon: "globe",
       },
       {
-        platform: "linkedin",
-        url: "https://linkedin.com/company/coqueconnecta",
-        icon: "linkedin",
+        platform: "twitter",
+        url: "https://twitter.com/coqueconnecta",
+        icon: "twitter",
+      },
+      {
+        platform: "youtube",
+        url: "https://youtube.com/@coqueconnecta",
+        icon: "youtube",
       },
     ],
     quickLinks: [
       { label: "Sobre nós", href: "#about" },
-      { label: "Projetos", href: "#projects" },
-      { label: "Contato", href: "#contact" },
-      { label: "Blog", href: "/blog" },
+      { label: "O que fazemos", href: "#our-work" },
+      { label: "Como doar", href: "#help" },
+      { label: "Nossos projetos", href: "#our-work" },
+      { label: "Relatórios", href: "#contact" },
+      { label: "Transparência", href: "#contact" },
     ],
   },
 };
@@ -422,10 +429,10 @@ export const mockDataEN: LandingPageData = {
     buttonText: "SUBSCRIBE",
   },
   footer: {
-    copyright: "© 2024 Coque Connecta. All rights reserved.",
+    copyright: "© 2025 Coque Connecta. All rights reserved.",
     address: "Av. Central, 1847 - São José, Recife - PE, 50090-700",
-    phone: "(81) 3222-1234",
-    email: "contact@coqueconnecta.org",
+    phone: "+55 8798238988",
+    email: "contact@coqueconnecta.com.br",
     socialLinks: [
       {
         platform: "instagram",
@@ -433,21 +440,28 @@ export const mockDataEN: LandingPageData = {
         icon: "instagram",
       },
       {
-        platform: "facebook",
-        url: "https://facebook.com/coqueconnecta",
-        icon: "facebook",
+        platform: "globe",
+        url: "https://coqueconnecta.com.br",
+        icon: "globe",
       },
       {
-        platform: "linkedin",
-        url: "https://linkedin.com/company/coqueconnecta",
-        icon: "linkedin",
+        platform: "twitter",
+        url: "https://twitter.com/coqueconnecta",
+        icon: "twitter",
+      },
+      {
+        platform: "youtube",
+        url: "https://youtube.com/@coqueconnecta",
+        icon: "youtube",
       },
     ],
     quickLinks: [
       { label: "About us", href: "#about" },
-      { label: "Projects", href: "#projects" },
-      { label: "Contact", href: "#contact" },
-      { label: "Blog", href: "/blog" },
+      { label: "What we do", href: "#our-work" },
+      { label: "How to donate", href: "#help" },
+      { label: "Our projects", href: "#our-work" },
+      { label: "Reports", href: "#contact" },
+      { label: "Transparency", href: "#contact" },
     ],
   },
 };

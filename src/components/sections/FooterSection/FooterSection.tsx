@@ -1,56 +1,74 @@
 import { cn } from '../../../lib/cn';
-import { Typography } from '../../ui/Typography';
+import { Logo } from '../../ui/Logo';
 import type { FooterData } from '../../../data/mockData';
 
 export interface FooterSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: FooterData;
 }
 
-export const FooterSection = ({ data, className, ...props }: FooterSectionProps) => {
-  return (
-    <footer className={cn('w-full bg-gray-900 text-white', className)} {...props}>
-      {/* Main Footer Content */}
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-12 md:grid-cols-4">
-          {/* Brand Column */}
-          <div className="space-y-4">
-            <div>
-              <Typography variant="h3" tone="onDark" className="font-bold text-lg">
-                Coque Connecta
-              </Typography>
-              <Typography variant="bodySm" tone="onDark" className="opacity-70">
-                Conectando, multiplicando, transformando.
-              </Typography>
-            </div>
-            {/* Social Links */}
-            <div className="flex gap-4 pt-4">
-              {data.socialLinks.map((link) => (
-                <a
-                  key={link.platform}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-8 w-8 inline-flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-orange-600 transition-colors"
-                  aria-label={`Visite nosso ${link.platform}`}
-                  title={link.platform}
-                >
-                  <span className="text-xs font-bold">{link.platform[0].toUpperCase()}</span>
-                </a>
-              ))}
-            </div>
-          </div>
+const socialGlyph: Record<string, string> = {
+  instagram: 'IG',
+  facebook: 'f',
+  linkedin: 'in',
+  globe: '○',
+  twitter: 'x',
+  youtube: '▶',
+};
 
-          {/* Quick Links */}
-          <div className="space-y-3">
-            <Typography variant="h3" tone="onDark" className="font-semibold text-sm mb-4">
-              Links Rápidos
-            </Typography>
-            <nav className="space-y-2">
-              {data.quickLinks.map((link) => (
+export const FooterSection = ({ data, className, ...props }: FooterSectionProps) => {
+  const leftLinks = data.quickLinks.slice(0, 3);
+  const rightLinks = data.quickLinks.slice(3, 6);
+
+  return (
+    <footer className={cn('w-full bg-white py-10', className)} {...props}>
+      <div className="mx-auto w-full max-w-[1440px] px-3 sm:px-4">
+        <div className="w-full rounded-t-[10px] bg-[#f58634] px-4 py-10 sm:px-6 lg:px-10">
+          <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-12">
+            <div className="space-y-6">
+              <Logo variant="footerLight" className="h-auto w-[280px] max-w-full" />
+
+              <div className="flex flex-wrap gap-3">
+                {data.socialLinks.map((link) => (
+                  <a
+                    key={link.platform}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.platform}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/80 text-[#fef7ee] transition hover:bg-black"
+                  >
+                    <span className="text-[11px] font-semibold uppercase tracking-tight">
+                      {socialGlyph[link.icon] ?? link.platform[0]}
+                    </span>
+                  </a>
+                ))}
+              </div>
+
+              <div className="space-y-1 text-[16px] leading-[1.4] text-[#fef7ee]">
+                <p>{data.address}</p>
+                {data.email ? <p>{data.email}</p> : null}
+                {data.phone ? <p>{data.phone}</p> : null}
+              </div>
+            </div>
+
+            <nav className="space-y-2 pt-1 text-[22px] leading-[1.05] text-[#fef7ee] sm:text-[28px] lg:text-[40px]">
+              {leftLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-gray-300 hover:text-white transition-colors block"
+                  className="block transition hover:opacity-80"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+
+            <nav className="space-y-2 pt-1 text-[22px] leading-[1.05] text-[#fef7ee] sm:text-[28px] lg:text-[40px]">
+              {rightLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="block transition hover:opacity-80"
                 >
                   {link.label}
                 </a>
@@ -58,57 +76,8 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
             </nav>
           </div>
 
-          {/* Contact Info */}
-          <div className="space-y-3">
-            <Typography variant="h3" tone="onDark" className="font-semibold text-sm mb-4">
-              Contato
-            </Typography>
-            <div className="space-y-2 text-sm text-gray-300">
-              {data.email && (
-                <a href={`mailto:${data.email}`} className="hover:text-white transition-colors block">
-                  📧 {data.email}
-                </a>
-              )}
-              {data.phone && (
-                <a href={`tel:${data.phone}`} className="hover:text-white transition-colors block">
-                  ☎️ {data.phone}
-                </a>
-              )}
-              {data.address && <div className="text-gray-400">📍 {data.address}</div>}
-            </div>
-          </div>
-
-          {/* Newsletter CTA */}
-          <div className="space-y-3">
-            <Typography variant="h3" tone="onDark" className="font-semibold text-sm mb-4">
-              Newsletter
-            </Typography>
-            <Typography variant="bodySm" tone="onDark" className="opacity-70 text-xs">
-              Receba nossas atualizações e histórias de impacto.
-            </Typography>
-            <a
-              href="#newsletter"
-              className="inline-block mt-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold rounded-md transition-colors"
-            >
-              Inscrever
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-gray-800">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Typography variant="bodySm" tone="onDark" className="opacity-70">
+          <div className="mt-6 border-t border-[#fef7ee]/70 pt-6 text-[20px] leading-[1.1] text-[#fef7ee] sm:text-[28px] lg:text-[36px]">
             {data.copyright}
-          </Typography>
-          <div className="flex gap-6 text-xs text-gray-400">
-            <a href="#" className="hover:text-white transition-colors">
-              Política de Privacidade
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
-              Termos de Uso
-            </a>
           </div>
         </div>
       </div>

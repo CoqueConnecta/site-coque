@@ -132,4 +132,7 @@ Entregas:
 - Form da newsletter ajustado para proporções do protótipo: input pill + botão pill com paleta #fafafa / #f9b778 / #792b15.
 - Âncora `#contact` reposicionada para a NewsletterSection (footer não carrega mais o id).
 - Commit/push realizado para versão inicial da newsletter: `30197c5`.
-- Próximo passo: ajuste fino de espaçamento e escala tipográfica final com base em comparação visual Framer x localhost.
+- FooterSection refeito para o layout Framer: bloco laranja com `rounded-t-[10px]`, logo no canto esquerdo, ícones sociais em círculos escuros, links em duas colunas e faixa inferior com divisor e copyright.
+- Conteúdo do footer atualizado no mockData (PT/EN): e-mail, telefone, links e ano de copyright alinhados ao protótipo.
+- Criado logotipo SVG reutilizável para uso global: `/public/coque-logotipo.svg` e versão clara `/public/coque-logotipo-light.svg`; `Logo.tsx` atualizado para suportar variantes `default`, `monochrome`, `footerLight` e `icon`.
+- Próximo passo: ajuste fino pixel-perfect de espaçamentos/tipografia do footer e validação visual desktop/mobile.
