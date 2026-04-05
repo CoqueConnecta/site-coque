@@ -139,5 +139,7 @@ Entregas:
 - Ajuste adicional solicitado: ícone de Web trocado para o novo SVG circular (18x18) e ícone de YouTube atualizado para o novo SVG (18x13), mantendo sequência do protótipo: Instagram, Web, Twitter, YouTube.
 - Links sociais do footer ajustados para o padrão visual do protótipo: cada ícone agora renderiza dentro de círculo 32x32 com fundo escuro semitransparente e hover levemente mais intenso.
 - Ajuste fino de opacidade aplicado nos círculos sociais para aproximar ainda mais do Framer: estado base `bg-black/15` e hover `bg-black/25`.
+- Seção "Quer ajudar" removida do fluxo da landing para alinhar ao protótipo atual; navegação/CTAs de "Faça Parte" e "DOE AGORA" redirecionados para `#contact`.
+- Wrapper externo da NewsletterSection ajustado para fundo branco (`#fff`), removendo o aspecto cinza ao redor do card laranja.
 - Assets de marca substituídos pelo logo vetorial original completo em `/public/coque-logotipo.svg` e `/public/coque-logotipo-light.svg` para evitar simplificações visuais divergentes.
 - Próximo passo: ajuste fino pixel-perfect de espaçamentos/tipografia do footer e validação visual desktop/mobile.

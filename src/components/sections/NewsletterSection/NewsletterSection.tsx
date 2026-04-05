@@ -24,6 +24,7 @@ export const NewsletterSection = ({ data, onEmailSubmit, className, ...props }: 
     <section
       style={{
         width: '100%',
+        backgroundColor: '#fff',
         padding: '60px 0',
         display: 'flex',
         justifyContent: 'center',

@@ -5,7 +5,6 @@ import { HeroSection } from '../components/sections/HeroSection';
 import { AboutSection } from '../components/sections/AboutSection';
 import { GallerySection } from '../components/sections/GallerySection';
 import { StatsSection } from '../components/sections/StatsSection';
-import { HelpSection } from '../components/sections/HelpSection';
 import { NewsletterSection } from '../components/sections/NewsletterSection';
 import { FooterSection } from '../components/sections/FooterSection';
 import { mockDataPT } from '../data/mockData';
@@ -15,7 +14,7 @@ const navLinks = [
   { label: 'Início', href: '#hero', id: 'inicio' },
   { label: 'Quem Somos', href: '#about', id: 'about' },
   { label: 'Nossos Projetos', href: '#our-work', id: 'our-work' },
-  { label: 'Faça Parte', href: '#help', id: 'help' },
+  { label: 'Faça Parte', href: '#contact', id: 'contact' },
 ];
 
 function Site() {
@@ -55,7 +54,7 @@ function Site() {
         navLinks={navLinks}
         activeLink={activeLink}
         ctaText="DOE AGORA"
-        ctaHref="#help"
+        ctaHref="#contact"
         isTransparent={headerTransparent}
         onNavClick={handleNavClick}
         onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -70,7 +69,7 @@ function Site() {
         onClose={() => setMobileMenuOpen(false)}
         showNewsletter
         ctaText="Faça Parte"
-        ctaHref="#help"
+        ctaHref="#contact"
       />
 
       <main>
@@ -78,7 +77,6 @@ function Site() {
         <AboutSection data={data.about} id="about" />
         <StatsSection data={data.stats} />
         <GallerySection data={data.gallery} id="our-work" />
-        <HelpSection data={data.help} id="help" />
         <NewsletterSection data={data.newsletter} id="contact" />
       </main>
 
