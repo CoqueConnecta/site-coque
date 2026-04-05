@@ -1,8 +1,4 @@
 import { useState } from 'react';
-import { cn } from '../../../lib/cn';
-import { Typography } from '../../ui/Typography';
-import { Input } from '../../ui/Input';
-import { Surface } from '../../ui/Surface';
 import type { NewsletterData } from '../../../data/mockData';
 
 export interface NewsletterSectionProps extends React.HTMLAttributes<HTMLElement> {
@@ -25,56 +21,84 @@ export const NewsletterSection = ({ data, onEmailSubmit, className, ...props }: 
   };
 
   return (
-    <section className={cn('w-full bg-gray-50', className)} {...props}>
-      <div className="mx-auto max-w-4xl px-4 py-20 sm:py-32 lg:py-40">
-        {/* Main surface with gradient */}
-        <Surface variant="newsletter" padding="lg" className="space-y-8 text-center">
-          {/* Headline */}
-          <Typography variant="h2" tone="default" className="text-3xl sm:text-4xl lg:text-5xl font-bold">
+    <section
+      style={{
+        width: '100%',
+        backgroundColor: '#f58634',
+        padding: '60px 0',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '48px',
+      }}
+      className={className}
+      {...props}
+    >
+      {/* Content */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', textAlign: 'center', padding: '0 24px' }}>
+        <div>
+          <h3 style={{ fontFamily: '"DM Sans", sans-serif', fontWeight: 500, fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: '-0.6px', lineHeight: '90%', color: '#fff', margin: 0 }}>
             {data.headline}
-          </Typography>
-
-          {/* Description */}
-          <Typography variant="body" tone="muted" className="max-w-2xl mx-auto text-lg">
-            {data.description}
-          </Typography>
-
-          {/* Form */}
-          {!isSubmitted ? (
-            <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-3">
-              <div className="flex gap-2 sm:flex-row">
-                <Input
-                  type="email"
-                  placeholder={data.placeholderEmail}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  aria-label="Email para newsletter"
-                  className="flex-grow"
-                />
-                <button
-                  type="submit"
-                  className="inline-flex items-center justify-center rounded-[var(--radius-pill)] font-semibold tracking-tight transition-all bg-orange-600 text-white hover:bg-orange-700 px-6 py-2 text-base h-10 min-w-fit whitespace-nowrap"
-                >
-                  {data.buttonText}
-                </button>
-              </div>
-              <Typography variant="bodySm" tone="muted" className="text-xs">
-                Garantimos que você não será spammado.
-              </Typography>
-            </form>
-          ) : (
-            <div className="py-4 space-y-2">
-              <Typography variant="h3" className="text-xl text-orange-600 font-semibold">
-                ✓ Inscrição confirmada!
-              </Typography>
-              <Typography variant="bodySm" tone="muted">
-                Obrigado por se inscrever. Você receberá em breve as nossas atualizações.
-              </Typography>
-            </div>
+          </h3>
+          {data.headlineAccent && (
+            <h3 style={{ fontFamily: '"DM Sans", sans-serif', fontWeight: 500, fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: '-0.6px', lineHeight: '90%', color: '#fff', margin: '8px 0 0' }}>
+              {data.headlineAccent}
+            </h3>
           )}
-        </Surface>
+        </div>
+        <p style={{ fontFamily: '"Manrope", sans-serif', fontWeight: 400, fontSize: 'clamp(16px, 2vw, 22px)', letterSpacing: '-0.3px', lineHeight: '150%', color: '#fff', maxWidth: '600px', margin: 0 }}>
+          {data.description}
+        </p>
       </div>
+
+      {/* Form */}
+      {!isSubmitted ? (
+        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '0 24px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <input
+            type="email"
+            placeholder={data.placeholderEmail}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            aria-label="Email para newsletter"
+            style={{
+              height: '48px',
+              minWidth: '320px',
+              borderRadius: '32px',
+              border: '1px solid #dbdad9',
+              backgroundColor: '#fafafa',
+              color: '#101014',
+              fontSize: '16px',
+              padding: '0 20px',
+              outline: 'none',
+              fontFamily: '"Manrope", sans-serif',
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              height: '48px',
+              padding: '0 28px',
+              borderRadius: '32px',
+              border: 'none',
+              backgroundColor: '#f9b778',
+              color: '#792b15',
+              fontSize: '14px',
+              fontWeight: 700,
+              letterSpacing: '0.5px',
+              cursor: 'pointer',
+              fontFamily: '"Manrope", sans-serif',
+            }}
+          >
+            {data.buttonText}
+          </button>
+        </form>
+      ) : (
+        <div style={{ textAlign: 'center', color: '#fff' }}>
+          <p style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '20px', fontWeight: 600, margin: 0 }}>✓ Inscrição confirmada!</p>
+          <p style={{ fontFamily: '"Manrope", sans-serif', fontSize: '16px', marginTop: '8px', opacity: 0.85 }}>Obrigado por se inscrever.</p>
+        </div>
+      )}
     </section>
   );
 };

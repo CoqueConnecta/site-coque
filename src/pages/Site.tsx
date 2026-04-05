@@ -79,10 +79,10 @@ function Site() {
         <StatsSection data={data.stats} />
         <GallerySection data={data.gallery} id="our-work" />
         <HelpSection data={data.help} id="help" />
-        <NewsletterSection data={data.newsletter} />
+        <NewsletterSection data={data.newsletter} id="contact" />
       </main>
 
-      <FooterSection data={data.footer} id="contact" />
+      <FooterSection data={data.footer} />
     </>
   )
 }

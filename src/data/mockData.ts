@@ -80,6 +80,7 @@ export interface HelpData {
 
 export interface NewsletterData {
   headline: string;
+  headlineAccent?: string;
   description: string;
   placeholderEmail: string;
   buttonText: string;
@@ -246,10 +247,11 @@ export const mockDataPT: LandingPageData = {
     highlightedText: "Juntos somos mais fortes!",
   },
   newsletter: {
-    headline: "Fique por dentro",
-    description: "Receba nossas atualizações, histórias de impacto e oportunidades para participar.",
-    placeholderEmail: "seu@email.com",
-    buttonText: "Inscrever",
+    headline: "Inscreva-se na Newslatter:",
+    headlineAccent: "Coque Connecta!",
+    description: "Junte-se à nossa comunidade! Assinando nossa newsletter, você fica por dentro de todas as novidades e eventos.",
+    placeholderEmail: "E-mail",
+    buttonText: "RECEBER",
   },
   footer: {
     copyright: "© 2024 Coque Connecta. Todos os direitos reservados.",
@@ -413,10 +415,11 @@ export const mockDataEN: LandingPageData = {
     highlightedText: "Together we are stronger!",
   },
   newsletter: {
-    headline: "Stay Updated",
-    description: "Receive our updates, impact stories, and opportunities to participate.",
-    placeholderEmail: "your@email.com",
-    buttonText: "Subscribe",
+    headline: "Subscribe to the Newsletter:",
+    headlineAccent: "Coque Connecta!",
+    description: "Join our community! By subscribing to our newsletter, you stay up to date with all the news and events.",
+    placeholderEmail: "E-mail",
+    buttonText: "SUBSCRIBE",
   },
   footer: {
     copyright: "© 2024 Coque Connecta. All rights reserved.",
