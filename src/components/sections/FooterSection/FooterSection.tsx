@@ -26,12 +26,12 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center transition hover:opacity-75"
+                    className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/15 transition hover:bg-black/25"
                   >
                     <SocialIcon 
                       type={link.icon as any} 
                       label={link.platform}
-                      className="h-6 w-6 text-[#fef7ee]"
+                      className="text-[#fef7ee]"
                     />
                   </a>
                 ))}

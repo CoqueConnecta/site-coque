@@ -135,4 +135,9 @@ Entregas:
 - FooterSection refeito para o layout Framer: bloco laranja com `rounded-t-[10px]`, logo no canto esquerdo, ícones sociais em círculos escuros, links em duas colunas e faixa inferior com divisor e copyright.
 - Conteúdo do footer atualizado no mockData (PT/EN): e-mail, telefone, links e ano de copyright alinhados ao protótipo.
 - Criado logotipo SVG reutilizável para uso global: `/public/coque-logotipo.svg` e versão clara `/public/coque-logotipo-light.svg`; `Logo.tsx` atualizado para suportar variantes `default`, `monochrome`, `footerLight` e `icon`.
+- SVGs ajustados para os originais do protótipo enviados pelo time: `SocialIcon` agora usa os paths reais de Instagram, YouTube, Twitter e Web; dimensões nativas dos ícones preservadas no footer.
+- Ajuste adicional solicitado: ícone de Web trocado para o novo SVG circular (18x18) e ícone de YouTube atualizado para o novo SVG (18x13), mantendo sequência do protótipo: Instagram, Web, Twitter, YouTube.
+- Links sociais do footer ajustados para o padrão visual do protótipo: cada ícone agora renderiza dentro de círculo 32x32 com fundo escuro semitransparente e hover levemente mais intenso.
+- Ajuste fino de opacidade aplicado nos círculos sociais para aproximar ainda mais do Framer: estado base `bg-black/15` e hover `bg-black/25`.
+- Assets de marca substituídos pelo logo vetorial original completo em `/public/coque-logotipo.svg` e `/public/coque-logotipo-light.svg` para evitar simplificações visuais divergentes.
 - Próximo passo: ajuste fino pixel-perfect de espaçamentos/tipografia do footer e validação visual desktop/mobile.
