@@ -1,7 +1,19 @@
 <svg width="280" height="76" viewBox="0 0 280 76" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Coque Connecta">
-  <g>
-    <image href="/coque-logo.svg" x="0" y="0" width="76" height="76"/>
-    <text x="84" y="45" fill="#101014" font-family="'DM Sans', sans-serif" font-size="28" font-weight="700" letter-spacing="-0.5">coque</text>
-    <text x="171" y="45" fill="#101014" font-family="'DM Sans', sans-serif" font-size="28" font-weight="300" letter-spacing="-0.5">connecta</text>
-  </g>
+  <defs>
+    <style>
+      .coque-text-bold { font-family: 'DM Sans', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+      .coque-text-light { font-family: 'DM Sans', sans-serif; font-size: 28px; font-weight: 300; letter-spacing: -0.5px; }
+    </style>
+  </defs>
+  
+  <!-- Circle icon/badge on the left -->
+  <circle cx="38" cy="38" r="32" fill="none" stroke="#101014" stroke-width="2" opacity="0.2"/>
+  <circle cx="38" cy="38" r="24" fill="#101014" opacity="0.15"/>
+  <text x="38" y="45" text-anchor="middle" class="coque-text-bold" fill="#101014">C</text>
+  
+  <!-- Text: coque -->
+  <text x="84" y="45" class="coque-text-bold" fill="#101014">coque</text>
+  
+  <!-- Text: connecta -->
+  <text x="171" y="45" class="coque-text-light" fill="#101014">connecta</text>
 </svg>

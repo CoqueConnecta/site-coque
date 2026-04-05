@@ -1,19 +1,11 @@
 import { cn } from '../../../lib/cn';
 import { Logo } from '../../ui/Logo';
+import { SocialIcon } from '../../ui/SocialIcon';
 import type { FooterData } from '../../../data/mockData';
 
 export interface FooterSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: FooterData;
 }
-
-const socialGlyph: Record<string, string> = {
-  instagram: 'IG',
-  facebook: 'f',
-  linkedin: 'in',
-  globe: '○',
-  twitter: 'x',
-  youtube: '▶',
-};
 
 export const FooterSection = ({ data, className, ...props }: FooterSectionProps) => {
   const leftLinks = data.quickLinks.slice(0, 3);
@@ -27,19 +19,20 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
             <div className="space-y-6">
               <Logo variant="footerLight" className="h-auto w-[280px] max-w-full" />
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-4">
                 {data.socialLinks.map((link) => (
                   <a
                     key={link.platform}
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={link.platform}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/80 text-[#fef7ee] transition hover:bg-black"
+                    className="inline-flex items-center justify-center transition hover:opacity-75"
                   >
-                    <span className="text-[11px] font-semibold uppercase tracking-tight">
-                      {socialGlyph[link.icon] ?? link.platform[0]}
-                    </span>
+                    <SocialIcon 
+                      type={link.icon as any} 
+                      label={link.platform}
+                      className="h-6 w-6 text-[#fef7ee]"
+                    />
                   </a>
                 ))}
               </div>
