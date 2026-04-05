@@ -75,22 +75,23 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
         )}
         {...props}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <div className="flex shrink-0 items-center self-center">
             <Logo
               variant={variant === 'dark' ? 'footerLight' : 'default'}
-              className="h-10 w-auto"
+              className="block h-16 w-auto"
             />
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center gap-10 md:flex">
+          <div className="hidden self-center items-center gap-10 md:flex">
             <NavMenu
               links={navLinks}
               activeLink={activeLink}
               onLinkClick={onNavClick}
               tone={navTone}
+              className="items-center"
             />
 
             {/* CTA Button */}

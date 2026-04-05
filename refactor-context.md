@@ -20,6 +20,7 @@ Refatorar completamente a landing publica para alta fidelidade desktop ao protot
 - Storybook com conteudo mockado nesta etapa inicial.
 - i18n e Firebase entram apenas no pos-V1.
 - Estrutura pragmatica: ui, composites, sections, layouts.
+- Comentarios no codigo devem ser escritos em portugues brasileiro.
 
 ## Progresso por Fase
 
@@ -149,4 +150,5 @@ Entregas:
 - Header e HeroSection agora compartilham o mesmo fundo: o gradiente foi movido para um wrapper pai em `Site.tsx` que envolve ambos; `HeroSection` não aplica mais background próprio.
 - Botão "DOE AGORA" alinhado ao protótipo: fundo `#fafafa`, texto `#f58634`, `backdrop-blur-[10px]`, `border-radius: 50px`, padding simétrico `px-5` para centralização correta do texto.
 - Decisão de abordagem: não é necessário replicar 100% o código de estilos do Framer (ex.: classes proprietárias, tokens CSS do Framer). Usar Tailwind de forma simples e direta é preferível, desde que o resultado visual final seja equivalente ao protótipo.
+- Header ajustado para alinhamento vertical mais consistente no desktop: logo e bloco de navegação/CTA centralizados no eixo Y dentro do container, com `Logo` em `display: block` para evitar desalinhamento óptico.
 - Próximo passo: revisão visual da AboutSection.
