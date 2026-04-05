@@ -143,3 +143,5 @@ Entregas:
 - Wrapper externo da NewsletterSection ajustado para fundo branco (`#fff`), removendo o aspecto cinza ao redor do card laranja.
 - Assets de marca substituídos pelo logo vetorial original completo em `/public/coque-logotipo.svg` e `/public/coque-logotipo-light.svg` para evitar simplificações visuais divergentes.
 - Próximo passo: ajuste fino pixel-perfect de espaçamentos/tipografia do footer e validação visual desktop/mobile.
+- Limpeza de componentes legados realizada: removidos `Banner/`, `Contacts/`, `Header/`, `LanguageToggle/`, `MissionVisionValues/`, `Projects/`, `WantHelp/`, `WhoWeAre/` de `src/components/`. Estes eram da versão anterior (sem Storybook) e não estavam sendo importados em lugar nenhum.
+- Mantido: `ProtectedRoute/` (ainda importado em `App.tsx` para proteção de rotas admin), `ui/`, `composites/`, `sections/` (estrutura nova).
