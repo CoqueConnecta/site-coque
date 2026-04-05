@@ -15,7 +15,7 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
   return (
     <section
       id="our-work"
-      className={cn('w-full bg-white py-16 sm:py-24', className)}
+      className={cn('w-full bg-white py-12 sm:py-16', className)}
       {...props}
     >
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
@@ -51,7 +51,7 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
         </div>
 
         {/* Cards */}
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-8">
           {data.cards.map((card) => {
             const bg = card.variant === 'dark' ? CARD_BG_DARK : CARD_BG_LIGHT;
             const titleColor = card.variant === 'dark' ? '#411409' : '#101014';
