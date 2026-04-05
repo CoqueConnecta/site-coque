@@ -102,3 +102,17 @@ Entregas:
 - Diferencas entre fontes reais do Framer e fallback no navegador podem gerar pequenas variacoes de layout.
 - Mobile sera refeito com criterio de produto; nao copiar bugs do prototipo.
 - Componentes legados (Banner, Header, WantHelp, etc.) ainda existem mas nao sao mais usados em Site.tsx; remover na fase de limpeza.
+
+## Protocolo Anti-Erro 413 (payload grande)
+
+- Se houver anexos extensos (prints, dumps de DevTools, HTML exportado), nao reenviar tudo no chat.
+- Consolidar evidencias em resumo tecnico curto: seletor, cores, dimensoes, posicionamento e diferenca visual.
+- Para conteudo grande inevitavel, salvar em arquivo local e compartilhar apenas caminho e trecho necessario.
+- Registrar no fim da sessao um handoff de ate 20 linhas com: estado atual, ultima decisao, proximo passo.
+- Em caso de falha 413, retomar por plano minimo em 3 passos sem repetir anexos longos.
+
+## Estado Curto da Sprint Atual
+
+- Foco atual: Hero com degradê simples para manter ritmo de entrega.
+- Ajuste fino de shader/fidelidade visual fica para etapa posterior.
+- Proximo marco: commitar fallback visual e avancar para as proximas secoes.
