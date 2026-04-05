@@ -128,4 +128,8 @@ Entregas:
 - Estrutura completa do card: imagem 280x280 border-radius 10px + conteúdo (título/descricao/tags) + blockquote com ícone de aspas, texto lorem ipsum e avatar placeholder circular.
 - Imagens reais mapeadas: pessoa-segurando-caixa.jpg / pessoa-recebendo-doacao.jpg / dando-maos-com-luvas.jpg (servidas de /public/).
 - GalleryData interface atualizada com campo blockquote opcional (text, authorName, authorAvatar).
-- Próximo passo: aprovação visual e commit, depois seguir para as próximas seções.
+- NewsletterSection reescrita para maior fidelidade ao Framer: card centralizado com cantos arredondados, fundo com textura da marca (`/public/background-coque-laranja.png`), heading em duas linhas, texto central e divisória antes do formulário.
+- Form da newsletter ajustado para proporções do protótipo: input pill + botão pill com paleta #fafafa / #f9b778 / #792b15.
+- Âncora `#contact` reposicionada para a NewsletterSection (footer não carrega mais o id).
+- Commit/push realizado para versão inicial da newsletter: `30197c5`.
+- Próximo passo: ajuste fino de espaçamento e escala tipográfica final com base em comparação visual Framer x localhost.
