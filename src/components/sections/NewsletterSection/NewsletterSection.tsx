@@ -32,7 +32,7 @@ export const NewsletterSection = ({ data, onEmailSubmit, className, ...props }: 
       className={className}
       {...props}
     >
-      <div style={{ width: '100%', maxWidth: '1440px', padding: '0 20px' }}>
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <div
           style={{
             width: '100%',

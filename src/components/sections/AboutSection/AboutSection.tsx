@@ -21,22 +21,24 @@ export const AboutSection = ({ data, className, ...props }: AboutSectionProps) =
   return (
     <section id="about" className={cn('w-full bg-white', className)} {...props}>
       {/* Bloco introdutório logo após o hero, em fundo branco como no protótipo */}
-      <SectionContainer spacing="lg" gutter>
-        <div className="space-y-12 md:space-y-16">
-          <div className="mx-auto max-w-5xl">
-            <Typography
-              variant="body"
-              tone="muted"
-              className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
-            >
-              {data.description}
-            </Typography>
-          </div>
+      <SectionContainer spacing="lg" width="full" gutter={false}>
+        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+          <div className="space-y-12 md:space-y-16">
+            <div className="mx-auto max-w-5xl">
+              <Typography
+                variant="body"
+                tone="muted"
+                className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
+              >
+                {data.description}
+              </Typography>
+            </div>
 
-          <InfiniteImageTicker
-            images={aboutTickerImages}
-            imageAlt="Atividades da Coque Connecta"
-          />
+            <InfiniteImageTicker
+              images={aboutTickerImages}
+              imageAlt="Atividades da Coque Connecta"
+            />
+          </div>
         </div>
       </SectionContainer>
     </section>

@@ -13,7 +13,7 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
 
   return (
     <footer className={cn('w-full bg-white py-10', className)} {...props}>
-      <div className="mx-auto w-full max-w-[1440px] px-3 sm:px-4">
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <div className="w-full rounded-t-[10px] bg-[#f58634] px-4 py-10 sm:px-6 lg:px-10">
           <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-12">
             <div className="space-y-6">
