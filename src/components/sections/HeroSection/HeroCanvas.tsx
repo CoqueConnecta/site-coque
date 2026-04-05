@@ -11,20 +11,22 @@ const vertexShader = `
   }
 `;
 
-// Fragment shader - Domain-warped FBM for organic blob animation
-// Colors from Framer design tokens: #f58634 (orange) + #411409 (dark blobs)
+// Fragment shader tuned to match the Framer hero mood:
+// bright orange field + soft dark blobs + subtle red glow.
 const fragmentShader = `
   uniform float uTime;
+  uniform vec2 uResolution;
   varying vec2 vUv;
 
-  // Value noise hash
-  float hash(vec2 p) {
-    p = fract(p * vec2(127.1, 311.7));
-    p += dot(p, p + 74.27);
-    return fract(p.x * p.y);
+  float smin(float a, float b, float k) {
+    float h = max(k - abs(a - b), 0.0) / k;
+    return min(a, b) - h * h * h * k * 0.16666667;
   }
 
-  // Smooth value noise
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+  }
+
   float noise(vec2 p) {
     vec2 i = floor(p);
     vec2 f = fract(p);
@@ -36,54 +38,61 @@ const fragmentShader = `
     );
   }
 
-  // Fractal Brownian Motion
-  float fbm(vec2 p) {
-    float v = 0.0;
-    float a = 0.5;
-    mat2 rot = mat2(0.87758, 0.47943, -0.47943, 0.87758); // 30deg rotation
-    for (int i = 0; i < 5; i++) {
-      v += a * noise(p);
-      p = rot * p * 2.0 + vec2(100.0);
-      a *= 0.5;
-    }
-    return v;
+  float circleSDF(vec2 p, vec2 c, float r) {
+    return length(p - c) - r;
   }
 
   void main() {
     vec2 uv = vUv;
-    float t = uTime * 0.045;
+    float t = uTime * 0.12;
+    float aspect = uResolution.x / max(uResolution.y, 1.0);
+    vec2 p = uv;
+    p.x *= aspect;
 
-    // Domain warping - nested FBM calls for organic shapes (Inigo Quilez technique)
-    vec2 q = vec2(
-      fbm(uv + vec2(0.0, t)),
-      fbm(uv + vec2(5.2, 1.3 + t * 0.8))
-    );
+    // Orange base close to Framer tokens
+    vec3 cBaseA = vec3(0.961, 0.525, 0.204); // #f58634
+    vec3 cBaseB = vec3(0.976, 0.420, 0.090);
+    vec3 cDark = vec3(0.255, 0.078, 0.035);  // #411409
+    vec3 cRedGlow = vec3(0.980, 0.180, 0.100);
 
-    vec2 r = vec2(
-      fbm(uv + 4.0 * q + vec2(1.7 + t * 0.25, 9.2)),
-      fbm(uv + 4.0 * q + vec2(8.3, 2.8 + t * 0.35))
-    );
+    float vGrad = smoothstep(0.0, 1.0, uv.y);
+    vec3 color = mix(cBaseA, cBaseB, vGrad * 0.55);
 
-    float f = fbm(uv + 4.0 * r);
+    // Top-right large dark mass (mostly outside viewport)
+    vec2 cTop = vec2(1.02 * aspect + sin(t * 0.7) * 0.01, 1.10 + cos(t * 0.5) * 0.01);
+    float dTop = circleSDF(p, cTop, 0.95);
+    float mTop = smoothstep(0.28, -0.18, dTop);
 
-    // Bias blobs toward top-right (matching the Framer prototype visual)
-    float rightBias = smoothstep(0.2, 0.9, uv.x);
-    float topBias   = smoothstep(0.1, 0.8, uv.y);
-    float bias = clamp(rightBias * 0.8 + topBias * 0.6, 0.0, 1.0);
+    // Mid-right soft organic blob
+    vec2 cMid = vec2(0.76 * aspect + sin(t * 0.9) * 0.03, 0.48 + cos(t * 0.8) * 0.02);
+    float dMidA = circleSDF(p, cMid, 0.50);
+    float dMidB = circleSDF(p, cMid + vec2(-0.12, 0.07), 0.34);
+    float dMid = smin(dMidA, dMidB, 0.25);
+    float mMid = smoothstep(0.20, -0.12, dMid);
 
-    f = mix(f * 0.35, f, bias);
+    // Left red glow region
+    vec2 cLeft = vec2(0.18 * aspect + cos(t * 0.6) * 0.015, 0.55 + sin(t * 0.5) * 0.02);
+    float dLeft = circleSDF(p, cLeft, 0.22);
+    float mLeft = smoothstep(0.26, -0.20, dLeft);
 
-    // Framer design tokens
-    // colorOrange = #f58634
-    vec3 colorOrange = vec3(0.961, 0.525, 0.204);
-    // colorDark = #411409 (dark brown for blobs)
-    vec3 colorDark   = vec3(0.255, 0.078, 0.035);
-    // colorHighlight = warmer highlight for edges
-    vec3 colorWarm   = vec3(0.980, 0.700, 0.455);
+    // Warm broad center glow
+    vec2 cWarm = vec2(0.52 * aspect, 0.36);
+    float dWarm = circleSDF(p, cWarm, 0.62);
+    float mWarm = smoothstep(0.48, -0.35, dWarm) * 0.25;
 
-    // Mix: orange base -> dark blobs, with warm highlight at edges
-    vec3 color = mix(colorOrange, colorDark, clamp(f * 2.2 - 0.4, 0.0, 1.0));
-    color = mix(color, colorWarm, clamp((1.0 - f) * f * 2.8, 0.0, 0.25));
+    // Slight breakup to avoid perfect circles
+    float breakup = (noise(uv * vec2(5.0, 3.5) + t * 0.35) - 0.5) * 0.12;
+    mTop = clamp(mTop + breakup * 0.6, 0.0, 1.0);
+    mMid = clamp(mMid + breakup, 0.0, 1.0);
+
+    color = mix(color, cDark, mTop * 0.58);
+    color = mix(color, cDark, mMid * 0.62);
+    color = mix(color, cRedGlow, mLeft * 0.42);
+    color += vec3(0.09, 0.03, 0.0) * mWarm;
+
+    // Subtle vignette for contrast similar to screenshot
+    float vignette = smoothstep(0.92, 0.22, distance(uv, vec2(0.5, 0.52)));
+    color *= mix(0.90, 1.03, vignette);
 
     gl_FragColor = vec4(color, 1.0);
   }
@@ -102,7 +111,8 @@ export const HeroCanvas = ({ className }: HeroCanvasProps) => {
 
     // Renderer - antialias off for performance (shader-based, no geometry edges)
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
 
@@ -119,6 +129,9 @@ export const HeroCanvas = ({ className }: HeroCanvasProps) => {
       fragmentShader,
       uniforms: {
         uTime: { value: 0.0 },
+        uResolution: {
+          value: new THREE.Vector2(container.clientWidth, container.clientHeight),
+        },
       },
     });
 
@@ -138,6 +151,7 @@ export const HeroCanvas = ({ className }: HeroCanvasProps) => {
     // Responsive resize
     const handleResize = () => {
       renderer.setSize(container.clientWidth, container.clientHeight);
+      material.uniforms.uResolution.value.set(container.clientWidth, container.clientHeight);
     };
     const resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(container);
@@ -155,7 +169,7 @@ export const HeroCanvas = ({ className }: HeroCanvasProps) => {
     };
   }, []);
 
-  return <div ref={containerRef} className={cn('absolute inset-0', className)} />;
+  return <div ref={containerRef} className={cn('absolute inset-0 pointer-events-none', className)} />;
 };
 
 HeroCanvas.displayName = 'HeroCanvas';

@@ -1,7 +1,6 @@
 import { cn } from '../../../lib/cn';
 import { Typography } from '../../ui/Typography';
 import type { HeroData } from '../../../data/mockData';
-import { HeroCanvas } from './HeroCanvas';
 
 export interface HeroSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: HeroData;
@@ -21,8 +20,18 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
       )}
       {...props}
     >
-      {/* Three.js animated canvas background */}
-      <HeroCanvas className="z-0" />
+      {/* Temporary fallback background: close to Framer hero colors */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage: [
+            'radial-gradient(60% 55% at 18% 55%, rgba(255, 70, 20, 0.35) 0%, rgba(255, 70, 20, 0) 70%)',
+            'radial-gradient(95% 90% at 98% 2%, rgba(65, 20, 9, 0.78) 0%, rgba(65, 20, 9, 0.2) 55%, rgba(65, 20, 9, 0) 100%)',
+            'linear-gradient(130deg, #ff6b1e 0%, #f58634 52%, #d5631f 100%)',
+          ].join(','),
+        }}
+      />
 
       {/* Content — bottom-left aligned (padding-bottom: 60px from Framer) */}
       <div className="relative z-10 w-full pb-16 px-6 sm:px-10 lg:px-16">
