@@ -1,7 +1,5 @@
 import { cn } from '../../../lib/cn';
 import { Typography } from '../../ui/Typography';
-import { Surface } from '../../ui/Surface';
-import { Tag } from '../../ui/Tag';
 import { SectionContainer } from '../../ui/SectionContainer';
 import type { AboutData } from '../../../data/mockData';
 
@@ -9,92 +7,46 @@ export interface AboutSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: AboutData;
 }
 
+const aboutTickerImages = [
+  'https://framerusercontent.com/images/nICdkmexvoBG2bA2goiNyF1mcY.jpg?width=1280&height=1600',
+  'https://framerusercontent.com/images/sBRdczu8bFBR8Rg0cEoUriOt8WU.jpg?width=1440&height=973',
+  'https://framerusercontent.com/images/5rHHzdIIT6bfHvdO1Eat1SsY4Zo.jpg?width=960&height=1280',
+  'https://framerusercontent.com/images/dJVDsHYR0sR8qpyxmYUJD8os.jpg?width=4032&height=3024',
+  'https://framerusercontent.com/images/EGwC09xR8iUr4R6I6YxLoCqUcQ.jpg?width=3024&height=4032',
+  'https://framerusercontent.com/images/AnnnTX5gDlgnIZzRJ0bNzA9CkpU.jpg?width=4032&height=3024',
+];
+
 export const AboutSection = ({ data, className, ...props }: AboutSectionProps) => {
   return (
     <section id="about" className={cn('w-full bg-white', className)} {...props}>
-      {/* Main About Content */}
+      {/* Intro block right after hero, matching the prototype white section */}
       <SectionContainer spacing="lg" gutter>
-        <div className="space-y-16">
-          {/* Header */}
-          <div className="space-y-6">
-            <Tag variant="accent">Sobre</Tag>
-            <Typography variant="h1" className="text-4xl sm:text-5xl">
-              {data.headline}
-            </Typography>
-            <Typography variant="body" tone="muted" className="max-w-3xl text-lg">
+        <div className="space-y-12 md:space-y-16">
+          <div className="mx-auto max-w-5xl">
+            <Typography variant="body" tone="muted" className="text-lg leading-relaxed sm:text-xl">
               {data.description}
             </Typography>
           </div>
 
-          {/* Two Column Layout */}
-          <div className="grid gap-12 lg:grid-cols-2">
-            {/* Left Column - Subheadline & Description */}
-            <div className="space-y-4">
-              <Typography variant="h2" className="text-3xl">
-                {data.subheadline}
-              </Typography>
-              <Typography variant="body" tone="muted" className="leading-relaxed">
-                {data.subdescription}
-              </Typography>
-            </div>
-
-            {/* Right Column - Mission & Vision Cards */}
-            <div className="space-y-4">
-              <Surface variant="cardLight" padding="md">
-                <Typography variant="h3" className="mb-2">
-                  {data.mission.title}
-                </Typography>
-                <Typography variant="bodySm" tone="muted">
-                  {data.mission.description}
-                </Typography>
-              </Surface>
-              <Surface variant="cardLight" padding="md">
-                <Typography variant="h3" className="mb-2">
-                  {data.vision.title}
-                </Typography>
-                <Typography variant="bodySm" tone="muted">
-                  {data.vision.description}
-                </Typography>
-              </Surface>
-            </div>
+          {/* Horizontal ticker-like gallery */}
+          <div className="w-full overflow-x-auto pb-2">
+            <ul className="m-0 flex min-w-max list-none gap-4 p-0 md:gap-6 lg:gap-8">
+              {aboutTickerImages.map((imageUrl, index) => (
+                <li key={`${imageUrl}-${index}`} className="h-[300px] w-[240px] shrink-0 md:h-[420px] md:w-[320px] lg:h-[500px] lg:w-[400px]">
+                  <div className="h-full w-full overflow-hidden rounded-[40px] bg-white md:rounded-[50px] lg:rounded-[60px]">
+                    <img
+                      src={imageUrl}
+                      alt="Atividades da Coque Connecta"
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </SectionContainer>
-
-      {/* Values Section */}
-      <div className="border-t border-gray-200 bg-gray-50">
-        <SectionContainer spacing="lg" gutter>
-          <div className="space-y-12">
-            <div className="space-y-2">
-              <Typography variant="h2" className="text-3xl sm:text-4xl">
-                {data.values.title}
-              </Typography>
-              <Typography variant="body" tone="muted">
-                Os princípios que nos guiam em tudo que fazemos
-              </Typography>
-            </div>
-
-            {/* Values Grid */}
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.values.items.map((value) => (
-                <Surface
-                  key={value.id}
-                  variant="cardStrong"
-                  padding="md"
-                  className="border-l-4 border-l-orange-600"
-                >
-                  <Typography variant="h3" className="mb-2 text-lg font-bold text-orange-600">
-                    {value.label}
-                  </Typography>
-                  <Typography variant="bodySm" tone="muted">
-                    {value.description}
-                  </Typography>
-                </Surface>
-              ))}
-            </div>
-          </div>
-        </SectionContainer>
-      </div>
     </section>
   );
 };

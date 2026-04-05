@@ -116,3 +116,12 @@ Entregas:
 - Foco atual: Hero com degradê simples para manter ritmo de entrega.
 - Ajuste fino de shader/fidelidade visual fica para etapa posterior.
 - Proximo marco: commitar fallback visual e avancar para as proximas secoes.
+
+## Delta Recente
+
+- Ordem da landing ajustada para refletir o prototipo: About vem imediatamente apos o Hero.
+- Topo da AboutSection simplificado para bloco branco com o texto "Tudo comecou com uma ideia...".
+- Mantida a estrutura restante da About para iteracoes seguintes sem perder conteudo ja construido.
+- StatsSection reescrita no estilo Framer: fundo branco, grid 2×2 em desktop, numeros Lato weight-300 72px letter-spacing -0.8px, cor #101014.
+- Dados mock atualizados: +2.000 Jovens / +1.000 Familias / +5 Projetos financiados / +5 Territorios transformados.
+- Proximo passo: carrossel de fotos (ticker) dentro da AboutSection, loop continuo para esquerda com slowdown no hover.

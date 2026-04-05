@@ -1,7 +1,4 @@
 import { cn } from '../../../lib/cn';
-import { Typography } from '../../ui/Typography';
-import { Surface } from '../../ui/Surface';
-import { SectionContainer } from '../../ui/SectionContainer';
 import type { StatsData } from '../../../data/mockData';
 
 export interface StatsSectionProps extends React.HTMLAttributes<HTMLElement> {
@@ -11,44 +8,41 @@ export interface StatsSectionProps extends React.HTMLAttributes<HTMLElement> {
 export const StatsSection = ({ data, className, ...props }: StatsSectionProps) => {
   return (
     <section
-      className={cn(
-        'w-full bg-gradient-to-r from-orange-600 to-orange-700 py-16 sm:py-24 lg:py-32',
-        className
-      )}
+      className={cn('w-full bg-white', className)}
       {...props}
     >
-      <SectionContainer spacing="none" gutter>
-        <div className="space-y-12">
-          {/* Header */}
-          <div className="text-center space-y-3">
-            <Typography variant="h2" tone="onDark" className="text-3xl sm:text-4xl lg:text-5xl">
-              Impacto em Números
-            </Typography>
-            <Typography variant="body" tone="onDark" className="opacity-90">
-              Veja o alcance da Coque Connecta
-            </Typography>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {data.items.map((stat, index) => (
-              <Surface
-                key={index}
-                variant="cardLight"
-                padding="lg"
-                className="text-center space-y-2 transform transition-transform hover:scale-105"
+      <div className="mx-auto w-full max-w-screen-xl px-8 py-16 sm:py-20">
+        <div className="grid grid-cols-2 gap-x-[60px] gap-y-[60px] lg:grid-cols-4">
+          {data.items.map((stat, index) => (
+            <div key={index} className="flex flex-col items-center gap-3 text-center">
+              <p
+                style={{
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: 'clamp(40px, 5vw, 72px)',
+                  fontWeight: 300,
+                  letterSpacing: '-0.8px',
+                  lineHeight: '100%',
+                  color: '#101014',
+                  margin: 0,
+                }}
               >
-                <Typography variant="h1" className="text-4xl sm:text-5xl font-bold text-orange-600">
-                  {stat.value}
-                </Typography>
-                <Typography variant="body" tone="muted" className="font-medium">
-                  {stat.label}
-                </Typography>
-              </Surface>
-            ))}
-          </div>
+                {stat.value}
+              </p>
+              <p
+                style={{
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: '16px',
+                  fontWeight: 400,
+                  color: '#3d3d47',
+                  margin: 0,
+                }}
+              >
+                {stat.label}
+              </p>
+            </div>
+          ))}
         </div>
-      </SectionContainer>
+      </div>
     </section>
   );
 };

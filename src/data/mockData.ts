@@ -117,7 +117,7 @@ export const mockDataPT: LandingPageData = {
   about: {
     headline: "Quem Somos",
     description:
-      "A Coque Connecta é uma organização social fundada em 2018 no coração da comunidade do Coque, no Recife. Tudo começou com uma ideia potente, nascida do encontro entre dois líderes locais, um jovem sonhador e sua mãe, que acreditavam que a educação podia reescrever destinos e transformar realidades.",
+      "Tudo começou com uma ideia potente, nascida do encontro entre dois líderes locais, um jovem sonhador e sua mãe, que acreditavam que a educação podia reescrever destinos e transformar realidades. Marcone Ribeiro e Dona Danda, inspirados por suas próprias vivências, transformaram visão em ação, criando um espaço onde juventudes periféricas e suas famílias pudessem se enxergar, reconhecer seu valor e construir novos caminhos. Desde então, a Coque Connecta tornou-se um movimento coletivo de transformação, um espaço vivo feito de escuta, cuidado e formação cidadã.",
     subheadline: "Somos a ponte que conecta para um futuro melhor!",
     subdescription:
       "Ao longo dos anos, mais de 2.000 pessoas foram impactadas pelos nossos programas educacionais, construindo uma rede de fortalecimento comunitário. Nosso trabalho já foi reconhecido por diferentes instituições e premiações.",
@@ -199,20 +199,20 @@ export const mockDataPT: LandingPageData = {
   stats: {
     items: [
       {
-        value: "2000+",
-        label: "Pessoas impactadas",
+        value: "+2.000",
+        label: "Jovens impactados",
       },
       {
-        value: "6+",
-        label: "Anos de operação",
+        value: "+1.000",
+        label: "Famílias impactadas",
       },
       {
-        value: "4",
-        label: "Programas principais",
+        value: "+5",
+        label: "Projetos financiados",
       },
       {
-        value: "100%",
-        label: "Impacto comunitário",
+        value: "+5",
+        label: "Territórios transformados",
       },
     ],
   },

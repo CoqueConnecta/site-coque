@@ -75,8 +75,8 @@ function Site() {
 
       <main>
         <HeroSection data={data.hero} />
-        <StatsSection data={data.stats} />
         <AboutSection data={data.about} id="about" />
+        <StatsSection data={data.stats} />
         <GallerySection data={data.gallery} id="projects" />
         <HelpSection data={data.help} id="help" />
         <NewsletterSection data={data.newsletter} />
