@@ -14,7 +14,7 @@ import { mockDataPT } from '../data/mockData';
 const navLinks = [
   { label: 'Início', href: '#hero', id: 'inicio' },
   { label: 'Quem Somos', href: '#about', id: 'about' },
-  { label: 'Nossos Projetos', href: '#projects', id: 'projects' },
+  { label: 'Nossos Projetos', href: '#our-work', id: 'our-work' },
   { label: 'Faça Parte', href: '#help', id: 'help' },
 ];
 
@@ -77,7 +77,7 @@ function Site() {
         <HeroSection data={data.hero} />
         <AboutSection data={data.about} id="about" />
         <StatsSection data={data.stats} />
-        <GallerySection data={data.gallery} id="projects" />
+        <GallerySection data={data.gallery} id="our-work" />
         <HelpSection data={data.help} id="help" />
         <NewsletterSection data={data.newsletter} />
       </main>

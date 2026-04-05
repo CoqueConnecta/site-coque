@@ -19,16 +19,24 @@ export interface StatsData {
   items: StatItem[];
 }
 
-export interface ProjectCard {
+export interface HelpCard {
   id: string;
   title: string;
   description: string;
   image?: string;
   tags: string[];
+  variant: 'light' | 'dark';
+  blockquote?: {
+    text: string;
+    authorName: string;
+    authorAvatar?: string;
+  };
 }
 
 export interface GalleryData {
-  projects: ProjectCard[];
+  headline: string;
+  subtitle: string;
+  cards: HelpCard[];
 }
 
 export interface TeamMember {
@@ -165,34 +173,47 @@ export const mockDataPT: LandingPageData = {
     },
   },
   gallery: {
-    projects: [
+    headline: "Saiba como ajudar",
+    subtitle: "Existem diversas formas de colaborar com o nosso trabalho voluntário. Escolha aquela que mais combina com você!",
+    cards: [
       {
-        id: "project-1",
-        title: "Programa Futuro Conectado",
-        description: "Capacitação profissional para jovens da periferia.",
-        tags: ["educação", "capacitação"],
-        image: "/assets/project-1.jpg",
+        id: "doacoes",
+        title: "Doações",
+        description:
+          "O Coque Connecta é uma organização sem fins lucrativos que atua diretamente com a juventude e moradores do bairro do Coque em Recife – PE. Nosso trabalho só é possível graças ao apoio de pessoas que acreditam em um futuro mais justo, inclusivo e conectado para todos.",
+        image: "/pessoa-segurando-caixa.jpg",
+        tags: ["Mensal", "Internacional"],
+        variant: "light",
+        blockquote: {
+          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          authorName: "Maria Silva",
+        },
       },
       {
-        id: "project-2",
-        title: "Mentor Solidário",
-        description: "Mentoria e acompanhamento individual para desenvolvimento pessoal.",
-        tags: ["mentoria", "desenvolvimento"],
-        image: "/assets/project-2.jpg",
+        id: "voluntariado",
+        title: "Voluntariado",
+        description:
+          "O voluntariado é um pilar fundamental do Coque Connecta. Aqui, pessoas de diferentes trajetórias se unem em torno de uma missão: fortalecer o protagonismo dos moradores do Coque e mobilizar o território a partir da educação, cultura e participação cidadã.",
+        image: "/pessoa-recebendo-doacao.jpg",
+        tags: ["Base", "Pontual"],
+        variant: "dark",
+        blockquote: {
+          text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          authorName: "João Santos",
+        },
       },
       {
-        id: "project-3",
-        title: "Coque Inovação",
-        description: "Projetos de tecnologia e inovação impulsionados pela comunidade.",
-        tags: ["tecnologia", "inovação"],
-        image: "/assets/project-3.jpg",
-      },
-      {
-        id: "project-4",
-        title: "Mulheres Empreendedoras",
-        description: "Empreendedorismo feminino e autonomia econômica.",
-        tags: ["empreendedorismo", "feminismo"],
-        image: "/assets/project-4.jpg",
+        id: "voluntariado-corporativo",
+        title: "Voluntariado Corporativo",
+        description:
+          "O Coque Connecta acredita que mudanças profundas acontecem quando diferentes setores da sociedade se unem em torno de um propósito comum. Por isso, desenvolvemos parcerias com empresas comprometidas com responsabilidade social e desenvolvimento territorial!",
+        image: "/dando-maos-com-luvas.jpg",
+        tags: ["Patrocínio", "Campanhas"],
+        variant: "light",
+        blockquote: {
+          text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+          authorName: "Ana Oliveira",
+        },
       },
     ],
   },
@@ -319,34 +340,47 @@ export const mockDataEN: LandingPageData = {
     },
   },
   gallery: {
-    projects: [
+    headline: "How to Help",
+    subtitle: "There are many ways to collaborate with our volunteer work. Choose the one that suits you best!",
+    cards: [
       {
-        id: "project-1",
-        title: "Connected Future Program",
-        description: "Professional training for youth from the periphery.",
-        tags: ["education", "training"],
-        image: "/assets/project-1.jpg",
+        id: "donations",
+        title: "Donations",
+        description:
+          "Coque Connecta is a non-profit organization that works directly with youth and residents of the Coque neighborhood in Recife – PE. Our work is only possible thanks to the support of people who believe in a fairer, more inclusive and connected future for all.",
+        image: "/pessoa-segurando-caixa.jpg",
+        tags: ["Monthly", "International"],
+        variant: "light",
+        blockquote: {
+          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          authorName: "Maria Silva",
+        },
       },
       {
-        id: "project-2",
-        title: "Solidarity Mentoring",
-        description: "Individual mentoring and follow-up for personal development.",
-        tags: ["mentoring", "development"],
-        image: "/assets/project-2.jpg",
+        id: "volunteering",
+        title: "Volunteering",
+        description:
+          "Volunteering is a fundamental pillar of Coque Connecta. Here, people from different backgrounds come together around a mission: to strengthen the protagonism of Coque residents and mobilize the territory through education, culture, and civic participation.",
+        image: "/pessoa-recebendo-doacao.jpg",
+        tags: ["Local", "One-time"],
+        variant: "dark",
+        blockquote: {
+          text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          authorName: "João Santos",
+        },
       },
       {
-        id: "project-3",
-        title: "Coque Innovation",
-        description: "Technology and innovation projects driven by the community.",
-        tags: ["technology", "innovation"],
-        image: "/assets/project-3.jpg",
-      },
-      {
-        id: "project-4",
-        title: "Entrepreneurial Women",
-        description: "Women entrepreneurship and economic autonomy.",
-        tags: ["entrepreneurship", "feminism"],
-        image: "/assets/project-4.jpg",
+        id: "corporate-volunteering",
+        title: "Corporate Volunteering",
+        description:
+          "Coque Connecta believes that profound change happens when different sectors of society unite around a common purpose. That's why we develop partnerships with companies committed to social responsibility and territorial development!",
+        image: "/dando-maos-com-luvas.jpg",
+        tags: ["Sponsorship", "Campaigns"],
+        variant: "light",
+        blockquote: {
+          text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+          authorName: "Ana Oliveira",
+        },
       },
     ],
   },

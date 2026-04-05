@@ -124,4 +124,8 @@ Entregas:
 - Mantida a estrutura restante da About para iteracoes seguintes sem perder conteudo ja construido.
 - StatsSection reescrita no estilo Framer: fundo branco, grid 2×2 em desktop, numeros Lato weight-300 72px letter-spacing -0.8px, cor #101014.
 - Dados mock atualizados: +2.000 Jovens / +1.000 Familias / +5 Projetos financiados / +5 Territorios transformados.
-- Proximo passo: carrossel de fotos (ticker) dentro da AboutSection, loop continuo para esquerda com slowdown no hover.
+- GallerySection reescrita como seção "Saiba como Ajudar" (#our-work): 3 cards empilhados, alternancia light/dark (#f9b778 / #f58634), tags escuras #411409, header "Saiba como ajudar".
+- Estrutura completa do card: imagem 280x280 border-radius 10px + conteúdo (título/descricao/tags) + blockquote com ícone de aspas, texto lorem ipsum e avatar placeholder circular.
+- Imagens reais mapeadas: pessoa-segurando-caixa.jpg / pessoa-recebendo-doacao.jpg / dando-maos-com-luvas.jpg (servidas de /public/).
+- GalleryData interface atualizada com campo blockquote opcional (text, authorName, authorAvatar).
+- Próximo passo: aprovação visual e commit, depois seguir para as próximas seções.
