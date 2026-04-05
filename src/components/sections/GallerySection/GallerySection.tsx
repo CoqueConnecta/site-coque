@@ -37,21 +37,25 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
           <h3
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              fontSize: 'clamp(28px, 3vw, 42px)',
-              fontWeight: 500,
+              fontSize: 'clamp(34px, 4.2vw, 50px)',
+              fontWeight: 700,
               color: '#101014',
+              lineHeight: '1.1',
               margin: 0,
-              letterSpacing: '-0.4px',
+              letterSpacing: '-0.8px',
+              maxWidth: '640px',
+              width: '100%',
             }}
           >
             {data.headline}
           </h3>
           <p
             style={{
-              fontFamily: "'Manrope', sans-serif",
-              fontSize: '18px',
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 'clamp(17px, 2vw, 20px)',
+              lineHeight: '1.3',
               color: '#3d3d47',
-              maxWidth: '600px',
+              maxWidth: '640px',
               margin: 0,
             }}
           >
