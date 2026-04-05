@@ -151,4 +151,14 @@ Entregas:
 - Botão "DOE AGORA" alinhado ao protótipo: fundo `#fafafa`, texto `#f58634`, `backdrop-blur-[10px]`, `border-radius: 50px`, padding simétrico `px-5` para centralização correta do texto.
 - Decisão de abordagem: não é necessário replicar 100% o código de estilos do Framer (ex.: classes proprietárias, tokens CSS do Framer). Usar Tailwind de forma simples e direta é preferível, desde que o resultado visual final seja equivalente ao protótipo.
 - Header ajustado para alinhamento vertical mais consistente no desktop: logo e bloco de navegação/CTA centralizados no eixo Y dentro do container, com `Logo` em `display: block` para evitar desalinhamento óptico.
-- Próximo passo: revisão visual da AboutSection.
+- AboutSection: texto introdutório ajustado para escala mais próxima do protótipo (desktop em torno de 22px).
+- Carrossel da About refatorado para componente reutilizável `InfiniteImageTicker` em `src/components/composites/InfiniteImageTicker/InfiniteImageTicker.tsx`.
+- `TickerItem` foi extraído para dentro do componente reutilizável, reduzindo complexidade do `AboutSection` e facilitando reuso em outras seções.
+- Storybook adicionado para o novo componente: `InfiniteImageTicker.stories.tsx` com cenários `Default` e `InsideWhiteSection`.
+- Animação global `animate-marquee` mantida em `src/index.css` nesta etapa para preservar simplicidade e continuidade da implementação.
+- Commit/push realizado para a refatoração do About + ticker reutilizável: `32ba41a`.
+- StatsSection ajustada para mobile em coluna única (`grid-cols-1`), mantendo 2 colunas em `sm` e 4 colunas em `lg`.
+- Tipografia de Stats refinada com escala responsiva: valores em Lato (até 72px no desktop) e labels em 20px no desktop.
+- Correção de fonte em Tailwind: substituído uso incorreto de `font-[var(--font-support)]` por `[font-family:var(--font-support)]` no value.
+- Label da Stats com fonte explícita para evitar herança indesejada: `[font-family:var(--font-body)]`.
+- Próximo passo: revisão visual da GallerySection para alinhar tipografia, espaçamento e cards ao protótipo.

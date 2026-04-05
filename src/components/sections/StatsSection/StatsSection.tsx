@@ -12,33 +12,19 @@ export const StatsSection = ({ data, className, ...props }: StatsSectionProps) =
       {...props}
     >
       <div className="mx-auto w-full max-w-screen-xl px-8 py-16 sm:py-20">
-        <div className="grid grid-cols-2 gap-x-[60px] gap-y-[60px] lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-[60px] gap-y-[60px] sm:grid-cols-2 lg:grid-cols-4">
           {data.items.map((stat, index) => (
             <div key={index} className="flex flex-col items-center gap-3 text-center">
               <p
-                style={{
-                  fontFamily: "'Lato', sans-serif",
-                  fontSize: 'clamp(40px, 5vw, 72px)',
-                  fontWeight: 300,
-                  letterSpacing: '-0.8px',
-                  lineHeight: '100%',
-                  color: '#101014',
-                  margin: 0,
-                }}
+                className="m-0 [font-family:var(--font-support)] text-[40px] font-light leading-[1] tracking-[-0.8px] text-[#101014] sm:text-[56px] lg:text-[72px]"
               >
                 {stat.value}
               </p>
-              <p
-                style={{
-                  fontFamily: "'Lato', sans-serif",
-                  fontSize: '16px',
-                  fontWeight: 400,
-                  color: '#3d3d47',
-                  margin: 0,
-                }}
+              <h4
+                className="m-0 [font-family:var(--font-body)] text-[16px] font-normal leading-[1.5] text-[#101014] sm:text-[18px] lg:text-[20px]"
               >
                 {stat.label}
-              </p>
+              </h4>
             </div>
           ))}
         </div>
