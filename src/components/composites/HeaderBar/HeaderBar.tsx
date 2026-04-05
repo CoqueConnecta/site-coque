@@ -13,6 +13,8 @@ export interface HeaderBarProps extends HTMLAttributes<HTMLElement> {
   onMobileMenuClick?: () => void;
   showMobileMenu?: boolean;
   variant?: 'light' | 'dark';
+  /** Opcional: fixa o header no topo da janela */
+  isFixed?: boolean;
   /** Transparente quando hero está visível; transiciona para branco no scroll */
   isTransparent?: boolean;
 }
@@ -28,6 +30,7 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
       onMobileMenuClick,
       showMobileMenu,
       variant = 'light',
+      isFixed = false,
       isTransparent = false,
       className,
       ...props
@@ -48,9 +51,9 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
 
     const navTone = isTransparent ? 'onDark' : 'default';
 
-    // CTA button: dark on both white and transparent headers
+    // CTA button: white pill + orange text on transparent header (matches Framer prototype)
     const ctaBg = isTransparent
-      ? 'bg-[#101014] text-white hover:bg-black'
+      ? 'bg-[#fafafa] text-[#f58634] hover:bg-white backdrop-blur-[10px]'
       : variant === 'dark'
         ? 'bg-white text-gray-900 hover:bg-gray-100'
         : 'bg-gray-900 text-white hover:bg-gray-800';
@@ -58,11 +61,14 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
     // Mobile icon color
     const iconColor = isTransparent ? 'text-white' : variant === 'dark' ? 'text-white' : 'text-gray-700';
 
+    const positionClass = isFixed ? 'fixed top-0 left-0 right-0' : 'relative';
+
     return (
       <header
         ref={ref}
         className={cn(
-          'sticky top-0 z-40 w-full border-b transition-all duration-300',
+          'z-40 w-full border-b transition-all duration-300',
+          positionClass,
           bgClass,
           borderClass,
           className
@@ -73,8 +79,8 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
           {/* Logo */}
           <div className="flex-shrink-0">
             <Logo
-              variant={isTransparent || variant === 'dark' ? 'monochrome' : 'default'}
-              className={cn('h-10 w-auto', isTransparent && 'brightness-0 invert')}
+              variant={variant === 'dark' ? 'footerLight' : 'default'}
+              className="h-10 w-auto"
             />
           </div>
 
@@ -91,7 +97,8 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
             <a
               href={ctaHref}
               className={cn(
-                'inline-flex items-center justify-center rounded-[var(--radius-pill)] font-semibold tracking-tight transition-all px-5 py-2 text-sm h-10',
+                'inline-flex items-center justify-center rounded-[50px] font-semibold tracking-tight transition-all text-sm',
+                isTransparent ? 'px-5 h-[39px]' : 'px-5 py-2 h-10',
                 ctaBg
               )}
             >

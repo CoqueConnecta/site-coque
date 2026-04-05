@@ -145,3 +145,8 @@ Entregas:
 - Próximo passo: ajuste fino pixel-perfect de espaçamentos/tipografia do footer e validação visual desktop/mobile.
 - Limpeza de componentes legados realizada: removidos `Banner/`, `Contacts/`, `Header/`, `LanguageToggle/`, `MissionVisionValues/`, `Projects/`, `WantHelp/`, `WhoWeAre/` de `src/components/`. Estes eram da versão anterior (sem Storybook) e não estavam sendo importados em lugar nenhum.
 - Mantido: `ProtectedRoute/` (ainda importado em `App.tsx` para proteção de rotas admin), `ui/`, `composites/`, `sections/` (estrutura nova).
+- HeaderBar ajustado para fidelidade ao protótipo: não fica mais fixo por padrão (prop `isFixed` opcional), permanece transparente sem trocar de cor no scroll, logo colorida no estado transparente.
+- Header e HeroSection agora compartilham o mesmo fundo: o gradiente foi movido para um wrapper pai em `Site.tsx` que envolve ambos; `HeroSection` não aplica mais background próprio.
+- Botão "DOE AGORA" alinhado ao protótipo: fundo `#fafafa`, texto `#f58634`, `backdrop-blur-[10px]`, `border-radius: 50px`, padding simétrico `px-5` para centralização correta do texto.
+- Decisão de abordagem: não é necessário replicar 100% o código de estilos do Framer (ex.: classes proprietárias, tokens CSS do Framer). Usar Tailwind de forma simples e direta é preferível, desde que o resultado visual final seja equivalente ao protótipo.
+- Próximo passo: revisão visual da AboutSection.

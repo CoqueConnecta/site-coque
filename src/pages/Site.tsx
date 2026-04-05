@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { HeaderBar } from '../components/composites/HeaderBar';
 import { MobileMenuOverlay } from '../components/composites/MobileMenuOverlay';
 import { HeroSection } from '../components/sections/HeroSection';
@@ -20,28 +20,7 @@ const navLinks = [
 function Site() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string | undefined>(undefined);
-  const [headerTransparent, setHeaderTransparent] = useState(true);
-  const heroRef = useRef<HTMLElement | null>(null);
   const data = mockDataPT;
-
-  // IntersectionObserver: header is transparent while hero is visible
-  useEffect(() => {
-    heroRef.current = document.getElementById('hero');
-    if (!heroRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setHeaderTransparent(entry.isIntersecting);
-      },
-      {
-        // Trigger when less than 10% of hero is still visible
-        threshold: 0.1,
-      }
-    );
-
-    observer.observe(heroRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   const handleNavClick = (href: string) => {
     setActiveLink(href);
@@ -50,17 +29,6 @@ function Site() {
 
   return (
     <>
-      <HeaderBar
-        navLinks={navLinks}
-        activeLink={activeLink}
-        ctaText="DOE AGORA"
-        ctaHref="#contact"
-        isTransparent={headerTransparent}
-        onNavClick={handleNavClick}
-        onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        showMobileMenu={mobileMenuOpen}
-      />
-
       <MobileMenuOverlay
         isOpen={mobileMenuOpen}
         navLinks={navLinks}
@@ -72,8 +40,31 @@ function Site() {
         ctaHref="#contact"
       />
 
-      <main>
+      {/* Hero wrapper: HeaderBar + HeroSection share the same gradient background */}
+      <div
+        style={{
+          backgroundImage: [
+            'radial-gradient(60% 55% at 18% 55%, rgba(255, 70, 20, 0.35) 0%, rgba(255, 70, 20, 0) 70%)',
+            'radial-gradient(95% 90% at 98% 2%, rgba(65, 20, 9, 0.78) 0%, rgba(65, 20, 9, 0.2) 55%, rgba(65, 20, 9, 0) 100%)',
+            'linear-gradient(130deg, #ff6b1e 0%, #f58634 52%, #d5631f 100%)',
+          ].join(',')
+        }}
+      >
+        <HeaderBar
+          navLinks={navLinks}
+          activeLink={activeLink}
+          ctaText="DOE AGORA"
+          ctaHref="#contact"
+          isTransparent
+          onNavClick={handleNavClick}
+          onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          showMobileMenu={mobileMenuOpen}
+        />
+
         <HeroSection data={data.hero} />
+      </div>
+
+      <main>
         <AboutSection data={data.about} id="about" />
         <StatsSection data={data.stats} />
         <GallerySection data={data.gallery} id="our-work" />
