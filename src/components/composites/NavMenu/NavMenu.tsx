@@ -20,7 +20,7 @@ export const NavMenu = forwardRef<HTMLElement, NavMenuProps>(
     return (
       <nav
         ref={ref}
-        className={cn('flex items-center gap-8', className)}
+        className={cn('flex items-center gap-8 lg:gap-10', className)}
         {...props}
       >
         {links.map((link) => (
@@ -29,13 +29,13 @@ export const NavMenu = forwardRef<HTMLElement, NavMenuProps>(
             href={link.href}
             onClick={() => onLinkClick?.(link.href)}
             className={cn(
-              'text-sm font-semibold transition-colors',
+              '[font-family:var(--font-body)] text-[18px] font-medium leading-none tracking-[-0.3px] transition-colors',
               tone === 'onDark'
                 ? activeLink === link.href
-                  ? 'text-white font-bold underline underline-offset-4'
+                  ? 'text-white'
                   : 'text-white/90 hover:text-white'
                 : activeLink === link.href
-                  ? 'text-orange-600'
+                  ? 'text-[#f58634]'
                   : 'text-gray-900 hover:text-orange-600'
             )}
           >

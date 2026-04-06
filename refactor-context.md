@@ -161,4 +161,12 @@ Entregas:
 - Tipografia de Stats refinada com escala responsiva: valores em Lato (até 72px no desktop) e labels em 20px no desktop.
 - Correção de fonte em Tailwind: substituído uso incorreto de `font-[var(--font-support)]` por `[font-family:var(--font-support)]` no value.
 - Label da Stats com fonte explícita para evitar herança indesejada: `[font-family:var(--font-body)]`.
-- Próximo passo: revisão visual da GallerySection para alinhar tipografia, espaçamento e cards ao protótipo.
+- Header da Gallery alinhado ao protótipo: título com DM Sans até 50px e subtítulo com DM Sans até 20px na cor #3d3d47.
+- GalleryCard extraído para arquivo dedicado em `src/components/sections/GallerySection/GalleryCard.tsx`, mantendo renderização atual com props de estilo e conteúdo.
+- Storybook do card criado em `GalleryCard.stories.tsx` com cenários: Light, Dark, WithoutBlockquote e WithAuthorAvatar.
+- GalleryCard refinado visualmente com foco em tipografia, espaçamento interno e responsividade (stack no mobile, lado a lado no desktop).
+- Padronização de container lateral aplicada em About, Stats, Gallery, Newsletter e Footer com base comum `max-w-[1440px] px-4 sm:px-6 lg:px-10`.
+- Espaçamentos verticais entre Gallery, Newsletter e Footer reduzidos; footer ajustado com `pb-0` para eliminar faixa branca na base desktop.
+- NavMenu refinado para o estilo do protótipo: itens em DM Sans 18px, tracking mais fechado, espaçamento entre links ajustado e estado ativo simplificado no header sobre fundo laranja.
+- Commits realizados nesta etapa: `27d3958`, `37fe96a` e `40fa848`.
+- Próximo passo (sessão seguinte): integrar conteúdo via API/Firebase (substituir mocks por requisição) e adicionar ação no topo para alternância de idioma PT/EN.
