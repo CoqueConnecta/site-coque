@@ -14,7 +14,7 @@ const navLinks = [
   { label: 'Início', href: '#hero', id: 'inicio' },
   { label: 'Quem Somos', href: '#about', id: 'about' },
   { label: 'Nossos Projetos', href: '#our-work', id: 'our-work' },
-  { label: 'Faça Parte', href: '#contact', id: 'contact' },
+  { label: 'Faça Parte', href: '#our-work', id: 'contact' },
 ];
 
 function Site() {

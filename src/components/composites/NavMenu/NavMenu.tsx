@@ -12,7 +12,7 @@ export interface NavMenuProps extends HTMLAttributes<HTMLElement> {
   activeLink?: string;
   onLinkClick?: (href: string) => void;
   /** 'onDark' para header transparente sobre fundo colorido */
-  tone?: 'default' | 'onDark';
+  tone?: 'default' | 'onDark' | 'brand';
 }
 
 export const NavMenu = forwardRef<HTMLElement, NavMenuProps>(
@@ -34,6 +34,10 @@ export const NavMenu = forwardRef<HTMLElement, NavMenuProps>(
                 ? activeLink === link.href
                   ? 'text-white'
                   : 'text-white/90 hover:text-white'
+                : tone === 'brand'
+                  ? activeLink === link.href
+                    ? 'text-[#f58634]'
+                    : 'text-[#f58634] hover:text-[#d86f2f]'
                 : activeLink === link.href
                   ? 'text-[#f58634]'
                   : 'text-gray-900 hover:text-orange-600'

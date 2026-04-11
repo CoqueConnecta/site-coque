@@ -33,11 +33,14 @@ export const AboutSection = ({ data, className, ...props }: AboutSectionProps) =
             </Typography>
           </div>
           <YouTubeFeed />
-          <InfiniteImageTicker
-            images={aboutTickerImages}
-            imageAlt="Atividades da Coque Connecta"
-          />
         </div>
+      </Block>
+
+      <Block inset="full" className="mt-12 md:mt-16">
+        <InfiniteImageTicker
+          images={aboutTickerImages}
+          imageAlt="Atividades da Coque Connecta"
+        />
       </Block>
     </section>
   );
