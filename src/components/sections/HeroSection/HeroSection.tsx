@@ -1,6 +1,7 @@
 import { cn } from '../../../lib/cn';
 import type { HeroData } from '../../../data/mockData';
 import { Block } from '../../ui/Block';
+import { HeroCanvas } from './HeroCanvas';
 
 export interface HeroSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: HeroData;
@@ -12,7 +13,6 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
       id="hero"
       className={cn(
         // Framer: height:100vh; min-height:700px; overflow:hidden; padding-bottom:60px
-        // Fundo agora vem do wrapper pai em Site.tsx
         'relative w-full overflow-hidden',
         'flex flex-col justify-end',
         'min-h-[620px]',
@@ -20,7 +20,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
       )}
       {...props}
     >
-
+      <HeroCanvas />
 
       {/* Conteúdo alinhado no canto inferior esquerdo (padding-bottom: 60px do Framer) */}
       <Block className="relative z-10 pb-16">

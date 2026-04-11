@@ -59,7 +59,7 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
       <header
         ref={ref}
         className={cn(
-          'z-50 w-[min(1180px,calc(100%-2rem))] transition-all duration-300',
+          'z-40 w-[min(1180px,calc(100%-2rem))] transition-all duration-300',
           positionClass,
           className
         )}

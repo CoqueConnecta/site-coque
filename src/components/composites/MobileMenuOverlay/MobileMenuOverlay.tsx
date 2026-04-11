@@ -45,7 +45,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
         <div
           ref={ref}
           className={cn(
-            'fixed right-0 top-0 z-40 h-full w-full max-w-xs overflow-y-auto bg-white shadow-xl transition-transform duration-300 ease-in-out',
+            'fixed right-0 top-0 z-50 h-full w-full max-w-xs overflow-y-auto bg-white shadow-xl transition-transform duration-300 ease-in-out',
             isOpen ? 'translate-x-0' : 'translate-x-full',
             className
           )}
