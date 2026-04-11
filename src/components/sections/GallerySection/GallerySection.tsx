@@ -1,5 +1,6 @@
 import { cn } from '../../../lib/cn';
 import type { GalleryData } from '../../../data/mockData';
+import { Block } from '../../ui/Block';
 import { GalleryCard } from './GalleryCard';
 
 export interface GallerySectionProps extends React.HTMLAttributes<HTMLElement> {
@@ -18,7 +19,7 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
       className={cn('w-full bg-white py-12 sm:py-16', className)}
       {...props}
     >
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+      <Block>
         {/* Header */}
         <div className="mb-10 flex flex-col items-center gap-4 text-center">
           <h3
@@ -74,7 +75,7 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
             );
           })}
         </div>
-      </div>
+      </Block>
     </section>
   );
 };

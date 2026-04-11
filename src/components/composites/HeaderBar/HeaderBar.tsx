@@ -1,5 +1,6 @@
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../../lib/cn';
+import { Block } from '../../ui/Block';
 import { Logo } from '../../ui/Logo';
 import { IconButton } from '../../ui/IconButton';
 import { NavMenu, type NavLink } from '../NavMenu';
@@ -75,7 +76,7 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
         )}
         {...props}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
+        <Block className="flex items-center justify-between py-6">
           {/* Logo */}
           <div className="flex shrink-0 items-center self-center">
             <Logo
@@ -128,7 +129,7 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
               onClick={onMobileMenuClick}
             />
           </div>
-        </div>
+        </Block>
       </header>
     );
   }

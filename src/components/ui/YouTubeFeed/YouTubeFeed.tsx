@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Modal } from '../Modal';
 import { Typography } from '../../ui/Typography';
-import { SectionContainer } from '../SectionContainer';
 // Importe um icone de play se quiser colocar em cima da thumb
 import { Play } from 'lucide-react'; 
 
@@ -35,39 +34,39 @@ export const YouTubeFeed = () => {
   };
 
   return (
-    <SectionContainer className="py-16">
+    <>
       <Typography variant="h2" className="mb-8">Vídeos</Typography>
 
       {/* Grid de Thumbnails */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-        {mockVideos.map((video) => (
-          <div 
-            key={video.id} 
-            className="group relative cursor-pointer overflow-hidden rounded-xl bg-gray-200 aspect-video"
-            onClick={() => openVideo(video.id)}
-          >
-            {/* Imagem de Capa do Youtube */}
-            <img 
-              src={video.thumbnail} 
-              alt={video.title} 
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            
-            {/* Overlay com botão de Play (Fica visível no hover) */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/40">
-              <div className="rounded-full bg-red-600 p-4 text-white shadow-lg transition-transform group-hover:scale-110">
-                <Play fill="currentColor" size={24} />
+          {mockVideos.map((video) => (
+            <div 
+              key={video.id} 
+              className="group relative cursor-pointer overflow-hidden rounded-xl bg-gray-200 aspect-video"
+              onClick={() => openVideo(video.id)}
+            >
+              {/* Imagem de Capa do Youtube */}
+              <img 
+                src={video.thumbnail} 
+                alt={video.title} 
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              
+              {/* Overlay com botão de Play (Fica visível no hover) */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/40">
+                <div className="rounded-full bg-red-600 p-4 text-white shadow-lg transition-transform group-hover:scale-110">
+                  <Play fill="currentColor" size={24} />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
       {/* O Nosso Modal Reutilizável */}
       <Modal 
         isOpen={isModalOpen} 
         onClose={closeModal} 
-        className="max-w-5xl" // Limita a largura máxima do vídeo em telas gigantes
+        className="max-w-5xl"
       >
         {/* Usamos 'aspect-video' do Tailwind para manter a proporção 16:9 perfeita em qualquer tamanho de tela */}
         <div className="aspect-video w-full overflow-hidden rounded-lg bg-black shadow-2xl">
@@ -83,6 +82,6 @@ export const YouTubeFeed = () => {
           )}
         </div>
       </Modal>
-    </SectionContainer>
+    </>
   );
 };

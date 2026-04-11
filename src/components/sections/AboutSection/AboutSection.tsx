@@ -1,8 +1,9 @@
 import { cn } from '../../../lib/cn';
 import { Typography } from '../../ui/Typography';
-import { SectionContainer } from '../../ui/SectionContainer';
 import { InfiniteImageTicker } from '../../composites/InfiniteImageTicker';
 import type { AboutData } from '../../../data/mockData';
+import { Block } from '../../ui/Block';
+import { YouTubeFeed } from '../../ui/YouTubeFeed';
 
 export interface AboutSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: AboutData;
@@ -19,28 +20,25 @@ const aboutTickerImages = [
 
 export const AboutSection = ({ data, className, ...props }: AboutSectionProps) => {
   return (
-    <section id="about" className={cn('w-full bg-white', className)} {...props}>
-      {/* Bloco introdutório logo após o hero, em fundo branco como no protótipo */}
-      <SectionContainer spacing="lg" width="full" gutter={false}>
-        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
-          <div className="space-y-12 md:space-y-16">
-            <div className="mx-auto max-w-5xl">
-              <Typography
-                variant="body"
-                tone="muted"
-                className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
-              >
-                {data.description}
-              </Typography>
-            </div>
-
-            <InfiniteImageTicker
-              images={aboutTickerImages}
-              imageAlt="Atividades da Coque Connecta"
-            />
+    <section id="about" className={cn('w-full bg-white py-16 md:py-24', className)} {...props}>
+      <Block>
+        <div className="space-y-12 md:space-y-16">
+          <div className="max-w-5xl">
+            <Typography
+              variant="body"
+              tone="muted"
+              className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
+            >
+              {data.description}
+            </Typography>
           </div>
+          <YouTubeFeed />
+          <InfiniteImageTicker
+            images={aboutTickerImages}
+            imageAlt="Atividades da Coque Connecta"
+          />
         </div>
-      </SectionContainer>
+      </Block>
     </section>
   );
 };

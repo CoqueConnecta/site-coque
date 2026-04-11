@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { NewsletterData } from '../../../data/mockData';
+import { Block } from '../../ui/Block';
 
 export interface NewsletterSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: NewsletterData;
@@ -32,7 +33,7 @@ export const NewsletterSection = ({ data, onEmailSubmit, className, ...props }: 
       className={className}
       {...props}
     >
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+      <Block>
         <div
           style={{
             width: '100%',
@@ -177,7 +178,7 @@ export const NewsletterSection = ({ data, onEmailSubmit, className, ...props }: 
             )}
           </div>
         </div>
-      </div>
+      </Block>
     </section>
   );
 };

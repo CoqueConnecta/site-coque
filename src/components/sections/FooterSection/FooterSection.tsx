@@ -1,4 +1,5 @@
 import { cn } from '../../../lib/cn';
+import { Block } from '../../ui/Block';
 import { Logo } from '../../ui/Logo';
 import { SocialIcon } from '../../ui/SocialIcon';
 import type { FooterData } from '../../../data/mockData';
@@ -13,7 +14,7 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
 
   return (
     <footer className={cn('w-full bg-white pt-2 pb-0', className)} {...props}>
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+      <Block>
         <div className="w-full rounded-t-[10px] bg-[#f58634] px-4 py-10 sm:px-6 lg:px-10">
           <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-12">
             <div className="space-y-6">
@@ -73,7 +74,7 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
             {data.copyright}
           </div>
         </div>
-      </div>
+      </Block>
     </footer>
   );
 };

@@ -1,6 +1,7 @@
 import { cn } from '../../../lib/cn';
 import { Typography } from '../../ui/Typography';
 import { SectionContainer } from '../../ui/SectionContainer';
+import { Block } from '../../ui/Block';
 import type { HelpData } from '../../../data/mockData';
 
 export interface HelpSectionProps extends React.HTMLAttributes<HTMLElement> {
@@ -11,7 +12,8 @@ export const HelpSection = ({ data, className, ...props }: HelpSectionProps) => 
   return (
     <section id="help" className={cn('w-full bg-white', className)} {...props}>
       <SectionContainer spacing="lg" gutter>
-        <div className="mx-auto max-w-3xl space-y-8 text-center">
+        <Block className="space-y-8">
+          <div className="mx-auto max-w-3xl space-y-8 text-center">
           {/* Headline */}
           <Typography variant="h1" className="text-4xl sm:text-5xl lg:text-6xl font-bold">
             {data.headline}
@@ -31,18 +33,19 @@ export const HelpSection = ({ data, className, ...props }: HelpSectionProps) => 
             </div>
           )}
 
-          {/* CTA Button */}
-          {data.ctaText && (
-            <div className="flex justify-center pt-4">
-              <a
-                href={data.ctaLink}
-                className="inline-flex items-center justify-center rounded-[var(--radius-pill)] font-semibold tracking-tight transition-all bg-orange-600 text-white hover:bg-orange-700 px-8 py-3 text-base sm:text-lg h-12 shadow-lg hover:shadow-xl"
-              >
-                {data.ctaText}
-              </a>
-            </div>
-          )}
-        </div>
+            {/* CTA Button */}
+            {data.ctaText && (
+              <div className="flex justify-center pt-4">
+                <a
+                  href={data.ctaLink}
+                  className="inline-flex items-center justify-center rounded-[var(--radius-pill)] font-semibold tracking-tight transition-all bg-orange-600 text-white hover:bg-orange-700 px-8 py-3 text-base sm:text-lg h-12 shadow-lg hover:shadow-xl"
+                >
+                  {data.ctaText}
+                </a>
+              </div>
+            )}
+          </div>
+        </Block>
       </SectionContainer>
     </section>
   );

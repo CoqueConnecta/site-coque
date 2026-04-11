@@ -1,5 +1,6 @@
 import { cn } from '../../../lib/cn';
 import type { HeroData } from '../../../data/mockData';
+import { Block } from '../../ui/Block';
 
 export interface HeroSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: HeroData;
@@ -22,7 +23,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
 
 
       {/* Conteúdo alinhado no canto inferior esquerdo (padding-bottom: 60px do Framer) */}
-      <div className="relative z-10 w-full pb-16 px-6 sm:px-10 lg:px-16">
+      <Block className="relative z-10 pb-16">
         <div className="max-w-3xl space-y-6">
           {/* Título: linha 1 em DM Sans bold; linha 2 em Kirang Haerang */}
           <h1 className="whitespace-pre-line text-[#fef7ee] leading-tight">
@@ -61,7 +62,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
             </div>
           )}
         </div>
-      </div>
+      </Block>
     </section>
   );
 };
