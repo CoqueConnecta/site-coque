@@ -97,6 +97,8 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
             {/* CTA Button */}
             <a
               href={ctaHref}
+              target='_blank'
+              rel="noopener noreferrer"
               className={cn(
                 'inline-flex items-center justify-center rounded-[50px] font-semibold tracking-tight transition-all text-sm',
                 isTransparent ? 'px-5 h-[39px]' : 'px-5 py-2 h-10',

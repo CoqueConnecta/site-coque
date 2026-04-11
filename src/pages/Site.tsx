@@ -54,7 +54,7 @@ function Site() {
           navLinks={navLinks}
           activeLink={activeLink}
           ctaText="DOE AGORA"
-          ctaHref="#contact"
+          ctaHref="https://benfeitoria.com/projeto/coqueconnecta"
           isTransparent
           onNavClick={handleNavClick}
           onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
