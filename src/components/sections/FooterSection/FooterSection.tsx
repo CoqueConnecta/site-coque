@@ -47,7 +47,7 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 sm:gap-10 lg:justify-self-end lg:self-center">
-              <nav className="space-y-2 text-[22px] leading-[1.05] text-[#fef7ee] sm:text-[28px] lg:text-[28px]">
+              <nav className="space-y-2 text-[20px] leading-[1.05] text-[#fef7ee]">
                 {leftLinks.map((link) => (
                   <a
                     key={link.href}
@@ -59,7 +59,7 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
                 ))}
               </nav>
 
-              <nav className="space-y-2 text-[22px] leading-[1.05] text-[#fef7ee] sm:text-[28px] lg:text-[28px]">
+              <nav className="space-y-2 text-[20px] leading-[1.05] text-[#fef7ee]">
                 {rightLinks.map((link) => (
                   <a
                     key={link.href}
@@ -73,7 +73,7 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
             </div>
           </div>
 
-          <div className="mt-6 border-t border-[#fef7ee]/70 pt-6 text-[20px] leading-[1.1] text-[#fef7ee] sm:text-[24px] lg:text-[24px]">
+          <div className="mt-6 border-t border-[#fef7ee]/70 pt-6 text-[20px] leading-[1.1] text-[#fef7ee]">
             {data.copyright}
           </div>
         </div>
