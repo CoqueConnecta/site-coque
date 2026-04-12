@@ -176,3 +176,4 @@ Entregas:
 - Ícones de quote e avatar placeholder do `GalleryCard` foram extraídos para `QuoteIcon` e `UserAvatarPlaceholderIcon`.
 - Mantidos fora desta etapa: `SocialIcon` (já centralizado em componente próprio) e SVGs de stories.
 - `SocialIcon` migrado para `src/components/icons/SocialIcon.tsx`; `src/components/ui/SocialIcon/SocialIcon.tsx` agora reexporta (compatibilidade retroativa de imports).
+- Footer alinhado ao protótipo no desktop: bloco esquerdo (logo/ícones/endereço) mantido à esquerda, bloco de 6 links agrupado em 2 colunas e ancorado ao extremo direito (mantendo text-left), com divisória e copyright alinhados ao mesmo eixo horizontal do container.

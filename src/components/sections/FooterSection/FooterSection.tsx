@@ -16,7 +16,7 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
     <footer className={cn('w-full bg-white pt-2 pb-0', className)} {...props}>
       <Block>
         <div className="w-full rounded-t-[10px] bg-[#f58634] px-4 py-10 sm:px-6 lg:px-10">
-          <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-12">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-12">
             <div className="space-y-6">
               <Logo variant="footerLight" className="h-auto w-[280px] max-w-full" />
 
@@ -45,32 +45,34 @@ export const FooterSection = ({ data, className, ...props }: FooterSectionProps)
               </div>
             </div>
 
-            <nav className="space-y-2 pt-1 text-[22px] leading-[1.05] text-[#fef7ee] sm:text-[28px] lg:text-[40px]">
-              {leftLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="block transition hover:opacity-80"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
+            <div className="grid gap-6 sm:grid-cols-2 sm:gap-10 lg:justify-self-end lg:self-center">
+              <nav className="space-y-2 text-[22px] leading-[1.05] text-[#fef7ee] sm:text-[28px] lg:text-[28px]">
+                {leftLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="block transition hover:opacity-80"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
 
-            <nav className="space-y-2 pt-1 text-[22px] leading-[1.05] text-[#fef7ee] sm:text-[28px] lg:text-[40px]">
-              {rightLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="block transition hover:opacity-80"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
+              <nav className="space-y-2 text-[22px] leading-[1.05] text-[#fef7ee] sm:text-[28px] lg:text-[28px]">
+                {rightLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="block transition hover:opacity-80"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
           </div>
 
-          <div className="mt-6 border-t border-[#fef7ee]/70 pt-6 text-[20px] leading-[1.1] text-[#fef7ee] sm:text-[28px] lg:text-[36px]">
+          <div className="mt-6 border-t border-[#fef7ee]/70 pt-6 text-[20px] leading-[1.1] text-[#fef7ee] sm:text-[24px] lg:text-[24px]">
             {data.copyright}
           </div>
         </div>
