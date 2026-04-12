@@ -30,12 +30,5 @@ export const Interactive: Story = {
   args: {
     data: mockDataPT.newsletter,
   },
-  render: (args) => (
-    <NewsletterSection
-      {...args}
-      onEmailSubmit={(email) => {
-        alert(`Email inscrito: ${email}`);
-      }}
-    />
-  ),
+  render: (args) => <NewsletterSection {...args} />,
 };

@@ -7,6 +7,7 @@ import Site from "./pages/Site";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PrivacyPage from "./pages/PrivacyPage";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/privacidade",
+    element: <PrivacyPage />,
   },
   {
     path: "/admin",

@@ -177,3 +177,4 @@ Entregas:
 - Mantidos fora desta etapa: `SocialIcon` (já centralizado em componente próprio) e SVGs de stories.
 - `SocialIcon` migrado para `src/components/icons/SocialIcon.tsx`; `src/components/ui/SocialIcon/SocialIcon.tsx` agora reexporta (compatibilidade retroativa de imports).
 - Footer alinhado ao protótipo no desktop: bloco esquerdo (logo/ícones/endereço) mantido à esquerda, bloco de 6 links agrupado em 2 colunas e ancorado ao extremo direito (mantendo text-left), com divisória e copyright alinhados ao mesmo eixo horizontal do container.
+- Newsletter e Privacy alinhados ao design system de tipografia: removidas classes de fonte fora do padrão (`Manrope` hardcoded) e adotado `--font-body` nos inputs/select/checkbox/botão e listas com bullet points da Política de Privacidade.
