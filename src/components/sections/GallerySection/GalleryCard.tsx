@@ -1,4 +1,5 @@
 import type { GalleryData } from '../../../data/mockData';
+import { QuoteIcon, UserAvatarPlaceholderIcon } from '../../icons';
 
 export interface GalleryCardProps {
   card: GalleryData['cards'][number];
@@ -10,19 +11,6 @@ export interface GalleryCardProps {
   tagBg: string;
   tagText: string;
 }
-
-const QuoteIcon = ({ color }: { color: string }) => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 16 16"
-    fill={color}
-    style={{ flexShrink: 0 }}
-    aria-hidden="true"
-  >
-    <path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388q0-.527.062-1.054.093-.558.31-.992t.559-.683q.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612q0-.527.062-1.054.094-.558.31-.992.217-.434.559-.683.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 3 7.558V11a1 1 0 0 0 1 1z" />
-  </svg>
-);
 
 export const GalleryCard = ({
   card,
@@ -122,9 +110,7 @@ export const GalleryCard = ({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="#aaa" aria-hidden="true">
-                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-                </svg>
+                <UserAvatarPlaceholderIcon />
               )}
             </div>
             <p

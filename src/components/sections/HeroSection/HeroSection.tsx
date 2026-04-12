@@ -15,7 +15,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
         // Framer: height:100vh; min-height:700px; overflow:hidden; padding-bottom:60px
         'relative w-full overflow-hidden',
         'flex flex-col justify-end',
-        'min-h-[620px]',
+        'min-h-[720px]',
         className
       )}
       {...props}

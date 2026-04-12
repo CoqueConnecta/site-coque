@@ -170,3 +170,9 @@ Entregas:
 - NavMenu refinado para o estilo do protótipo: itens em DM Sans 18px, tracking mais fechado, espaçamento entre links ajustado e estado ativo simplificado no header sobre fundo laranja.
 - Commits realizados nesta etapa: `27d3958`, `37fe96a` e `40fa848`.
 - Próximo passo (sessão seguinte): integrar conteúdo via API/Firebase (substituir mocks por requisição) e adicionar ação no topo para alternância de idioma PT/EN.
+- Organização de SVGs iniciada com pasta única `src/components/icons/` para reduzir ícones inline espalhados.
+- `CoqueConnectaWordmark` foi extraído de `HeaderBar` para `src/components/icons/CoqueConnectaWordmark.tsx`.
+- Ícones de menu/fechar foram centralizados (`MenuIcon` e `CloseIcon`) e aplicados em `HeaderBar` e `MobileMenuOverlay`.
+- Ícones de quote e avatar placeholder do `GalleryCard` foram extraídos para `QuoteIcon` e `UserAvatarPlaceholderIcon`.
+- Mantidos fora desta etapa: `SocialIcon` (já centralizado em componente próprio) e SVGs de stories.
+- `SocialIcon` migrado para `src/components/icons/SocialIcon.tsx`; `src/components/ui/SocialIcon/SocialIcon.tsx` agora reexporta (compatibilidade retroativa de imports).

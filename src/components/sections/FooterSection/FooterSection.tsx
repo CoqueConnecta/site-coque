@@ -1,7 +1,7 @@
 import { cn } from '../../../lib/cn';
 import { Block } from '../../ui/Block';
 import { Logo } from '../../ui/Logo';
-import { SocialIcon } from '../../ui/SocialIcon';
+import { SocialIcon } from '../../icons';
 import type { FooterData } from '../../../data/mockData';
 
 export interface FooterSectionProps extends React.HTMLAttributes<HTMLElement> {

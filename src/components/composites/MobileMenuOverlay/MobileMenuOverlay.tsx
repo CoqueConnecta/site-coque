@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { cn } from '../../../lib/cn';
+import { CloseIcon } from '../../icons';
 import type { NavLink } from '../NavMenu';
 import { Typography } from '../../ui/Typography';
 
@@ -61,9 +62,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
               className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900"
               aria-label="Fechar menu"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <CloseIcon className="h-6 w-6" />
             </button>
           </div>
 

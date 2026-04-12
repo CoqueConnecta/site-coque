@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { Modal } from '../Modal';
 import { Typography } from '../../ui/Typography';
-// Importe um icone de play se quiser colocar em cima da thumb
 import { Play } from 'lucide-react'; 
 
-// Dados de exemplo baseados no site
 const mockVideos =[
   {
-    id: 'dQw4w9WgXcQ', // ID do vídeo do YouTube (depois de ?v=)
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+    id: 'rwniUxBd5OI', // ID do vídeo do YouTube (depois de ?v=)
+    thumbnail: 'https://img.youtube.com/vi/rwniUxBd5OI/maxresdefault.jpg',
     title: 'Exemplo de vídeo 1'
   },
   {

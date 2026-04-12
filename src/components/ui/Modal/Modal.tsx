@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { X } from 'lucide-react';
 import { cn } from '../../../lib/cn';
+import { CloseIcon } from '../../icons';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -44,7 +44,7 @@ export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
         className="absolute right-4 top-4 z-[110] rounded-full p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white sm:right-6 sm:top-6"
         aria-label="Fechar"
       >
-        <X size={32} />
+        <CloseIcon className="h-8 w-8" />
       </button>
 
       {/* Container do Conteúdo */}
