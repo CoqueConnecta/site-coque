@@ -60,7 +60,7 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
       >
         <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-hidden rounded-[999px] border border-white/15 bg-[rgba(244,212,194,0.94)] px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] backdrop-blur-[16px] sm:px-6 lg:gap-8 lg:px-8">
           {/* Logo */}
-          <a href="./" className="flex shrink-0 items-center" aria-label="Coque Connecta">
+          <a href="/" className="flex shrink-0 items-center" aria-label="Coque Connecta">
             <CoqueConnectaWordmark className="h-8 w-auto lg:h-9" />
           </a>
 

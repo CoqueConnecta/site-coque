@@ -1,6 +1,6 @@
 import type { SVGAttributes } from 'react';
 
-export type SocialIconType = 'instagram' | 'globe' | 'twitter' | 'youtube';
+export type SocialIconType = 'instagram' | 'globe' | 'twitter' | 'youtube' | 'linkedin';
 
 export interface SocialIconProps extends SVGAttributes<SVGSVGElement> {
   type: SocialIconType;
@@ -82,6 +82,24 @@ export function SocialIcon({ type, label, ...props }: SocialIconProps) {
           fillRule="evenodd"
           clipRule="evenodd"
           d="M15.668.5a2.17 2.17 0 0 1 1.509 1.549c.357 1.366.357 4.218.357 4.218s0 2.85-.357 4.218a2.17 2.17 0 0 1-1.51 1.549C14.338 12.4 9 12.4 9 12.4s-5.337 0-6.668-.366a2.17 2.17 0 0 1-1.509-1.55C.467 9.119.467 6.268.467 6.268s0-2.852.356-4.218A2.17 2.17 0 0 1 2.333.5C3.662.134 9 .134 9 .134s5.337 0 6.668.367M7.4 3.867V9.2l4.267-2.667z"
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+
+  if (type === 'linkedin') {
+    return (
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 50 50"
+        fill="none"
+        aria-label={label || type}
+        {...props}
+      >
+        <path
+          d="M41 4H9C6.24 4 4 6.24 4 9v32c0 2.76 2.24 5 5 5h32c2.76 0 5-2.24 5-5V9c0-2.76-2.24-5-5-5M17 20v19h-6V20zm-6-5.53c0-1.4 1.2-2.47 3-2.47s2.93 1.07 3 2.47c0 1.4-1.12 2.53-3 2.53-1.8 0-3-1.13-3-2.53M39 39h-6V29c0-2-1-4-3.5-4.04h-.08C27 24.96 26 27.02 26 29v10h-6V20h6v2.56S27.93 20 31.81 20c3.97 0 7.19 2.73 7.19 8.26z"
           fill="currentColor"
         />
       </svg>

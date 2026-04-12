@@ -9,8 +9,9 @@ export interface FooterSectionProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export const FooterSection = ({ data, className, ...props }: FooterSectionProps) => {
-  const leftLinks = data.quickLinks.slice(0, 3);
-  const rightLinks = data.quickLinks.slice(3, 6);
+  const splitIndex = Math.ceil(data.quickLinks.length / 2);
+  const leftLinks = data.quickLinks.slice(0, splitIndex);
+  const rightLinks = data.quickLinks.slice(splitIndex);
 
   return (
     <footer className={cn('w-full bg-white pt-2 pb-0', className)} {...props}>

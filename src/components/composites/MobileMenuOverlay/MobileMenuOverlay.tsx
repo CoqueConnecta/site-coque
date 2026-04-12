@@ -25,7 +25,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
       onClose,
       showNewsletter = true,
       ctaText = 'Entre em contato',
-      ctaHref = '#contact',
+      ctaHref = '/#contact',
       className,
       ...props
     },
@@ -72,8 +72,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
               <a
                 key={link.id || link.href}
                 href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
+                onClick={() => {
                   onNavClick?.(link.href);
                   onClose?.();
                 }}
@@ -93,8 +92,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
           <div className="border-t border-gray-100 px-4 py-4">
             <a
               href={ctaHref}
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={() => {
                 onNavClick?.(ctaHref);
                 onClose?.();
               }}

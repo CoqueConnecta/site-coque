@@ -28,6 +28,17 @@ body {
   background-color: var(--color-surface-page);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+#hero,
+#about,
+#our-work,
+#contact {
+  scroll-margin-top: 132px;
+}
+
 #root {
   width: 100%;
 }
