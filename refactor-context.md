@@ -222,3 +222,5 @@ Entregas:
 - Fase 2 concluída: editores premium extraídos para componentes dedicados em `src/features/admin/components/sections/` (`HeroEditor.tsx`, `NavEditor.tsx`, `GalleryEditor.tsx`).
 - Tipos compartilhados de domínio do admin centralizados em `src/features/admin/types.ts` para reduzir duplicação entre page e componentes.
 - `AdminPage.tsx` simplificado para orquestrar estado/callbacks e delegar renderização de seções premium aos novos componentes.
+- Fase 3 concluída: editor genérico dinâmico também foi extraído para `src/features/admin/components/sections/DynamicSectionEditor.tsx`.
+- `AdminPage.tsx` passou a delegar tanto seções premium quanto seção genérica para componentes dedicados, reduzindo acoplamento e melhorando manutenção.
