@@ -3,6 +3,8 @@ import { cn } from '../../../lib/cn';
 import { CloseIcon } from '../../icons';
 import type { NavLink } from '../NavMenu';
 import { Typography } from '../../ui/Typography';
+import { LanguageToggle } from '../../ui/LanguageToggle/LanguageToggle';
+import type { CmsLanguage } from '../../../types/cms';
 
 export interface MobileMenuOverlayProps extends React.HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
@@ -13,6 +15,8 @@ export interface MobileMenuOverlayProps extends React.HTMLAttributes<HTMLDivElem
   showNewsletter?: boolean;
   ctaText?: string;
   ctaHref?: string;
+  language?: CmsLanguage;
+  onLanguageChange?: (language: CmsLanguage) => void;
 }
 
 export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayProps>(
@@ -26,6 +30,8 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
       showNewsletter = true,
       ctaText = 'Entre em contato',
       ctaHref = '/#contact',
+      language = 'pt',
+      onLanguageChange,
       className,
       ...props
     },
@@ -67,6 +73,13 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
           </div>
 
           {/* Navigation Links */}
+          <div className="border-b border-gray-100 px-4 py-4">
+            <LanguageToggle
+              value={language}
+              onChange={(nextLanguage) => onLanguageChange?.(nextLanguage)}
+            />
+          </div>
+
           <nav className="space-y-2 px-4 py-6">
             {navLinks.map((link) => (
               <a

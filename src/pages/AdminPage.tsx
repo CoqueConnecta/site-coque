@@ -1,41 +1,71 @@
 // src/pages/AdminPage.tsx
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { ref, get, set } from 'firebase/database';
 import { auth, database } from '../../firebase';
 import toast from 'react-hot-toast';
+import { cmsFallbackByLanguage } from '../data/cmsFallback';
+import type { CmsLandingData, CmsLanguage } from '../types/cms';
 
-// Tipos de dados (sem alterações)
-type TranslationContent = {
-  [key: string]: string | TranslationContent;
+type CmsLandingByLanguage = {
+  pt: CmsLandingData;
+  en: CmsLandingData;
 };
-type LocaleData = {
-  translation: TranslationContent;
-};
-type FullTranslations = {
-  pt: LocaleData;
-  en: LocaleData;
-};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function mergeWithFallback<T>(fallback: T, incoming: unknown): T {
+  if (Array.isArray(fallback)) {
+    return (Array.isArray(incoming) ? incoming : fallback) as T;
+  }
+
+  if (isRecord(fallback)) {
+    if (!isRecord(incoming)) {
+      return fallback;
+    }
+
+    const result: Record<string, unknown> = { ...fallback };
+    for (const key of Object.keys(fallback)) {
+      result[key] = mergeWithFallback(
+        (fallback as Record<string, unknown>)[key],
+        incoming[key]
+      );
+    }
+    return result as T;
+  }
+
+  return (incoming === undefined || incoming === null ? fallback : incoming) as T;
+}
 
 export default function AdminPage() {
-  // Hooks de estado (sem alterações)
   const navigate = useNavigate();
-  const [translations, setTranslations] = useState<FullTranslations | null>(null);
-  const [activeSection, setActiveSection] = useState<string>('');
+  const [cmsData, setCmsData] = useState<CmsLandingByLanguage | null>(null);
+  const [activeSection, setActiveSection] = useState<keyof CmsLandingData | ''>('');
+  const [jsonDraft, setJsonDraft] = useState<Record<CmsLanguage, string>>({ pt: '', en: '' });
+  const [jsonError, setJsonError] = useState<Record<CmsLanguage, string | undefined>>({
+    pt: undefined,
+    en: undefined,
+  });
 
-  // Lógica de busca e salvamento (sem alterações)
   useEffect(() => {
     const fetchData = async () => {
-      const localesRef = ref(database, 'locales');
+      const cmsRef = ref(database, 'cms/v2/landing');
       try {
-        const snapshot = await get(localesRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          setTranslations(data);
-          if (data.pt?.translation) {
-            setActiveSection(Object.keys(data.pt.translation)[0]);
-          }
+        const snapshot = await get(cmsRef);
+        const incoming = snapshot.exists() ? snapshot.val() : {};
+
+        const normalized: CmsLandingByLanguage = {
+          pt: mergeWithFallback(cmsFallbackByLanguage.pt, incoming.pt),
+          en: mergeWithFallback(cmsFallbackByLanguage.en, incoming.en),
+        };
+
+        setCmsData(normalized);
+        const firstSection = Object.keys(normalized.pt)[0] as keyof CmsLandingData | undefined;
+        if (firstSection) {
+          setActiveSection(firstSection);
         }
       } catch (error) {
         toast.error("Falha ao carregar os dados do painel.");
@@ -45,25 +75,60 @@ export default function AdminPage() {
     fetchData();
   }, []);
 
-  const handleInputChange = (lang: 'pt' | 'en', path: string[], value: string) => {
-    if (!translations) return;
-    const newTranslations = JSON.parse(JSON.stringify(translations));
-    let current: TranslationContent = newTranslations[lang].translation;
-    for (let i = 0; i < path.length - 1; i++) {
-      const nextNode = current[path[i]];
-      if (typeof nextNode === 'string') return;
-      current = nextNode;
+  const sections = useMemo(() => {
+    if (!cmsData) {
+      return [] as Array<keyof CmsLandingData>;
     }
-    current[path[path.length - 1]] = value;
-    setTranslations(newTranslations);
+    return Object.keys(cmsData.pt) as Array<keyof CmsLandingData>;
+  }, [cmsData]);
+
+  useEffect(() => {
+    if (!cmsData || !activeSection) {
+      return;
+    }
+
+    setJsonDraft({
+      pt: JSON.stringify(cmsData.pt[activeSection], null, 2),
+      en: JSON.stringify(cmsData.en[activeSection], null, 2),
+    });
+    setJsonError({ pt: undefined, en: undefined });
+  }, [activeSection, cmsData]);
+
+  const handleJsonChange = (language: CmsLanguage, value: string) => {
+    setJsonDraft((prev) => ({ ...prev, [language]: value }));
+
+    if (!cmsData || !activeSection) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(value) as CmsLandingData[keyof CmsLandingData];
+      setJsonError((prev) => ({ ...prev, [language]: undefined }));
+
+      setCmsData((prev) => {
+        if (!prev) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          [language]: {
+            ...prev[language],
+            [activeSection]: parsed,
+          },
+        };
+      });
+    } catch {
+      setJsonError((prev) => ({ ...prev, [language]: 'JSON inválido para esta seção.' }));
+    }
   };
 
   const handleSave = () => {
-    if (!translations) return;
-    const savePromise = set(ref(database, 'locales'), translations);
+    if (!cmsData) return;
+    const savePromise = set(ref(database, 'cms/v2/landing'), cmsData);
     toast.promise(savePromise, {
       loading: 'Salvando...',
-      success: <b>Traduções salvas com sucesso!</b>,
+      success: <b>Conteúdo CMS v2 salvo com sucesso!</b>,
       error: <b>Erro ao salvar. Tente novamente.</b>,
     });
   };
@@ -73,50 +138,10 @@ export default function AdminPage() {
     navigate('/login');
   };
 
-  // --- FUNÇÃO DE RENDERIZAÇÃO COM O POLIMENTO ESTÉTICO ---
-  const renderFormFields = (obj: TranslationContent, lang: 'pt' | 'en', path: string[] = []) => {
-    return Object.entries(obj).map(([key, value]) => {
-      const currentPath = [...path, key];
-      if (typeof value === 'string') {
-        const isTextarea = key.toLowerCase().includes('descricao');
-        return (
-          <div key={currentPath.join('-')} className="mb-5"> {/* Aumentamos a margem inferior */}
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"> {/* Rótulo menor, cinza e com espaçamento entre letras */}
-              {key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
-            </label>
-            {isTextarea ? (
-              <textarea
-                value={value}
-                onChange={(e) => handleInputChange(lang, currentPath, e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
-                rows={6}
-              />
-            ) : (
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => handleInputChange(lang, currentPath, e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
-              />
-            )}
-          </div>
-        );
-      }
-      // Renderização de sub-seções (se houver)
-      return (
-        <div key={currentPath.join('-')} className="border-t mt-8 pt-6">
-          <h4 className="text-lg font-semibold text-gray-700 mb-4">{key.toUpperCase()}</h4>
-          {renderFormFields(value, lang, currentPath)}
-        </div>
-      );
-    });
-  };
-
-  if (!translations) {
+  if (!cmsData) {
     return <div className="flex justify-center items-center h-screen bg-gray-100 text-gray-600">Carregando painel...</div>;
   }
 
-  // --- JSX PRINCIPAL COM O POLIMENTO ESTÉTICO ---
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
       <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
@@ -125,7 +150,7 @@ export default function AdminPage() {
         </div>
         <nav className="p-3">
           <ul>
-            {Object.keys(translations.pt.translation).map((section) => (
+            {sections.map((section) => (
               <li key={section}>
                 <button
                   onClick={() => setActiveSection(section)}
@@ -135,7 +160,7 @@ export default function AdminPage() {
                       : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
-                  {section.charAt(0).toUpperCase() + section.slice(1).replace(/_/g, ' ')}
+                  {String(section).charAt(0).toUpperCase() + String(section).slice(1).replace(/_/g, ' ')}
                 </button>
               </li>
             ))}
@@ -146,11 +171,11 @@ export default function AdminPage() {
       <main className="flex-1 flex flex-col overflow-hidden">
         <header className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800">
-            Editando: <span className="text-blue-600">{activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/_/g, ' ')}</span>
+            Editando: <span className="text-blue-600">{String(activeSection).charAt(0).toUpperCase() + String(activeSection).slice(1).replace(/_/g, ' ')}</span>
           </h2>
           <div className="flex items-center">
             <button onClick={handleSave} className="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-sm transition-all duration-150 transform hover:scale-105">
-              Salvar Alterações
+              Salvar CMS v2
             </button>
             <button onClick={handleLogout} className="ml-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 shadow-sm transition-all duration-150 transform hover:scale-105">
               Sair
@@ -162,12 +187,24 @@ export default function AdminPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
               <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Português (PT)</h3>
-              {renderFormFields(translations.pt.translation[activeSection] as TranslationContent, 'pt', [activeSection])}
+              <p className="mb-3 text-sm text-gray-500">Edite a seção em JSON. Alterações válidas são aplicadas em tempo real.</p>
+              <textarea
+                value={jsonDraft.pt}
+                onChange={(e) => handleJsonChange('pt', e.target.value)}
+                className="h-[65vh] w-full rounded-lg border border-gray-200 bg-gray-50 p-3 font-mono text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              />
+              {jsonError.pt ? <p className="mt-2 text-sm text-red-600">{jsonError.pt}</p> : null}
             </div>
 
             <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
               <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Inglês (EN)</h3>
-              {renderFormFields(translations.en.translation[activeSection] as TranslationContent, 'en', [activeSection])}
+              <p className="mb-3 text-sm text-gray-500">Edite a seção em JSON. Alterações válidas são aplicadas em tempo real.</p>
+              <textarea
+                value={jsonDraft.en}
+                onChange={(e) => handleJsonChange('en', e.target.value)}
+                className="h-[65vh] w-full rounded-lg border border-gray-200 bg-gray-50 p-3 font-mono text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              />
+              {jsonError.en ? <p className="mt-2 text-sm text-red-600">{jsonError.en}</p> : null}
             </div>
           </div>
         </div>

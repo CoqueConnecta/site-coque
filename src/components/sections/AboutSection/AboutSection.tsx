@@ -4,9 +4,12 @@ import { InfiniteImageTicker } from '../../composites/InfiniteImageTicker';
 import type { AboutData } from '../../../data/mockData';
 import { Block } from '../../ui/Block';
 import { YouTubeFeed } from '../../ui/YouTubeFeed';
+import type { CmsTickerImage, CmsYoutubeVideo } from '../../../types/cms';
 
 export interface AboutSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: AboutData;
+  tickerImages?: CmsTickerImage[];
+  youtubeVideos?: CmsYoutubeVideo[];
 }
 
 const aboutTickerImages = [
@@ -18,7 +21,17 @@ const aboutTickerImages = [
   'https://framerusercontent.com/images/AnnnTX5gDlgnIZzRJ0bNzA9CkpU.jpg?width=4032&height=3024',
 ];
 
-export const AboutSection = ({ data, className, ...props }: AboutSectionProps) => {
+export const AboutSection = ({
+  data,
+  tickerImages,
+  youtubeVideos,
+  className,
+  ...props
+}: AboutSectionProps) => {
+  const images = (tickerImages && tickerImages.length > 0
+    ? tickerImages.map((image) => image.src)
+    : aboutTickerImages);
+
   return (
     <section id="about" className={cn('w-full bg-white py-16 md:py-24', className)} {...props}>
       <Block>
@@ -32,13 +45,13 @@ export const AboutSection = ({ data, className, ...props }: AboutSectionProps) =
               {data.description}
             </Typography>
           </div>
-          <YouTubeFeed />
+          <YouTubeFeed videos={youtubeVideos} />
         </div>
       </Block>
 
       <Block inset="full" className="mt-12 md:mt-16">
         <InfiniteImageTicker
-          images={aboutTickerImages}
+          images={images}
           imageAlt="Atividades da Coque Connecta"
         />
       </Block>

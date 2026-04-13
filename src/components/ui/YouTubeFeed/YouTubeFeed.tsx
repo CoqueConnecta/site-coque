@@ -2,23 +2,27 @@ import { useState } from 'react';
 import { Modal } from '../Modal';
 import { Typography } from '../../ui/Typography';
 import { Play } from 'lucide-react'; 
+import type { CmsYoutubeVideo } from '../../../types/cms';
 
-const mockVideos =[
+const mockVideos: CmsYoutubeVideo[] = [
   {
-    id: 'rwniUxBd5OI', // ID do vídeo do YouTube (depois de ?v=)
-    thumbnail: 'https://img.youtube.com/vi/rwniUxBd5OI/maxresdefault.jpg',
+    id: 'rwniUxBd5OI',
     title: 'Exemplo de vídeo 1'
   },
   {
     id: 'F5g_i93m-lU',
-    thumbnail: 'https://img.youtube.com/vi/F5g_i93m-lU/maxresdefault.jpg',
     title: 'Exemplo de vídeo 2'
   }
 ];
 
-export const YouTubeFeed = () => {
+interface YouTubeFeedProps {
+  videos?: CmsYoutubeVideo[];
+}
+
+export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState<string | null>(null);
+  const visibleVideos = videos && videos.length > 0 ? videos : mockVideos;
 
   const openVideo = (videoId: string) => {
     setCurrentVideoId(videoId);
@@ -37,7 +41,7 @@ export const YouTubeFeed = () => {
 
       {/* Grid de Thumbnails */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {mockVideos.map((video) => (
+          {visibleVideos.map((video) => (
             <div 
               key={video.id} 
               className="group relative cursor-pointer overflow-hidden rounded-xl bg-gray-200 aspect-video"
@@ -45,7 +49,7 @@ export const YouTubeFeed = () => {
             >
               {/* Imagem de Capa do Youtube */}
               <img 
-                src={video.thumbnail} 
+                src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
                 alt={video.title} 
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />

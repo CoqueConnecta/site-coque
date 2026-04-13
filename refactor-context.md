@@ -183,3 +183,12 @@ Entregas:
 - Planejamento da migração de conteúdo para Firebase CMS v2 documentado em `cms-v2-migration-plan.md`, cobrindo fases de contrato de dados, loader com fallback, toggle de idioma (localStorage), evolução do admin lado a lado PT/EN e migração do legado `locales` para `cms/v2`.
 - Escopo confirmado para a primeira entrega do CMS v2: páginas de Privacy e Transparency também entram no modelo editável via admin.
 - Decisões de produto para CMS v2 confirmadas: mensagens de sucesso/erro da newsletter permanecem no código (fora do CMS nesta fase), header seguirá CMS + fallback para links críticos e o formato atual de `admins` no RTDB é array de `{ email, isAdmin }`.
+- Início da implementação do CMS v2 (Fase 1/2): criado contrato tipado (`src/types/cms.ts`), fallback por idioma (`src/data/cmsFallback.ts`), serviço de leitura com merge + fallback (`src/services/cmsService.ts`) e hook de consumo (`src/hooks/useCmsLandingData.ts`).
+- `PublicLayout` e `Site` migrados para consumir conteúdo de `cms/v2/landing/{lang}` com fallback local, incluindo persistência de idioma em `localStorage` e injeção de contexto para páginas filhas.
+- `AboutSection`/`YouTubeFeed` adaptados para consumir mídia do CMS (`tickerImages` e `youtubeVideos` por `videoId`, com thumbnail derivada automaticamente).
+- `PrivacyPage` e `TransparencyPage` já preparados para ler conteúdo de CMS quando houver dados; em ausência de seções no CMS, `PrivacyPage` mantém fallback local completo.
+- Toggle visual de idioma implementado no front público (desktop e mobile) via componente `LanguageToggle`, com persistência da escolha em `localStorage`.
+- Estratégia de carregamento de conteúdo otimizada em `useCmsLandingData`: cache em memória + `sessionStorage` e prefetch do idioma alternativo para reduzir latência na troca PT/EN.
+- Script de seed criado para popular `cms/v2/landing` automaticamente a partir do fallback atual: `scripts/seed-cms-v2.ts` com comandos `npm run seed:cms-v2:dry` e `npm run seed:cms-v2`.
+- Estratégia alternativa adicionada para contornar `permission_denied` no seed: exportação de JSON para importação manual no Firebase Console via `npm run export:cms-v2:json` (arquivos em `arquivos_exemplo/`).
+- Migração da rota `/admin` iniciada para o novo CMS: `AdminPage` agora lê/salva `cms/v2/landing` (PT/EN lado a lado por seção), com fallback estrutural e edição em JSON por seção; botão temporário de seed foi removido após import manual no Firebase.

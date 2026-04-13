@@ -3,6 +3,8 @@ import { CloseIcon, CoqueConnectaWordmark, MenuIcon } from '../../icons';
 import { cn } from '../../../lib/cn';
 import { IconButton } from '../../ui/IconButton';
 import { NavMenu, type NavLink } from '../NavMenu';
+import { LanguageToggle } from '../../ui/LanguageToggle/LanguageToggle';
+import type { CmsLanguage } from '../../../types/cms';
 
 export interface HeaderBarProps extends HTMLAttributes<HTMLElement> {
   navLinks: NavLink[];
@@ -12,6 +14,8 @@ export interface HeaderBarProps extends HTMLAttributes<HTMLElement> {
   onNavClick?: (href: string) => void;
   onMobileMenuClick?: () => void;
   showMobileMenu?: boolean;
+  language?: CmsLanguage;
+  onLanguageChange?: (language: CmsLanguage) => void;
   variant?: 'light' | 'dark';
   /** Opcional: fixa o header no topo da janela */
   isFixed?: boolean;
@@ -29,6 +33,8 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
       onNavClick,
       onMobileMenuClick,
       showMobileMenu,
+      language = 'pt',
+      onLanguageChange,
       variant = 'light',
       isFixed = true,
       isTransparent = false,
@@ -58,7 +64,7 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
         )}
         {...props}
       >
-        <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-hidden rounded-[999px] border border-white/15 bg-[rgba(244,212,194,0.94)] px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] backdrop-blur-[16px] sm:px-6 lg:gap-8 lg:px-8">
+        <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-visible rounded-[999px] border border-white/15 bg-[rgba(244,212,194,0.94)] px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] backdrop-blur-[16px] sm:px-6 lg:gap-8 lg:px-8">
           {/* Logo */}
           <a href="/" className="flex shrink-0 items-center" aria-label="Coque Connecta">
             <CoqueConnectaWordmark className="h-8 w-auto lg:h-9" />
@@ -72,6 +78,12 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
               onLinkClick={onNavClick}
               tone={navTone}
               className="items-center"
+            />
+
+            <LanguageToggle
+              value={language}
+              onChange={(nextLanguage) => onLanguageChange?.(nextLanguage)}
+              compact
             />
 
             {/* CTA Button */}

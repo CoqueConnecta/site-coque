@@ -4,20 +4,33 @@ import { HeaderBar } from '../components/composites/HeaderBar';
 import { MobileMenuOverlay } from '../components/composites/MobileMenuOverlay';
 import { NewsletterSection } from '../components/sections/NewsletterSection';
 import { FooterSection } from '../components/sections/FooterSection';
-import { mockDataPT } from '../data/mockData';
+import { useCmsLandingData } from '../hooks/useCmsLandingData';
+import type { CmsLandingData, CmsLanguage } from '../types/cms';
 
-const navLinks = [
-  { label: 'Início', href: '/#hero', id: 'inicio' },
-  { label: 'Quem Somos', href: '/#about', id: 'about' },
-  { label: 'Nossos Projetos', href: '/#our-work', id: 'our-work' },
-  { label: 'Faça Parte', href: '/#contact', id: 'contact' },
-];
+const LANGUAGE_STORAGE_KEY = 'site-coque-language';
+
+export interface PublicLayoutContextValue {
+  content: CmsLandingData;
+  language: CmsLanguage;
+  setLanguage: (language: CmsLanguage) => void;
+  isLoadingContent: boolean;
+}
 
 export default function PublicLayout() {
   const location = useLocation();
-  const data = mockDataPT;
+  const [language, setLanguage] = useState<CmsLanguage>(() => {
+    const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    return saved === 'en' ? 'en' : 'pt';
+  });
+  const { data: content, isLoading } = useCmsLandingData(language);
+  const navLinks = content.nav.links;
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+  }, [language]);
 
   useEffect(() => {
     if (location.pathname === '/' && location.hash) {
@@ -66,24 +79,33 @@ export default function PublicLayout() {
         onNavClick={handleNavClick}
         onClose={() => setMobileMenuOpen(false)}
         showNewsletter
-        ctaText="Faça Parte"
+        ctaText={content.nav.links.find((link) => link.id === 'contact')?.label || 'Faça Parte'}
         ctaHref="/#contact"
+        language={language}
+        onLanguageChange={setLanguage}
       />
 
       <HeaderBar
         navLinks={navLinks}
         activeLink={activeLink}
-        ctaText="DOE AGORA"
-        ctaHref="https://benfeitoria.com/projeto/coqueconnecta"
+        ctaText={content.nav.cta.label}
+        ctaHref={content.nav.cta.href}
         onNavClick={handleNavClick}
         onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         showMobileMenu={mobileMenuOpen}
+        language={language}
+        onLanguageChange={setLanguage}
       />
 
-      <Outlet />
+      <Outlet context={{
+        content,
+        language,
+        setLanguage,
+        isLoadingContent: isLoading,
+      }} />
 
-      <NewsletterSection data={data.newsletter} id="contact" />
-      <FooterSection data={data.footer} />
+      <NewsletterSection data={content.newsletter} id="contact" />
+      <FooterSection data={content.footer} />
     </>
   );
 }
