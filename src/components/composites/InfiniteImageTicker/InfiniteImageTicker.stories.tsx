@@ -2,12 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { InfiniteImageTicker } from './InfiniteImageTicker';
 
 const demoImages = [
-  'https://framerusercontent.com/images/nICdkmexvoBG2bA2goiNyF1mcY.jpg?width=1280&height=1600',
-  'https://framerusercontent.com/images/sBRdczu8bFBR8Rg0cEoUriOt8WU.jpg?width=1440&height=973',
-  'https://framerusercontent.com/images/5rHHzdIIT6bfHvdO1Eat1SsY4Zo.jpg?width=960&height=1280',
-  'https://framerusercontent.com/images/dJVDsHYR0sR8qpyxmYUJD8os.jpg?width=4032&height=3024',
-  'https://framerusercontent.com/images/EGwC09xR8iUr4R6I6YxLoCqUcQ.jpg?width=3024&height=4032',
-  'https://framerusercontent.com/images/AnnnTX5gDlgnIZzRJ0bNzA9CkpU.jpg?width=4032&height=3024',
+  '/mulheres-costurando.jpg',
+  '/mulheres-recortando-tecido.jpg',
+  '/mulher-ensinando-estudante.jpg',
+  '/mulheres-estudando.jpg',
+  '/crianca-lavando-as-maos.jpg',
+  '/jovens-no-auditorio.jpg',
 ];
 
 const meta = {

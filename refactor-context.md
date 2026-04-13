@@ -201,3 +201,17 @@ Entregas:
 - Etapa premium iniciada: seções `nav` e `gallery` ganharam formulários dedicados com rótulos guiados e controles específicos por domínio (CTA/menu para nav e cards/tags/depoimentos para gallery).
 - `gallery` premium inclui CRUD de cards, CRUD de tags por card, toggle de blockquote com preenchimento inicial via fallback e controle de variante visual (`light`/`dark`).
 - Build validado com sucesso após a inclusão dos editores premium.
+- Fase 1 de mídia implementada no `/admin`: upload de imagens para Firebase Storage + catálogo em `media/library` no RTDB.
+- Upload agora aceita metadados opcionais de `title` e `alt` no momento do cadastro da imagem; estes dados ficam salvos na biblioteca para reuso.
+- Biblioteca com busca e seleção foi integrada aos campos de imagem (hero, gallery e demais campos de imagem detectados no editor dinâmico), incluindo prévia e opção de aplicar `title/alt` automaticamente em objetos compatíveis.
+- Exemplo de regras RTDB atualizado em `arquivos_exemplo/settings_realtime_database.txt` para incluir acesso autenticado a `media/library`.
+- Estratégia de mídia revista para manter custo zero: removida a dependência prática de upload/Storage e a biblioteca do admin agora usa um catálogo local de imagens versionadas em `public/`.
+- Criado manifesto local `src/data/localImageLibrary.ts` com `url`, `title`, `alt` e `category` para cada asset selecionável no admin.
+- Modal de imagem do `/admin` agora atua como biblioteca local com busca e aplicação de metadados (`title`/`alt`) quando o objeto de destino suporta esses campos.
+- Biblioteca local evoluída com taxonomia explícita de categorias (`all`, `gallery`, `brand`, `background`) para escalar a curadoria de assets.
+- Modal do admin agora possui filtros visuais por categoria, badge de categoria por asset e estado vazio quando a busca/filtro não encontra resultados.
+- Próximo passo natural: mapear novas fotos externas por URL, baixá-las para `public/` e cadastrar os itens correspondentes em `src/data/localImageLibrary.ts`.
+- Migração das imagens remotas do ticker da About concluída: URLs do `framerusercontent` foram substituídas por arquivos locais em `public/`.
+- Sequência local aplicada no projeto: `mulheres-costurando.jpg`, `mulheres-recortando-tecido.jpg`, `mulher-ensinando-estudante.jpg`, `mulheres-estudando.jpg`, `crianca-lavando-as-maos.jpg`, `jovens-no-auditorio.jpg`.
+- Catálogo local expandido com categoria `about` para facilitar seleção dessas fotos na biblioteca do admin.
+- Limpeza adicional concluída: arquivos de exemplo de import (`arquivos_exemplo/cms-v2-landing-import.json` e `arquivos_exemplo/cms-v2-root-import.json`) também foram atualizados para usar os caminhos locais das novas imagens.
