@@ -215,3 +215,4 @@ Entregas:
 - Sequência local aplicada no projeto: `mulheres-costurando.jpg`, `mulheres-recortando-tecido.jpg`, `mulher-ensinando-estudante.jpg`, `mulheres-estudando.jpg`, `crianca-lavando-as-maos.jpg`, `jovens-no-auditorio.jpg`.
 - Catálogo local expandido com categoria `about` para facilitar seleção dessas fotos na biblioteca do admin.
 - Limpeza adicional concluída: arquivos de exemplo de import (`arquivos_exemplo/cms-v2-landing-import.json` e `arquivos_exemplo/cms-v2-root-import.json`) também foram atualizados para usar os caminhos locais das novas imagens.
+- Scripts legados de bootstrap/manual import do CMS v2 removidos: `scripts/seed-cms-v2.ts` e `scripts/export-cms-v2-json.ts`, junto dos comandos associados no `package.json`.
