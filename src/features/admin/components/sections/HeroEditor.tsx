@@ -4,6 +4,7 @@ import type { CmsLandingByLanguage } from '../../types';
 
 type HeroEditorProps = {
   cmsData: CmsLandingByLanguage;
+  isFieldDirty: (language: CmsLanguage, path: Array<string | number>) => boolean;
   onHeroFieldChange: (
     language: CmsLanguage,
     field: 'headline' | 'subheadline' | 'ctaText' | 'backgroundImage',
@@ -20,6 +21,7 @@ type HeroEditorProps = {
 
 export function HeroEditor({
   cmsData,
+  isFieldDirty,
   onHeroFieldChange,
   renderImageField,
 }: HeroEditorProps) {
@@ -34,7 +36,11 @@ export function HeroEditor({
           <textarea
             value={cmsData.pt.hero.headline}
             onChange={(e) => onHeroFieldChange('pt', 'headline', e.target.value)}
-            className="min-h-24 w-full rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`min-h-24 w-full rounded-lg border bg-gray-50 p-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty('pt', ['headline'])
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         </label>
 
@@ -43,7 +49,11 @@ export function HeroEditor({
           <textarea
             value={cmsData.pt.hero.subheadline}
             onChange={(e) => onHeroFieldChange('pt', 'subheadline', e.target.value)}
-            className="min-h-32 w-full rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`min-h-32 w-full rounded-lg border bg-gray-50 p-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty('pt', ['subheadline'])
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         </label>
 
@@ -53,7 +63,11 @@ export function HeroEditor({
             type="text"
             value={cmsData.pt.hero.ctaText}
             onChange={(e) => onHeroFieldChange('pt', 'ctaText', e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`h-11 w-full rounded-lg border bg-gray-50 px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty('pt', ['ctaText'])
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         </label>
 
@@ -75,7 +89,11 @@ export function HeroEditor({
           <textarea
             value={cmsData.en.hero.headline}
             onChange={(e) => onHeroFieldChange('en', 'headline', e.target.value)}
-            className="min-h-24 w-full rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`min-h-24 w-full rounded-lg border bg-gray-50 p-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty('en', ['headline'])
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         </label>
 
@@ -84,7 +102,11 @@ export function HeroEditor({
           <textarea
             value={cmsData.en.hero.subheadline}
             onChange={(e) => onHeroFieldChange('en', 'subheadline', e.target.value)}
-            className="min-h-32 w-full rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`min-h-32 w-full rounded-lg border bg-gray-50 p-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty('en', ['subheadline'])
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         </label>
 
@@ -94,7 +116,11 @@ export function HeroEditor({
             type="text"
             value={cmsData.en.hero.ctaText}
             onChange={(e) => onHeroFieldChange('en', 'ctaText', e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`h-11 w-full rounded-lg border bg-gray-50 px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty('en', ['ctaText'])
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         </label>
 

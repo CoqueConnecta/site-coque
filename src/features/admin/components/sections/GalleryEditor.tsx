@@ -4,6 +4,7 @@ import type { CmsLandingByLanguage } from '../../types';
 
 type GalleryEditorProps = {
   cmsData: CmsLandingByLanguage;
+  isFieldDirty: (language: CmsLanguage, path: Array<string | number>) => boolean;
   onSectionFieldChange: (
     language: CmsLanguage,
     path: Array<string | number>,
@@ -32,6 +33,7 @@ type GalleryEditorProps = {
 function GalleryLanguagePanel({
   language,
   cmsData,
+  isFieldDirty,
   onSectionFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
@@ -40,6 +42,7 @@ function GalleryLanguagePanel({
 }: {
   language: CmsLanguage;
   cmsData: CmsLandingByLanguage;
+  isFieldDirty: GalleryEditorProps['isFieldDirty'];
   onSectionFieldChange: GalleryEditorProps['onSectionFieldChange'];
   onAddArrayItem: GalleryEditorProps['onAddArrayItem'];
   onRemoveArrayItem: GalleryEditorProps['onRemoveArrayItem'];
@@ -56,7 +59,11 @@ function GalleryLanguagePanel({
           type="text"
           value={galleryData.headline}
           onChange={(e) => onSectionFieldChange(language, ['headline'], e.target.value)}
-          className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+            isFieldDirty(language, ['headline'])
+              ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+              : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+          }`}
         />
       </label>
 
@@ -65,7 +72,11 @@ function GalleryLanguagePanel({
         <textarea
           value={galleryData.subtitle}
           onChange={(e) => onSectionFieldChange(language, ['subtitle'], e.target.value)}
-          className="min-h-24 w-full rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          className={`min-h-24 w-full rounded-lg border bg-white p-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+            isFieldDirty(language, ['subtitle'])
+              ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+              : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+          }`}
         />
       </label>
 
@@ -101,7 +112,11 @@ function GalleryLanguagePanel({
                   type="text"
                   value={card.id}
                   onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'id'], e.target.value)}
-                  className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                    isFieldDirty(language, ['cards', cardIndex, 'id'])
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                  }`}
                   placeholder="doacoes"
                 />
               </label>
@@ -112,7 +127,11 @@ function GalleryLanguagePanel({
                   type="text"
                   value={card.title}
                   onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'title'], e.target.value)}
-                  className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                    isFieldDirty(language, ['cards', cardIndex, 'title'])
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                  }`}
                 />
               </label>
 
@@ -121,7 +140,11 @@ function GalleryLanguagePanel({
                 <textarea
                   value={card.description}
                   onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'description'], e.target.value)}
-                  className="min-h-24 w-full rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  className={`min-h-24 w-full rounded-lg border bg-white p-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                    isFieldDirty(language, ['cards', cardIndex, 'description'])
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                  }`}
                 />
               </label>
 
@@ -151,7 +174,11 @@ function GalleryLanguagePanel({
                         type="text"
                         value={tag}
                         onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'tags', tagIndex], e.target.value)}
-                        className="h-10 flex-1 rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                        className={`h-10 flex-1 rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                          isFieldDirty(language, ['cards', cardIndex, 'tags', tagIndex])
+                            ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                            : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                        }`}
                       />
                       <button
                         type="button"
@@ -186,7 +213,11 @@ function GalleryLanguagePanel({
                       <textarea
                         value={card.blockquote.text}
                         onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'blockquote', 'text'], e.target.value)}
-                        className="min-h-24 w-full rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                        className={`min-h-24 w-full rounded-lg border bg-white p-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                          isFieldDirty(language, ['cards', cardIndex, 'blockquote', 'text'])
+                            ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                            : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                        }`}
                       />
                     </label>
 
@@ -196,7 +227,11 @@ function GalleryLanguagePanel({
                         type="text"
                         value={card.blockquote.authorName}
                         onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'blockquote', 'authorName'], e.target.value)}
-                        className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                        className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                          isFieldDirty(language, ['cards', cardIndex, 'blockquote', 'authorName'])
+                            ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                            : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                        }`}
                       />
                     </label>
 
@@ -216,7 +251,11 @@ function GalleryLanguagePanel({
                 <select
                   value={card.variant}
                   onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'variant'], e.target.value)}
-                  className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                    isFieldDirty(language, ['cards', cardIndex, 'variant'])
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                  }`}
                 >
                   <option value="light">Claro (light)</option>
                   <option value="dark">Escuro (dark)</option>
@@ -232,6 +271,7 @@ function GalleryLanguagePanel({
 
 export function GalleryEditor({
   cmsData,
+  isFieldDirty,
   onSectionFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
@@ -246,6 +286,7 @@ export function GalleryEditor({
         <GalleryLanguagePanel
           language="pt"
           cmsData={cmsData}
+          isFieldDirty={isFieldDirty}
           onSectionFieldChange={onSectionFieldChange}
           onAddArrayItem={onAddArrayItem}
           onRemoveArrayItem={onRemoveArrayItem}
@@ -260,6 +301,7 @@ export function GalleryEditor({
         <GalleryLanguagePanel
           language="en"
           cmsData={cmsData}
+          isFieldDirty={isFieldDirty}
           onSectionFieldChange={onSectionFieldChange}
           onAddArrayItem={onAddArrayItem}
           onRemoveArrayItem={onRemoveArrayItem}

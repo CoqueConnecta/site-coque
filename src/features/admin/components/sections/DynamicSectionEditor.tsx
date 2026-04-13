@@ -6,6 +6,7 @@ type DynamicSectionEditorProps = {
   sectionName: string;
   ptValue: unknown;
   enValue: unknown;
+  isFieldDirty: (language: CmsLanguage, path: Array<string | number>) => boolean;
   onSectionFieldChange: (
     language: CmsLanguage,
     path: Array<string | number>,
@@ -48,6 +49,7 @@ export function DynamicSectionEditor({
   sectionName,
   ptValue,
   enValue,
+  isFieldDirty,
   onSectionFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
@@ -131,7 +133,11 @@ export function DynamicSectionEditor({
             type="number"
             value={value}
             onChange={(e) => onSectionFieldChange(language, path, Number(e.target.value))}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty(language, path)
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         </label>
       );
@@ -151,14 +157,22 @@ export function DynamicSectionEditor({
           <textarea
             value={textValue}
             onChange={(e) => onSectionFieldChange(language, path, e.target.value)}
-            className="min-h-24 w-full rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`min-h-24 w-full rounded-lg border bg-white p-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty(language, path)
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         ) : (
           <input
             type="text"
             value={textValue}
             onChange={(e) => onSectionFieldChange(language, path, e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty(language, path)
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
           />
         )}
       </label>

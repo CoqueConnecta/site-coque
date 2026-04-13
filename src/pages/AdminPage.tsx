@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { ref, get, set } from 'firebase/database';
+import { ref, get, update } from 'firebase/database';
 import { auth, database } from '../../firebase';
 import toast from 'react-hot-toast';
 import { cmsFallbackByLanguage } from '../data/cmsFallback';
@@ -23,16 +23,31 @@ import {
 } from '../features/admin/utils/editorPath';
 import type { CmsLandingData, CmsLanguage } from '../types/cms';
 
+function deepEqual(left: unknown, right: unknown) {
+  if (Object.is(left, right)) {
+    return true;
+  }
+
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function parsePathSegment(segment: string): string | number {
+  return /^\d+$/.test(segment) ? Number(segment) : segment;
+}
+
 export default function AdminPage() {
   const navigate = useNavigate();
   const [cmsData, setCmsData] = useState<CmsLandingByLanguage | null>(null);
+  const [originalCmsData, setOriginalCmsData] = useState<CmsLandingByLanguage | null>(null);
   const [activeSection, setActiveSection] = useState<keyof CmsLandingData | ''>('');
+  const [dirtyFields, setDirtyFields] = useState<Record<string, true>>({});
   const [mediaAssets] = useState<MediaAsset[]>(localImageLibrary);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const [pickerState, setPickerState] = useState<PickerState>(null);
   const [mediaSearch, setMediaSearch] = useState('');
   const [selectedMediaCategory, setSelectedMediaCategory] = useState<'all' | MediaAsset['category']>('all');
   const [shouldApplyMetadata, setShouldApplyMetadata] = useState(true);
+  const [isDiscardConfirmOpen, setIsDiscardConfirmOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +62,8 @@ export default function AdminPage() {
         };
 
         setCmsData(normalized);
+        setOriginalCmsData(normalized);
+        setDirtyFields({});
         const firstSection = Object.keys(normalized.pt)[0] as keyof CmsLandingData | undefined;
         if (firstSection) {
           setActiveSection(firstSection);
@@ -58,6 +75,23 @@ export default function AdminPage() {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!isDiscardConfirmOpen) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsDiscardConfirmOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isDiscardConfirmOpen]);
 
   const sections = useMemo(() => {
     if (!cmsData) {
@@ -89,6 +123,76 @@ export default function AdminPage() {
     const value = getValueAtPath(source, path);
     return isRecord(value) ? value : null;
   };
+
+  const buildDirtyFieldKey = (
+    language: CmsLanguage,
+    section: keyof CmsLandingData,
+    path: Array<string | number>
+  ) => [language, section, ...path.map(String)].join('.');
+
+  const markDirtyField = (
+    language: CmsLanguage,
+    section: keyof CmsLandingData,
+    path: Array<string | number>,
+    nextValue: unknown
+  ) => {
+    if (!originalCmsData) {
+      return;
+    }
+
+    const originalSection = originalCmsData[language][section];
+    const originalValue = path.length > 0 ? getValueAtPath(originalSection, path) : originalSection;
+    const fieldKey = buildDirtyFieldKey(language, section, path);
+    const nextIsDirty = !deepEqual(originalValue, nextValue);
+
+    setDirtyFields((prev) => {
+      if (nextIsDirty) {
+        if (prev[fieldKey]) {
+          return prev;
+        }
+        return {
+          ...prev,
+          [fieldKey]: true,
+        };
+      }
+
+      if (!prev[fieldKey]) {
+        return prev;
+      }
+
+      const next = { ...prev };
+      delete next[fieldKey];
+      return next;
+    });
+  };
+
+  const isFieldDirty = (
+    language: CmsLanguage,
+    path: Array<string | number>,
+    sectionOverride?: keyof CmsLandingData
+  ) => {
+    const section = sectionOverride ?? activeSection;
+    if (!section) {
+      return false;
+    }
+
+    return Boolean(dirtyFields[buildDirtyFieldKey(language, section, path)]);
+  };
+
+  const activeSectionDirtyCount = useMemo(() => {
+    if (!activeSection) {
+      return 0;
+    }
+
+    const ptPrefix = `pt.${activeSection}`;
+    const enPrefix = `en.${activeSection}`;
+    return Object.keys(dirtyFields).filter((fieldKey) => (
+      fieldKey === ptPrefix
+      || fieldKey.startsWith(`${ptPrefix}.`)
+      || fieldKey === enPrefix
+      || fieldKey.startsWith(`${enPrefix}.`)
+    )).length;
+  }, [activeSection, dirtyFields]);
 
   const openImagePicker = (
     language: CmsLanguage,
@@ -155,6 +259,8 @@ export default function AdminPage() {
 
       const currentSectionData = prev[language][activeSection];
       const updatedSectionData = setValueAtPath(currentSectionData, path, value) as CmsLandingData[keyof CmsLandingData];
+      const nextValue = getValueAtPath(updatedSectionData, path);
+      markDirtyField(language, activeSection, path, nextValue);
 
       return {
         ...prev,
@@ -190,6 +296,7 @@ export default function AdminPage() {
 
       const updatedArray = [...currentValue, fallbackItem];
       const updatedSectionData = setValueAtPath(currentSectionData, path, updatedArray) as CmsLandingData[keyof CmsLandingData];
+      markDirtyField(language, activeSection, path, updatedArray);
 
       return {
         ...prev,
@@ -223,6 +330,7 @@ export default function AdminPage() {
 
       const updatedArray = currentValue.filter((_, itemIndex) => itemIndex !== index);
       const updatedSectionData = setValueAtPath(currentSectionData, path, updatedArray) as CmsLandingData[keyof CmsLandingData];
+      markDirtyField(language, activeSection, path, updatedArray);
 
       return {
         ...prev,
@@ -239,6 +347,9 @@ export default function AdminPage() {
     field: keyof CmsLandingData['hero'],
     value: string
   ) => {
+    const section: keyof CmsLandingData = 'hero';
+    markDirtyField(language, section, [field], value);
+
     setCmsData((prev) => {
       if (!prev) {
         return prev;
@@ -268,6 +379,7 @@ export default function AdminPage() {
       <ImageField
         label={label}
         value={value}
+        isDirty={activeSection ? isFieldDirty(language, path, activeSection) : false}
         placeholder={placeholder}
         onChange={(nextValue) => handleSectionFieldChange(language, path, nextValue)}
         onOpenLibrary={() => openImagePicker(language, path, label)}
@@ -296,13 +408,131 @@ export default function AdminPage() {
   };
 
   const handleSave = () => {
-    if (!cmsData) return;
-    const savePromise = set(ref(database, 'cms/v2/landing'), cmsData);
+    if (!cmsData || !activeSection) {
+      return;
+    }
+
+    const sectionKey = activeSection;
+    const ptPrefix = `pt.${sectionKey}`;
+    const enPrefix = `en.${sectionKey}`;
+    const activeSectionDirtyKeys = Object.keys(dirtyFields).filter((fieldKey) => (
+      fieldKey === ptPrefix
+      || fieldKey.startsWith(`${ptPrefix}.`)
+      || fieldKey === enPrefix
+      || fieldKey.startsWith(`${enPrefix}.`)
+    ));
+
+    if (activeSectionDirtyKeys.length === 0) {
+      toast('Nenhuma alteracao pendente nesta secao.');
+      return;
+    }
+
+    const partialPayload: Record<string, unknown> = {};
+
+    activeSectionDirtyKeys.forEach((fieldKey) => {
+      const [languagePart, sectionPart, ...rawPath] = fieldKey.split('.');
+      const language = languagePart as CmsLanguage;
+      const section = sectionPart as keyof CmsLandingData;
+      const typedPath = rawPath.map(parsePathSegment);
+      const sourceSection = cmsData[language][section];
+      const nextValue = typedPath.length > 0 ? getValueAtPath(sourceSection, typedPath) : sourceSection;
+      partialPayload[`cms/v2/landing/${language}/${section}/${rawPath.join('/')}`] = nextValue ?? null;
+    });
+
+    const savePromise = update(ref(database), partialPayload).then(() => {
+      setOriginalCmsData(cmsData);
+      setDirtyFields((prev) => {
+        const next: Record<string, true> = {};
+        Object.keys(prev).forEach((fieldKey) => {
+          if (
+            fieldKey === ptPrefix
+            || fieldKey.startsWith(`${ptPrefix}.`)
+            || fieldKey === enPrefix
+            || fieldKey.startsWith(`${enPrefix}.`)
+          ) {
+            return;
+          }
+          next[fieldKey] = true;
+        });
+        return next;
+      });
+    });
+
     toast.promise(savePromise, {
-      loading: 'Salvando...',
-      success: <b>Conteúdo CMS v2 salvo com sucesso!</b>,
+      loading: 'Salvando secao ativa...',
+      success: <b>Secao salva com sucesso!</b>,
       error: <b>Erro ao salvar. Tente novamente.</b>,
     });
+  };
+
+  const requestDiscardActiveSectionChanges = () => {
+    if (!cmsData || !originalCmsData || !activeSection) {
+      return;
+    }
+
+    const sectionKey = activeSection;
+    const ptPrefix = `pt.${sectionKey}`;
+    const enPrefix = `en.${sectionKey}`;
+    const activeSectionDirtyKeys = Object.keys(dirtyFields).filter((fieldKey) => (
+      fieldKey === ptPrefix
+      || fieldKey.startsWith(`${ptPrefix}.`)
+      || fieldKey === enPrefix
+      || fieldKey.startsWith(`${enPrefix}.`)
+    ));
+
+    if (activeSectionDirtyKeys.length === 0) {
+      toast('Nenhuma alteracao pendente nesta secao.');
+      return;
+    }
+
+    setIsDiscardConfirmOpen(true);
+  };
+
+  const handleDiscardActiveSectionChanges = () => {
+    if (!cmsData || !originalCmsData || !activeSection) {
+      return;
+    }
+
+    const sectionKey = activeSection;
+    const ptPrefix = `pt.${sectionKey}`;
+    const enPrefix = `en.${sectionKey}`;
+
+    setCmsData((prev) => {
+      if (!prev) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        pt: {
+          ...prev.pt,
+          [sectionKey]: originalCmsData.pt[sectionKey],
+        },
+        en: {
+          ...prev.en,
+          [sectionKey]: originalCmsData.en[sectionKey],
+        },
+      };
+    });
+
+    setDirtyFields((prev) => {
+      const next: Record<string, true> = {};
+      Object.keys(prev).forEach((fieldKey) => {
+        if (
+          fieldKey === ptPrefix
+          || fieldKey.startsWith(`${ptPrefix}.`)
+          || fieldKey === enPrefix
+          || fieldKey.startsWith(`${enPrefix}.`)
+        ) {
+          return;
+        }
+        next[fieldKey] = true;
+      });
+      return next;
+    });
+
+    setIsDiscardConfirmOpen(false);
+    toast.success('Alteracoes da secao ativa descartadas.');
   };
 
   const handleLogout = async () => {
@@ -345,9 +575,24 @@ export default function AdminPage() {
           <h2 className="text-2xl font-bold text-gray-800">
             Editando: <span className="text-blue-600">{String(activeSection).charAt(0).toUpperCase() + String(activeSection).slice(1).replace(/_/g, ' ')}</span>
           </h2>
+          <span className={`ml-4 rounded-full px-3 py-1 text-xs font-semibold ${
+            activeSectionDirtyCount > 0
+              ? 'bg-amber-100 text-amber-800'
+              : 'bg-gray-100 text-gray-600'
+          }`}>
+            {activeSectionDirtyCount > 0
+              ? `${activeSectionDirtyCount} alteracao(oes) pendente(s)`
+              : 'Sem alteracoes pendentes'}
+          </span>
           <div className="flex items-center">
-            <button onClick={handleSave} className="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-sm transition-all duration-150 transform hover:scale-105">
-              Salvar CMS v2
+            <button
+              onClick={requestDiscardActiveSectionChanges}
+              className="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 shadow-sm transition-all duration-150"
+            >
+              Descartar secao ativa
+            </button>
+            <button onClick={handleSave} className="ml-3 px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-sm transition-all duration-150 transform hover:scale-105">
+              Salvar secao ativa
             </button>
             <button onClick={handleLogout} className="ml-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 shadow-sm transition-all duration-150 transform hover:scale-105">
               Sair
@@ -359,12 +604,14 @@ export default function AdminPage() {
           {activeSection === 'hero' ? (
             <HeroEditor
               cmsData={cmsData}
+              isFieldDirty={isFieldDirty}
               onHeroFieldChange={handleHeroFieldChange}
               renderImageField={renderImageField}
             />
           ) : activeSection === 'nav' ? (
             <NavEditor
               cmsData={cmsData}
+              isFieldDirty={isFieldDirty}
               onSectionFieldChange={handleSectionFieldChange}
               onAddArrayItem={handleAddArrayItem}
               onRemoveArrayItem={handleRemoveArrayItem}
@@ -372,6 +619,7 @@ export default function AdminPage() {
           ) : activeSection === 'gallery' ? (
             <GalleryEditor
               cmsData={cmsData}
+              isFieldDirty={isFieldDirty}
               onSectionFieldChange={handleSectionFieldChange}
               onAddArrayItem={handleAddArrayItem}
               onRemoveArrayItem={handleRemoveArrayItem}
@@ -383,6 +631,7 @@ export default function AdminPage() {
               sectionName={String(activeSection)}
               ptValue={activeSection ? cmsData.pt[activeSection] : {}}
               enValue={activeSection ? cmsData.en[activeSection] : {}}
+              isFieldDirty={isFieldDirty}
               onSectionFieldChange={handleSectionFieldChange}
               onAddArrayItem={handleAddArrayItem}
               onRemoveArrayItem={handleRemoveArrayItem}
@@ -407,6 +656,39 @@ export default function AdminPage() {
         filteredAssets={filteredMediaAssets}
         onSelectAsset={applyAssetToField}
       />
+
+      {isDiscardConfirmOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          onClick={() => setIsDiscardConfirmOpen(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3 className="text-lg font-bold text-gray-900">Tem certeza?</h3>
+            <p className="mt-2 text-sm text-gray-600">
+              Esta acao vai descartar todas as alteracoes pendentes da secao ativa em PT e EN.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setIsDiscardConfirmOpen(false)}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleDiscardActiveSectionChanges}
+                className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600"
+              >
+                Sim, descartar
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

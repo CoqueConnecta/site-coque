@@ -3,6 +3,7 @@ import type { CmsLandingByLanguage } from '../../types';
 
 type NavEditorProps = {
   cmsData: CmsLandingByLanguage;
+  isFieldDirty: (language: CmsLanguage, path: Array<string | number>) => boolean;
   onSectionFieldChange: (
     language: CmsLanguage,
     path: Array<string | number>,
@@ -19,12 +20,14 @@ type NavEditorProps = {
 function NavLanguagePanel({
   language,
   cmsData,
+  isFieldDirty,
   onSectionFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
 }: {
   language: CmsLanguage;
   cmsData: CmsLandingByLanguage;
+  isFieldDirty: NavEditorProps['isFieldDirty'];
   onSectionFieldChange: NavEditorProps['onSectionFieldChange'];
   onAddArrayItem: NavEditorProps['onAddArrayItem'];
   onRemoveArrayItem: NavEditorProps['onRemoveArrayItem'];
@@ -65,7 +68,11 @@ function NavLanguagePanel({
                   type="text"
                   value={link.id}
                   onChange={(e) => onSectionFieldChange(language, ['links', index, 'id'], e.target.value)}
-                  className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                    isFieldDirty(language, ['links', index, 'id'])
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                  }`}
                   placeholder="about"
                 />
               </label>
@@ -76,7 +83,11 @@ function NavLanguagePanel({
                   type="text"
                   value={link.label}
                   onChange={(e) => onSectionFieldChange(language, ['links', index, 'label'], e.target.value)}
-                  className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                    isFieldDirty(language, ['links', index, 'label'])
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                  }`}
                   placeholder="Quem Somos"
                 />
               </label>
@@ -87,7 +98,11 @@ function NavLanguagePanel({
                   type="text"
                   value={link.href}
                   onChange={(e) => onSectionFieldChange(language, ['links', index, 'href'], e.target.value)}
-                  className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+                    isFieldDirty(language, ['links', index, 'href'])
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+                  }`}
                   placeholder="/#about"
                 />
               </label>
@@ -105,7 +120,11 @@ function NavLanguagePanel({
             type="text"
             value={navData.cta.label}
             onChange={(e) => onSectionFieldChange(language, ['cta', 'label'], e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty(language, ['cta', 'label'])
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
             placeholder="DOE AGORA"
           />
         </label>
@@ -116,7 +135,11 @@ function NavLanguagePanel({
             type="text"
             value={navData.cta.href}
             onChange={(e) => onSectionFieldChange(language, ['cta', 'href'], e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isFieldDirty(language, ['cta', 'href'])
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
             placeholder="https://..."
           />
         </label>
@@ -127,6 +150,7 @@ function NavLanguagePanel({
 
 export function NavEditor({
   cmsData,
+  isFieldDirty,
   onSectionFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
@@ -139,6 +163,7 @@ export function NavEditor({
         <NavLanguagePanel
           language="pt"
           cmsData={cmsData}
+          isFieldDirty={isFieldDirty}
           onSectionFieldChange={onSectionFieldChange}
           onAddArrayItem={onAddArrayItem}
           onRemoveArrayItem={onRemoveArrayItem}
@@ -151,6 +176,7 @@ export function NavEditor({
         <NavLanguagePanel
           language="en"
           cmsData={cmsData}
+          isFieldDirty={isFieldDirty}
           onSectionFieldChange={onSectionFieldChange}
           onAddArrayItem={onAddArrayItem}
           onRemoveArrayItem={onRemoveArrayItem}

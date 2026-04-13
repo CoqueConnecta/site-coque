@@ -2,6 +2,7 @@ type ImageFieldProps = {
   label: string;
   value: string;
   placeholder?: string;
+  isDirty?: boolean;
   onChange: (value: string) => void;
   onOpenLibrary: () => void;
 };
@@ -10,6 +11,7 @@ export function ImageField({
   label,
   value,
   placeholder,
+  isDirty = false,
   onChange,
   onOpenLibrary,
 }: ImageFieldProps) {
@@ -17,7 +19,7 @@ export function ImageField({
   const canPreview = previewSource.startsWith('http') || previewSource.startsWith('/');
 
   return (
-    <div className="space-y-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+    <div className={`space-y-3 rounded-lg border bg-gray-50 p-3 ${isDirty ? 'border-amber-400' : 'border-gray-200'}`}>
       <label className="block">
         <span className="block text-sm font-medium text-gray-700 mb-2">{label}</span>
         <div className="flex gap-2">
@@ -25,7 +27,11 @@ export function ImageField({
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
+              isDirty
+                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
+                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
+            }`}
             placeholder={placeholder}
           />
           <button

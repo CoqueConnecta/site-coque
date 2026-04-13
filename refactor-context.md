@@ -218,6 +218,13 @@ Entregas:
 - Scripts legados de bootstrap/manual import do CMS v2 removidos: `scripts/seed-cms-v2.ts` e `scripts/export-cms-v2-json.ts`, junto dos comandos associados no `package.json`.
 - Iniciada componentização do admin (Fase 1) sem mudança de comportamento: helpers de edição por path/merge foram extraídos para `src/features/admin/utils/editorPath.ts`.
 - Modal da biblioteca de imagens extraído para `src/features/admin/components/ImageLibraryModal.tsx` e campo de imagem reutilizável extraído para `src/features/admin/components/ImageField.tsx`.
+- Admin agora possui baseline de dados carregados (`get`) para comparar alterações por campo e manter trilha `dirty` por path.
+- Indicador visual de campo alterado implementado nos editores `hero`, `nav`, `gallery`, editor dinâmico e campo de imagem (borda âmbar em campos modificados).
+- Estratégia de persistência alterada no `/admin`: botão salva somente a seção ativa com `update` parcial no Realtime Database (sem `set` completo de `cms/v2/landing`).
+- Payload parcial é montado a partir dos caminhos sujos da seção ativa (`pt` e `en`), incluindo suporte a remoção de valor com `null` quando necessário.
+- Header do admin agora exibe contador de alterações pendentes na seção ativa e o botão foi renomeado para "Salvar seção ativa".
+- Build validado com sucesso após a mudança de persistência parcial e indicadores de alteração (`npm run build` ✅).
+- Fluxo de descarte da seção ativa agora exige confirmação em modal "Tem certeza?", evitando perda acidental de edições antes do reset para o baseline.
 - `AdminPage.tsx` agora atua mais como orquestrador de estado e fluxo, com redução de responsabilidade de UI inline.
 - Fase 2 concluída: editores premium extraídos para componentes dedicados em `src/features/admin/components/sections/` (`HeroEditor.tsx`, `NavEditor.tsx`, `GalleryEditor.tsx`).
 - Tipos compartilhados de domínio do admin centralizados em `src/features/admin/types.ts` para reduzir duplicação entre page e componentes.
