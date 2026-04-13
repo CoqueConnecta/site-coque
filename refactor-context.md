@@ -192,3 +192,12 @@ Entregas:
 - Script de seed criado para popular `cms/v2/landing` automaticamente a partir do fallback atual: `scripts/seed-cms-v2.ts` com comandos `npm run seed:cms-v2:dry` e `npm run seed:cms-v2`.
 - Estratégia alternativa adicionada para contornar `permission_denied` no seed: exportação de JSON para importação manual no Firebase Console via `npm run export:cms-v2:json` (arquivos em `arquivos_exemplo/`).
 - Migração da rota `/admin` iniciada para o novo CMS: `AdminPage` agora lê/salva `cms/v2/landing` (PT/EN lado a lado por seção), com fallback estrutural e edição em JSON por seção; botão temporário de seed foi removido após import manual no Firebase.
+- Início da melhoria de UX do admin para público não técnico: seção `hero` migrada de edição JSON para formulário guiado com campos por idioma (headline, subheadline, ctaText e backgroundImage).
+- Estratégia de rollout definida em 2 fases: Fase rápida com formulário para seções prioritárias e Fase completa expandindo para seções com listas/objetos mais complexos, mantendo fallback para modo JSON nas seções ainda não migradas.
+- Próximo passo objetivo: migrar a seção `nav` para formulário guiado (links + CTA) e adicionar ações de "restaurar fallback" e "descartar alterações" por seção.
+- Admin evoluído para formulário dinâmico nas demais seções: além do `hero` customizado, todas as seções agora são editáveis por campos (objetos, listas e textos) sem exigir edição direta de JSON.
+- O editor dinâmico suporta adicionar/remover itens de listas e atualizar campos aninhados preservando a estrutura do `cms/v2/landing` no save.
+- Build validado com sucesso após a refatoração completa do AdminPage.
+- Etapa premium iniciada: seções `nav` e `gallery` ganharam formulários dedicados com rótulos guiados e controles específicos por domínio (CTA/menu para nav e cards/tags/depoimentos para gallery).
+- `gallery` premium inclui CRUD de cards, CRUD de tags por card, toggle de blockquote com preenchimento inicial via fallback e controle de variante visual (`light`/`dark`).
+- Build validado com sucesso após a inclusão dos editores premium.
