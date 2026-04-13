@@ -216,3 +216,9 @@ Entregas:
 - Catálogo local expandido com categoria `about` para facilitar seleção dessas fotos na biblioteca do admin.
 - Limpeza adicional concluída: arquivos de exemplo de import (`arquivos_exemplo/cms-v2-landing-import.json` e `arquivos_exemplo/cms-v2-root-import.json`) também foram atualizados para usar os caminhos locais das novas imagens.
 - Scripts legados de bootstrap/manual import do CMS v2 removidos: `scripts/seed-cms-v2.ts` e `scripts/export-cms-v2-json.ts`, junto dos comandos associados no `package.json`.
+- Iniciada componentização do admin (Fase 1) sem mudança de comportamento: helpers de edição por path/merge foram extraídos para `src/features/admin/utils/editorPath.ts`.
+- Modal da biblioteca de imagens extraído para `src/features/admin/components/ImageLibraryModal.tsx` e campo de imagem reutilizável extraído para `src/features/admin/components/ImageField.tsx`.
+- `AdminPage.tsx` agora atua mais como orquestrador de estado e fluxo, com redução de responsabilidade de UI inline.
+- Fase 2 concluída: editores premium extraídos para componentes dedicados em `src/features/admin/components/sections/` (`HeroEditor.tsx`, `NavEditor.tsx`, `GalleryEditor.tsx`).
+- Tipos compartilhados de domínio do admin centralizados em `src/features/admin/types.ts` para reduzir duplicação entre page e componentes.
+- `AdminPage.tsx` simplificado para orquestrar estado/callbacks e delegar renderização de seções premium aos novos componentes.
