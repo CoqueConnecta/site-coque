@@ -25,6 +25,10 @@ Objetivo: migrar o conteudo da landing para Realtime Database em `cms/v2`, mante
   - `cms/v2/landing/pt`
   - `cms/v2/landing/en`
 
+- Nó global (campos compartilhados entre idiomas):
+  - `cms/v2/landing/global`
+  - primeira seção global adotada: `aboutMedia`
+
 - Caminho legado preservado sem escrita nova:
   - `locales/*`
 

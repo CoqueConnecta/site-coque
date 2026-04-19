@@ -64,12 +64,12 @@ export function DynamicSectionEditor({
     if (Array.isArray(value)) {
       return (
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="block text-sm font-medium text-gray-700">{label}</span>
             <button
               type="button"
               onClick={() => onAddArrayItem(language, path)}
-              className="rounded-md bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-200"
+              className="rounded-md bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-200"
             >
               + Adicionar item
             </button>
@@ -80,12 +80,12 @@ export function DynamicSectionEditor({
             ) : null}
             {value.map((item, index) => (
               <div key={`${label}-${index}`} className="rounded-md border border-gray-200 bg-white p-3">
-                <div className="mb-2 flex items-center justify-between">
+                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Item {index + 1}</p>
                   <button
                     type="button"
                     onClick={() => onRemoveArrayItem(language, path, index)}
-                    className="rounded-md bg-red-100 px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-200"
+                    className="rounded-md bg-red-100 px-2 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-200"
                   >
                     Remover
                   </button>
@@ -181,14 +181,14 @@ export function DynamicSectionEditor({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-4">
-        <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Português (PT)</h3>
+      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+        <h3 className="mb-4 border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:mb-6 lg:text-xl">Português (PT)</h3>
         <p className="mb-3 text-sm text-gray-500">Edite os campos abaixo em formato de formulário.</p>
         {renderField('pt', ptValue, [], formatLabel(sectionName))}
       </div>
 
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-4">
-        <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Inglês (EN)</h3>
+      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+        <h3 className="mb-4 border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:mb-6 lg:text-xl">Inglês (EN)</h3>
         <p className="mb-3 text-sm text-gray-500">Edite os campos abaixo em formato de formulário.</p>
         {renderField('en', enValue, [], formatLabel(sectionName))}
       </div>

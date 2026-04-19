@@ -22,7 +22,7 @@ export function ImageField({
     <div className={`space-y-3 rounded-lg border bg-gray-50 p-3 ${isDirty ? 'border-amber-400' : 'border-gray-200'}`}>
       <label className="block">
         <span className="block text-sm font-medium text-gray-700 mb-2">{label}</span>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <input
             type="text"
             value={value}
@@ -37,7 +37,7 @@ export function ImageField({
           <button
             type="button"
             onClick={onOpenLibrary}
-            className="whitespace-nowrap rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700"
+            className="h-11 whitespace-nowrap rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 sm:h-auto"
           >
             Biblioteca local
           </button>

@@ -36,13 +36,25 @@ export async function getCmsLandingData(language: CmsLanguage): Promise<CmsLandi
   const fallback = cmsFallbackByLanguage[language] ?? cmsFallbackByLanguage.pt;
 
   try {
-    const snapshot = await get(ref(database, `${CMS_BASE_PATH}/${language}`));
-    if (!snapshot.exists()) {
-      return fallback;
-    }
+    const [languageSnapshot, globalSnapshot] = await Promise.all([
+      get(ref(database, `${CMS_BASE_PATH}/${language}`)),
+      get(ref(database, `${CMS_BASE_PATH}/global`)),
+    ]);
 
-    const data = snapshot.val();
-    return mergeWithFallback(fallback, data);
+    const languageData = languageSnapshot.exists() ? languageSnapshot.val() : {};
+    const mergedByLanguage = mergeWithFallback(fallback, languageData);
+
+    const globalData = globalSnapshot.exists() ? globalSnapshot.val() : {};
+    const mergedGlobalAboutMedia = mergeWithFallback(
+      fallback.aboutMedia,
+      isPlainObject(globalData) ? globalData.aboutMedia : undefined
+    );
+
+    return {
+      ...mergedByLanguage,
+      // Retrocompatibilidade: prioriza global/aboutMedia, mas preserva fallback antigo por idioma.
+      aboutMedia: mergedGlobalAboutMedia,
+    };
   } catch (error) {
     console.error('Erro ao carregar cms/v2/landing, usando fallback local.', error);
     return fallback;

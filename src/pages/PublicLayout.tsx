@@ -16,6 +16,16 @@ export interface PublicLayoutContextValue {
   isLoadingContent: boolean;
 }
 
+/**
+ * Converte CmsNavLink (global com labels PT/EN) para NavLink (específico de idioma com label único)
+ */
+function convertNavLinksToLanguage(navLinks: CmsLandingData['nav']['links'], language: CmsLanguage) {
+  return navLinks.map((link) => ({
+    ...link,
+    label: (link.labels as Record<CmsLanguage, string>)[language] || (link.labels as Record<CmsLanguage, string>).pt,
+  }));
+}
+
 export default function PublicLayout() {
   const location = useLocation();
   const [language, setLanguage] = useState<CmsLanguage>(() => {
@@ -23,7 +33,7 @@ export default function PublicLayout() {
     return saved === 'en' ? 'en' : 'pt';
   });
   const { data: content, isLoading } = useCmsLandingData(language);
-  const navLinks = content.nav.links;
+  const navLinks = convertNavLinksToLanguage(content.nav.links, language);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string | undefined>(undefined);
@@ -79,7 +89,7 @@ export default function PublicLayout() {
         onNavClick={handleNavClick}
         onClose={() => setMobileMenuOpen(false)}
         showNewsletter
-        ctaText={content.nav.links.find((link) => link.id === 'contact')?.label || 'Faça Parte'}
+        ctaText={navLinks.find((link) => link.id === 'contact')?.label || 'Faça Parte'}
         ctaHref="/#contact"
         language={language}
         onLanguageChange={setLanguage}
@@ -88,7 +98,7 @@ export default function PublicLayout() {
       <HeaderBar
         navLinks={navLinks}
         activeLink={activeLink}
-        ctaText={content.nav.cta.label}
+        ctaText={(content.nav.cta.labels as Record<CmsLanguage, string>)[language] || (content.nav.cta.labels as Record<CmsLanguage, string>).pt}
         ctaHref={content.nav.cta.href}
         onNavClick={handleNavClick}
         onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}

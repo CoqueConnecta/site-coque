@@ -31,13 +31,13 @@ const aboutTickerImages = [
 const fallbackPT: CmsLandingData = {
   nav: {
     links: [
-      { id: 'inicio', label: 'Início', href: '/#hero' },
-      { id: 'about', label: 'Quem Somos', href: '/#about' },
-      { id: 'our-work', label: 'Nossos Projetos', href: '/#our-work' },
-      { id: 'contact', label: 'Faça Parte', href: '/#contact' },
+      { id: 'inicio', labels: { pt: 'Início', en: 'Home' }, href: '/#hero' },
+      { id: 'about', labels: { pt: 'Quem Somos', en: 'Who We Are' }, href: '/#about' },
+      { id: 'our-work', labels: { pt: 'Nossos Projetos', en: 'Our Projects' }, href: '/#our-work' },
+      { id: 'contact', labels: { pt: 'Faça Parte', en: 'Join Us' }, href: '/#contact' },
     ],
     cta: {
-      label: 'DOE AGORA',
+      labels: { pt: 'DOE AGORA', en: 'DONATE NOW' },
       href: 'https://benfeitoria.com/projeto/coqueconnecta',
     },
   },
@@ -74,13 +74,13 @@ const fallbackPT: CmsLandingData = {
 const fallbackEN: CmsLandingData = {
   nav: {
     links: [
-      { id: 'inicio', label: 'Home', href: '/#hero' },
-      { id: 'about', label: 'Who We Are', href: '/#about' },
-      { id: 'our-work', label: 'Our Projects', href: '/#our-work' },
-      { id: 'contact', label: 'Join Us', href: '/#contact' },
+      { id: 'inicio', labels: { pt: 'Início', en: 'Home' }, href: '/#hero' },
+      { id: 'about', labels: { pt: 'Quem Somos', en: 'Who We Are' }, href: '/#about' },
+      { id: 'our-work', labels: { pt: 'Nossos Projetos', en: 'Our Projects' }, href: '/#our-work' },
+      { id: 'contact', labels: { pt: 'Faça Parte', en: 'Join Us' }, href: '/#contact' },
     ],
     cta: {
-      label: 'DONATE NOW',
+      labels: { pt: 'DOE AGORA', en: 'DONATE NOW' },
       href: 'https://benfeitoria.com/projeto/coqueconnecta',
     },
   },

@@ -14,7 +14,7 @@
 **Situação no projeto:** IMPLEMENTADO ✅
 **GIT/publicação:** Commit and Push ✅
 
-### Botão QUEM SOMOS
+### Botão QUEM SOMOS [DONE ✅]
 
 **Situação no protótipo:** INATIVO (Feature obrigatória para a primeira versão)
 
@@ -34,7 +34,7 @@
 
 **Situação no projeto:** EM PROGRESSO
 
-### Botão Faça Parte
+### Botão Faça Parte [DONE ✅]
 
 **Situação no protótipo:** INATIVO
 
@@ -45,15 +45,15 @@
 
 ## HERO (Conectando Pessoas...)
 
-### Background animado - LIMITANTE
+### Background animado [DONE ✅]
 
 **Situação no protótipo:** ATIVO FUNCIONAL
 
 **Solução sugerida pela equipe:** Entrar em contato com Léo e obter a animação via protótipo
 
-**Situação no projeto:** NÃO IMPLEMENTADO
+**Situação no projeto:** IMPLEMENTADO ✅
 
-### Bloco de texto Conectando pessoas
+### Bloco de texto Conectando pessoas [DONE ✅]
 
 **Situação no protótipo:** ATIVO FUNCIONAL
 
@@ -80,7 +80,7 @@
 
 **Situação no projeto:** Aguardando equipe enviar fotos e textos
 
-## NEWSLETTER
+## NEWSLETTER [DONE ✅]
 
 **Situação no protótipo:** INATIVO e DISCONFORME COM A INTENÇÃO ATUAL
 
@@ -88,17 +88,15 @@
 - email
 - nome
 - sobrenome
-- Tipo (CONFIRMAR ESTE DADO)
-  - Doador
-  - Participante
-  - Parceiro
-  - Staff
-  - Supporter
-  - Voluntário
+- Tipo (CONFIRMAR ESTES DADOS)
+  - VOLUNTÁRIO
+  - DOADOR
+  - EMPRESA
+  - COMUNIDADE
 
-**Situação no projeto:** NÃO IMPLEMENTADO
+**Situação no projeto:** IMPLEMENTADO COM INTEGRAÇÃO AO FIREBASE ✅
 
-## FOOTER
+## FOOTER [DONE ✅]
 
 - Instagram -> https://www.instagram.com/coqueconnecta/
 - WEB -> REMOVER
@@ -112,3 +110,5 @@
 - Relatórios -> REMOVER
 - Transparência -> deve ser uma nova página (falta definir)
 - Como doar -> mesma coisa do Botão DOE AGORA
+
+**Situação no projeto:** IMPLEMENTADO ✅

@@ -80,13 +80,13 @@ function GalleryLanguagePanel({
         />
       </label>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm font-semibold text-gray-700">Cards de ajuda</p>
           <button
             type="button"
             onClick={() => onAddArrayItem(language, ['cards'])}
-            className="rounded-md bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-200"
+            className="rounded-md bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-200"
           >
             + Adicionar card
           </button>
@@ -94,13 +94,13 @@ function GalleryLanguagePanel({
 
         <div className="space-y-4">
           {galleryData.cards.map((card, cardIndex) => (
-            <div key={`${language}-gallery-card-${cardIndex}`} className="rounded-md border border-gray-200 bg-white p-4 space-y-4">
-              <div className="flex items-center justify-between">
+            <div key={`${language}-gallery-card-${cardIndex}`} className="space-y-4 rounded-md border border-gray-200 bg-white p-3 sm:p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Card {cardIndex + 1}</p>
                 <button
                   type="button"
                   onClick={() => onRemoveArrayItem(language, ['cards'], cardIndex)}
-                  className="rounded-md bg-red-100 px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-200"
+                  className="rounded-md bg-red-100 px-2 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-200"
                 >
                   Remover
                 </button>
@@ -156,13 +156,13 @@ function GalleryLanguagePanel({
                 '/pessoa-segurando-caixa.jpg'
               )}
 
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-medium text-gray-700">Tags do card</p>
                   <button
                     type="button"
                     onClick={() => onAddArrayItem(language, ['cards', cardIndex, 'tags'])}
-                    className="rounded-md bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-200"
+                    className="rounded-md bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-200"
                   >
                     + Tag
                   </button>
@@ -193,7 +193,7 @@ function GalleryLanguagePanel({
               </div>
 
               <div className="space-y-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-medium text-gray-700">Depoimento (blockquote)</p>
                   <label className="inline-flex items-center gap-2 text-sm text-gray-700">
                     <input
@@ -279,9 +279,9 @@ export function GalleryEditor({
   renderImageField,
 }: GalleryEditorProps) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-4">
-        <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Português (PT)</h3>
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
+      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+        <h3 className="mb-4 border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:mb-6 lg:text-xl">Português (PT)</h3>
         <p className="mb-3 text-sm text-gray-500">Editor premium da galeria com cards, tags e depoimentos.</p>
         <GalleryLanguagePanel
           language="pt"
@@ -295,8 +295,8 @@ export function GalleryEditor({
         />
       </div>
 
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-4">
-        <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Inglês (EN)</h3>
+      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+        <h3 className="mb-4 border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:mb-6 lg:text-xl">Inglês (EN)</h3>
         <p className="mb-3 text-sm text-gray-500">Premium gallery editor with cards, tags, and blockquotes.</p>
         <GalleryLanguagePanel
           language="en"

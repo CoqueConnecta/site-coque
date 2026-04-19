@@ -26,9 +26,9 @@ export function HeroEditor({
   renderImageField,
 }: HeroEditorProps) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-5">
-        <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4">Português (PT)</h3>
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
+      <div className="space-y-5 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+        <h3 className="border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:text-xl">Português (PT)</h3>
         <p className="text-sm text-gray-500">Preencha os campos abaixo para editar o Hero sem precisar de JSON.</p>
 
         <label className="block">
@@ -80,8 +80,8 @@ export function HeroEditor({
         )}
       </div>
 
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-5">
-        <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4">Inglês (EN)</h3>
+      <div className="space-y-5 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+        <h3 className="border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:text-xl">Inglês (EN)</h3>
         <p className="text-sm text-gray-500">Preencha os campos abaixo para editar o Hero sem precisar de JSON.</p>
 
         <label className="block">

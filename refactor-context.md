@@ -231,3 +231,16 @@ Entregas:
 - `AdminPage.tsx` simplificado para orquestrar estado/callbacks e delegar renderização de seções premium aos novos componentes.
 - Fase 3 concluída: editor genérico dinâmico também foi extraído para `src/features/admin/components/sections/DynamicSectionEditor.tsx`.
 - `AdminPage.tsx` passou a delegar tanto seções premium quanto seção genérica para componentes dedicados, reduzindo acoplamento e melhorando manutenção.
+- Refactor mobile do `/admin` iniciado e concluído em primeira etapa: navegação lateral desktop foi complementada com painel móvel de seções (drawer/sheet) para reduzir fricção em telas pequenas.
+- Edição PT/EN no mobile ganhou abas (Português/Inglês), com abertura padrão em Português ao trocar de seção, mantendo o layout lado a lado no desktop.
+- Barra de ações mobile adicionada no rodapé fixo com "Descartar" e "Salvar seção", preservando o save parcial por seção ativa e os fluxos de confirmação já existentes.
+- Header mobile foi simplificado com acesso rápido a seções e saída, além de badge de alterações pendentes por seção na lista mobile/desktop.
+- Dependências adicionadas para padrão de UI inspirado no Music-Ed: `@radix-ui/react-dialog` e `@radix-ui/react-tabs`.
+- Próximo passo objetivo (pós-refactor mobile atual): planejar modelo de campos globais independentes de idioma (ex.: mídia compartilhada PT/EN) para reduzir duplicidade operacional no admin.
+- Refinamento mobile dos editores concluído: redução de densidade visual (padding/gaps), tipografia de títulos ajustada e ações de listas com melhor quebra/área de toque em `HeroEditor`, `NavEditor`, `GalleryEditor` e `DynamicSectionEditor`.
+- `ImageField` ajustado para layout responsivo (input + botão empilhados no mobile e em linha no desktop), facilitando uso em telas estreitas.
+- Build validado após refinamentos mobile dos editores (`npm run build` ✅).
+- Fase 1 de campos globais iniciada: `aboutMedia` agora pode ser lido/escrito em `cms/v2/landing/global/aboutMedia` com retrocompatibilidade para estrutura antiga por idioma.
+- Front público foi adaptado para priorizar `global/aboutMedia` no loader, mantendo fallback por idioma quando o nó global não existir.
+- Admin foi adaptado para tratar `aboutMedia` como seção global: edições sincronizam PT/EN no estado e o save da seção escreve no caminho global.
+- Build validado após a migração compatível de `aboutMedia` para global (`npm run build` ✅).

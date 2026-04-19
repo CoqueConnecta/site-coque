@@ -4,14 +4,14 @@ export type CmsLanguage = 'pt' | 'en';
 
 export interface CmsNavLink {
   id: string;
-  label: string;
+  labels: { pt: string; en: string };
   href: string;
 }
 
 export interface CmsNavData {
   links: CmsNavLink[];
   cta: {
-    label: string;
+    labels: { pt: string; en: string };
     href: string;
   };
 }
@@ -51,6 +51,35 @@ export interface CmsTransparencyData {
   body: string[];
 }
 
+export interface CmsStatItem {
+  value: string;
+  labels: { pt: string; en: string };
+}
+
+export interface CmsStatsData {
+  items: CmsStatItem[];
+}
+
+export interface CmsSocialLink {
+  platform: string;
+  url: string;
+  icon: string;
+}
+
+export interface CmsQuickLink {
+  labels: { pt: string; en: string };
+  href: string;
+}
+
+export interface CmsFooterData {
+  copyrights: { pt: string; en: string };
+  address: string;
+  phone?: string;
+  email?: string;
+  socialLinks: CmsSocialLink[];
+  quickLinks: CmsQuickLink[];
+}
+
 export interface CmsLandingData {
   nav: CmsNavData;
   hero: HeroData;
@@ -62,4 +91,11 @@ export interface CmsLandingData {
   footer: FooterData;
   privacy: CmsPrivacyData;
   transparency: CmsTransparencyData;
+}
+
+export interface CmsLandingGlobalData {
+  aboutMedia: CmsAboutMediaData;
+  nav: CmsNavData;
+  stats: CmsStatsData;
+  footer: CmsFooterData;
 }
