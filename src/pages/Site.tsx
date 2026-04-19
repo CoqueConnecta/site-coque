@@ -6,7 +6,12 @@ import { StatsSection } from '../components/sections/StatsSection';
 import type { PublicLayoutContextValue } from './PublicLayout';
 
 function Site() {
-  const { content } = useOutletContext<PublicLayoutContextValue>();
+  const { content, language } = useOutletContext<PublicLayoutContextValue>();
+
+  const localizedYoutubeVideos = content.aboutMedia.youtubeVideos.map((video) => ({
+    ...video,
+    title: video.titles?.[language] || video.titles?.pt || video.title || '',
+  }));
 
   return (
     <>
@@ -16,7 +21,7 @@ function Site() {
         <AboutSection
           data={content.about}
           tickerImages={content.aboutMedia.tickerImages}
-          youtubeVideos={content.aboutMedia.youtubeVideos}
+          youtubeVideos={localizedYoutubeVideos}
           id="about"
         />
         <StatsSection data={content.stats} />

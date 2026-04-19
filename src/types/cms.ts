@@ -24,7 +24,12 @@ export interface CmsTickerImage {
 
 export interface CmsYoutubeVideo {
   id: string;
-  title: string;
+  // Legacy support: older payloads may still contain a single title.
+  title?: string;
+  titles?: {
+    pt: string;
+    en: string;
+  };
 }
 
 export interface CmsAboutMediaData {

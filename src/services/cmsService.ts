@@ -50,10 +50,21 @@ export async function getCmsLandingData(language: CmsLanguage): Promise<CmsLandi
       isPlainObject(globalData) ? globalData.aboutMedia : undefined
     );
 
+    const normalizedYoutubeVideos = mergedGlobalAboutMedia.youtubeVideos.map((video) => ({
+      ...video,
+      titles: video.titles ?? {
+        pt: video.title ?? '',
+        en: video.title ?? '',
+      },
+    }));
+
     return {
       ...mergedByLanguage,
       // Retrocompatibilidade: prioriza global/aboutMedia, mas preserva fallback antigo por idioma.
-      aboutMedia: mergedGlobalAboutMedia,
+      aboutMedia: {
+        ...mergedGlobalAboutMedia,
+        youtubeVideos: normalizedYoutubeVideos,
+      },
     };
   } catch (error) {
     console.error('Erro ao carregar cms/v2/landing, usando fallback local.', error);

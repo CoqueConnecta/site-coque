@@ -249,3 +249,11 @@ Entregas:
 - Tentativa de migração via script Node local retornou `PERMISSION_DENIED` no RTDB; estratégia alterada para migração autenticada no painel.
 - Build validado após inclusão dos novos editores e da ação de migração autenticada (`npm run build` ✅).
 - Migração executada com sucesso pelo painel admin e botão temporário de migração removido em seguida para manter a interface limpa.
+- AboutMedia refatorado no admin com editor dedicado (`AboutMediaEditor`), separando claramente os blocos de `Ticker Images` e `YouTube Videos` para reduzir confusão operacional.
+- AboutMedia ajustado para painel único `Global` (sem coluna EN duplicada), e no mobile as abas PT/EN ficam ocultas apenas nessa seção.
+- Fluxo editorial de mídia refinado: no admin, `aboutMedia` foi dividido em duas entradas de navegação (`Carrossel` e `YouTube Videos`) para reduzir ambiguidade operacional sem quebrar retrocompatibilidade de schema.
+- Vídeos do YouTube agora suportam títulos localizados via `titles.pt` e `titles.en`, mantendo retrocompatibilidade com payload legado (`title` único).
+- Front passa a resolver título do vídeo conforme idioma ativo e o loader normaliza automaticamente vídeos legados para o formato com `titles`.
+- Script opcional de migração RTDB criado para persistir a normalização de vídeos legados (`title` -> `titles.pt/en`) nos caminhos global e legados por idioma.
+- Dry-run validado: 7 itens encontrados e 7 itens planejados para migração (`global/aboutMedia/youtubeVideos`: 3, `pt/aboutMedia/youtubeVideos`: 2, `en/aboutMedia/youtubeVideos`: 2).
+- Fluxo de save do `/admin` reforçado para normalizar `aboutMedia.youtubeVideos` no momento da gravação global: ao salvar, vídeos legados passam a persistir no formato novo (`titles.pt/en`) sem depender de escrita via terminal.

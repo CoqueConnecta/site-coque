@@ -18,6 +18,7 @@ import { HeroEditor } from '../features/admin/components/sections/HeroEditor';
 import { NavEditor } from '../features/admin/components/sections/NavEditor';
 import { StatsEditor } from '../features/admin/components/sections/StatsEditor';
 import { FooterEditor } from '../features/admin/components/sections/FooterEditor';
+import { AboutMediaEditor } from '../features/admin/components/sections/AboutMediaEditor';
 import type { CmsLandingByLanguage, MediaAsset, PickerState } from '../features/admin/types';
 import {
   buildEmptyFromTemplate,
@@ -26,7 +27,7 @@ import {
   mergeWithFallback,
   setValueAtPath,
 } from '../features/admin/utils/editorPath';
-import type { CmsLandingData, CmsLanguage } from '../types/cms';
+import type { CmsAboutMediaData, CmsLandingData, CmsLanguage, CmsYoutubeVideo } from '../types/cms';
 
 function deepEqual(left: unknown, right: unknown) {
   if (Object.is(left, right)) {
@@ -44,11 +45,50 @@ function isGlobalSection(section: keyof CmsLandingData) {
   return ['aboutMedia', 'nav', 'stats', 'footer'].includes(section);
 }
 
+function normalizeYoutubeVideos(videos: CmsYoutubeVideo[], dropLegacyTitle = false): CmsYoutubeVideo[] {
+  return videos.map((video) => {
+    const normalizedTitles = video.titles ?? {
+      pt: video.title ?? '',
+      en: video.title ?? '',
+    };
+
+    if (dropLegacyTitle) {
+      return {
+        id: video.id,
+        titles: normalizedTitles,
+      };
+    }
+
+    return {
+      ...video,
+      titles: normalizedTitles,
+    };
+  });
+}
+
+function normalizeAboutMedia(
+  aboutMedia: CmsAboutMediaData,
+  dropLegacyYoutubeTitle = false,
+): CmsAboutMediaData {
+  return {
+    ...aboutMedia,
+    youtubeVideos: normalizeYoutubeVideos(aboutMedia.youtubeVideos, dropLegacyYoutubeTitle),
+  };
+}
+
+type SectionNavItem = {
+  id: string;
+  section: keyof CmsLandingData;
+  label: string;
+  aboutMediaMode?: 'carousel' | 'youtubeVideos';
+};
+
 export default function AdminPage() {
   const navigate = useNavigate();
   const [cmsData, setCmsData] = useState<CmsLandingByLanguage | null>(null);
   const [originalCmsData, setOriginalCmsData] = useState<CmsLandingByLanguage | null>(null);
   const [activeSection, setActiveSection] = useState<keyof CmsLandingData | ''>('');
+  const [activeAboutMediaMode, setActiveAboutMediaMode] = useState<'carousel' | 'youtubeVideos'>('carousel');
   const [dirtyFields, setDirtyFields] = useState<Record<string, true>>({});
   const [mediaAssets] = useState<MediaAsset[]>(localImageLibrary);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
@@ -77,8 +117,9 @@ export default function AdminPage() {
           cmsFallbackByLanguage.pt.aboutMedia,
           incoming.global?.aboutMedia
         );
-        normalized.pt.aboutMedia = mergedGlobalAboutMedia;
-        normalized.en.aboutMedia = mergedGlobalAboutMedia;
+        const normalizedAboutMedia = normalizeAboutMedia(mergedGlobalAboutMedia);
+        normalized.pt.aboutMedia = normalizedAboutMedia;
+        normalized.en.aboutMedia = normalizedAboutMedia;
 
         const mergedGlobalNav = mergeWithFallback(
           cmsFallbackByLanguage.pt.nav,
@@ -139,6 +180,38 @@ export default function AdminPage() {
     }
     return Object.keys(cmsData.pt) as Array<keyof CmsLandingData>;
   }, [cmsData]);
+
+  const sectionNavItems = useMemo<SectionNavItem[]>(() => {
+    const items: SectionNavItem[] = [];
+
+    sections.forEach((section) => {
+      if (section === 'aboutMedia') {
+        items.push(
+          {
+            id: 'carousel',
+            section,
+            label: 'Carrossel',
+            aboutMediaMode: 'carousel',
+          },
+          {
+            id: 'youtubeVideos',
+            section,
+            label: 'YouTube Videos',
+            aboutMediaMode: 'youtubeVideos',
+          }
+        );
+        return;
+      }
+
+      items.push({
+        id: section,
+        section,
+        label: String(section).charAt(0).toUpperCase() + String(section).slice(1).replace(/_/g, ' '),
+      });
+    });
+
+    return items;
+  }, [sections]);
 
   const filteredMediaAssets = useMemo(() => {
     const query = mediaSearch.trim().toLowerCase();
@@ -224,6 +297,20 @@ export default function AdminPage() {
       return 0;
     }
 
+    if (activeSection === 'aboutMedia') {
+      const aboutMediaPrefix = activeAboutMediaMode === 'carousel'
+        ? 'aboutMedia.tickerImages'
+        : 'aboutMedia.youtubeVideos';
+      const ptPrefix = `pt.${aboutMediaPrefix}`;
+      const enPrefix = `en.${aboutMediaPrefix}`;
+      return Object.keys(dirtyFields).filter((fieldKey) => (
+        fieldKey === ptPrefix
+        || fieldKey.startsWith(`${ptPrefix}.`)
+        || fieldKey === enPrefix
+        || fieldKey.startsWith(`${enPrefix}.`)
+      )).length;
+    }
+
     const ptPrefix = `pt.${activeSection}`;
     const enPrefix = `en.${activeSection}`;
     return Object.keys(dirtyFields).filter((fieldKey) => (
@@ -232,7 +319,7 @@ export default function AdminPage() {
       || fieldKey === enPrefix
       || fieldKey.startsWith(`${enPrefix}.`)
     )).length;
-  }, [activeSection, dirtyFields]);
+  }, [activeSection, activeAboutMediaMode, dirtyFields]);
 
   const sectionDirtyCountMap = useMemo(() => {
     const counts: Partial<Record<keyof CmsLandingData, number>> = {};
@@ -243,6 +330,29 @@ export default function AdminPage() {
     });
     return counts;
   }, [dirtyFields]);
+
+  const sectionNavDirtyCount = (item: { section: keyof CmsLandingData; aboutMediaMode?: 'carousel' | 'youtubeVideos' }) => {
+    if (item.section !== 'aboutMedia' || !item.aboutMediaMode) {
+      return sectionDirtyCountMap[item.section] ?? 0;
+    }
+
+    const aboutMediaPrefix = item.aboutMediaMode === 'carousel'
+      ? 'aboutMedia.tickerImages'
+      : 'aboutMedia.youtubeVideos';
+    const ptPrefix = `pt.${aboutMediaPrefix}`;
+    const enPrefix = `en.${aboutMediaPrefix}`;
+
+    return Object.keys(dirtyFields).filter((fieldKey) => (
+      fieldKey === ptPrefix
+      || fieldKey.startsWith(`${ptPrefix}.`)
+      || fieldKey === enPrefix
+      || fieldKey.startsWith(`${enPrefix}.`)
+    )).length;
+  };
+
+  const activeSectionTitle = activeSection === 'aboutMedia'
+    ? (activeAboutMediaMode === 'carousel' ? 'Carrossel' : 'YouTube Videos')
+    : String(activeSection).charAt(0).toUpperCase() + String(activeSection).slice(1).replace(/_/g, ' ');
 
   const openImagePicker = (
     language: CmsLanguage,
@@ -540,13 +650,23 @@ export default function AdminPage() {
     }
 
     const sectionKey = activeSection;
+    const aboutMediaPrefix = activeAboutMediaMode === 'carousel' ? 'tickerImages' : 'youtubeVideos';
     const ptPrefix = `pt.${sectionKey}`;
     const enPrefix = `en.${sectionKey}`;
     if (isGlobalSection(sectionKey)) {
-      const currentGlobalSection = cmsData.pt[sectionKey];
+      const currentGlobalSection = sectionKey === 'aboutMedia'
+        ? normalizeAboutMedia(cmsData.pt.aboutMedia, true)
+        : cmsData.pt[sectionKey];
       const originalGlobalSection = originalCmsData?.pt[sectionKey];
 
-      if (deepEqual(currentGlobalSection, originalGlobalSection)) {
+      const currentComparable = sectionKey === 'aboutMedia'
+        ? getValueAtPath(currentGlobalSection, [aboutMediaPrefix])
+        : currentGlobalSection;
+      const originalComparable = sectionKey === 'aboutMedia'
+        ? getValueAtPath(originalGlobalSection, [aboutMediaPrefix])
+        : originalGlobalSection;
+
+      if (deepEqual(currentComparable, originalComparable)) {
         toast('Nenhuma alteracao pendente nesta secao.');
         return;
       }
@@ -554,10 +674,66 @@ export default function AdminPage() {
       const savePromise = update(ref(database), {
         [`cms/v2/landing/global/${sectionKey}`]: currentGlobalSection,
       }).then(() => {
-        setOriginalCmsData(cmsData);
+        if (sectionKey === 'aboutMedia') {
+          setCmsData((prev) => {
+            if (!prev) {
+              return prev;
+            }
+
+            const nextAboutMedia = currentGlobalSection as CmsAboutMediaData;
+            return {
+              ...prev,
+              pt: {
+                ...prev.pt,
+                aboutMedia: nextAboutMedia,
+              },
+              en: {
+                ...prev.en,
+                aboutMedia: nextAboutMedia,
+              },
+            };
+          });
+
+          setOriginalCmsData((prev) => {
+            if (!prev) {
+              return prev;
+            }
+
+            const nextAboutMedia = currentGlobalSection as CmsAboutMediaData;
+            return {
+              ...prev,
+              pt: {
+                ...prev.pt,
+                aboutMedia: nextAboutMedia,
+              },
+              en: {
+                ...prev.en,
+                aboutMedia: nextAboutMedia,
+              },
+            };
+          });
+        } else {
+          setOriginalCmsData(cmsData);
+        }
+
         setDirtyFields((prev) => {
           const next: Record<string, true> = {};
           Object.keys(prev).forEach((fieldKey) => {
+            if (sectionKey === 'aboutMedia') {
+              const ptScopedPrefix = `${ptPrefix}.${aboutMediaPrefix}`;
+              const enScopedPrefix = `${enPrefix}.${aboutMediaPrefix}`;
+              if (
+                fieldKey === ptScopedPrefix
+                || fieldKey.startsWith(`${ptScopedPrefix}.`)
+                || fieldKey === enScopedPrefix
+                || fieldKey.startsWith(`${enScopedPrefix}.`)
+              ) {
+                return;
+              }
+              next[fieldKey] = true;
+              return;
+            }
+
             if (
               fieldKey === ptPrefix
               || fieldKey.startsWith(`${ptPrefix}.`)
@@ -636,14 +812,28 @@ export default function AdminPage() {
     }
 
     const sectionKey = activeSection;
+    const aboutMediaPrefix = activeAboutMediaMode === 'carousel' ? 'tickerImages' : 'youtubeVideos';
     const ptPrefix = `pt.${sectionKey}`;
     const enPrefix = `en.${sectionKey}`;
-    const activeSectionDirtyKeys = Object.keys(dirtyFields).filter((fieldKey) => (
-      fieldKey === ptPrefix
-      || fieldKey.startsWith(`${ptPrefix}.`)
-      || fieldKey === enPrefix
-      || fieldKey.startsWith(`${enPrefix}.`)
-    ));
+    const activeSectionDirtyKeys = Object.keys(dirtyFields).filter((fieldKey) => {
+      if (sectionKey !== 'aboutMedia') {
+        return (
+          fieldKey === ptPrefix
+          || fieldKey.startsWith(`${ptPrefix}.`)
+          || fieldKey === enPrefix
+          || fieldKey.startsWith(`${enPrefix}.`)
+        );
+      }
+
+      const ptScopedPrefix = `${ptPrefix}.${aboutMediaPrefix}`;
+      const enScopedPrefix = `${enPrefix}.${aboutMediaPrefix}`;
+      return (
+        fieldKey === ptScopedPrefix
+        || fieldKey.startsWith(`${ptScopedPrefix}.`)
+        || fieldKey === enScopedPrefix
+        || fieldKey.startsWith(`${enScopedPrefix}.`)
+      );
+    });
 
     if (activeSectionDirtyKeys.length === 0) {
       toast('Nenhuma alteracao pendente nesta secao.');
@@ -659,6 +849,7 @@ export default function AdminPage() {
     }
 
     const sectionKey = activeSection;
+    const aboutMediaPrefix = activeAboutMediaMode === 'carousel' ? 'tickerImages' : 'youtubeVideos';
     const ptPrefix = `pt.${sectionKey}`;
     const enPrefix = `en.${sectionKey}`;
 
@@ -667,15 +858,35 @@ export default function AdminPage() {
         return prev;
       }
 
+      if (sectionKey !== 'aboutMedia') {
+        return {
+          ...prev,
+          pt: {
+            ...prev.pt,
+            [sectionKey]: originalCmsData.pt[sectionKey],
+          },
+          en: {
+            ...prev.en,
+            [sectionKey]: originalCmsData.en[sectionKey],
+          },
+        };
+      }
+
+      const nextAboutMediaPT = setValueAtPath(
+        prev.pt.aboutMedia,
+        [aboutMediaPrefix],
+        getValueAtPath(originalCmsData.pt.aboutMedia, [aboutMediaPrefix]),
+      ) as CmsLandingData['aboutMedia'];
+
       return {
         ...prev,
         pt: {
           ...prev.pt,
-          [sectionKey]: originalCmsData.pt[sectionKey],
+          aboutMedia: nextAboutMediaPT,
         },
         en: {
           ...prev.en,
-          [sectionKey]: originalCmsData.en[sectionKey],
+          aboutMedia: nextAboutMediaPT,
         },
       };
     });
@@ -683,6 +894,21 @@ export default function AdminPage() {
     setDirtyFields((prev) => {
       const next: Record<string, true> = {};
       Object.keys(prev).forEach((fieldKey) => {
+        if (sectionKey === 'aboutMedia') {
+          const ptScopedPrefix = `${ptPrefix}.${aboutMediaPrefix}`;
+          const enScopedPrefix = `${enPrefix}.${aboutMediaPrefix}`;
+          if (
+            fieldKey === ptScopedPrefix
+            || fieldKey.startsWith(`${ptScopedPrefix}.`)
+            || fieldKey === enScopedPrefix
+            || fieldKey.startsWith(`${enScopedPrefix}.`)
+          ) {
+            return;
+          }
+          next[fieldKey] = true;
+          return;
+        }
+
         if (
           fieldKey === ptPrefix
           || fieldKey.startsWith(`${ptPrefix}.`)
@@ -710,9 +936,11 @@ export default function AdminPage() {
       return null;
     }
 
-    const mobilePanelMaskClass = mobileLanguage === 'pt'
-      ? 'max-lg:[&>div>div:nth-child(2)]:hidden'
-      : 'max-lg:[&>div>div:nth-child(1)]:hidden';
+    const mobilePanelMaskClass = activeSection === 'aboutMedia'
+      ? ''
+      : (mobileLanguage === 'pt'
+          ? 'max-lg:[&>div>div:nth-child(2)]:hidden'
+          : 'max-lg:[&>div>div:nth-child(1)]:hidden');
 
     if (activeSection === 'hero') {
       return (
@@ -751,6 +979,22 @@ export default function AdminPage() {
             onAddArrayItem={handleAddArrayItem}
             onRemoveArrayItem={handleRemoveArrayItem}
             onToggleGalleryBlockquote={handleToggleGalleryBlockquote}
+            renderImageField={renderImageField}
+          />
+        </div>
+      );
+    }
+
+    if (activeSection === 'aboutMedia') {
+      return (
+        <div className={mobilePanelMaskClass}>
+          <AboutMediaEditor
+            mode={activeAboutMediaMode}
+            cmsData={cmsData}
+            isFieldDirty={isFieldDirty}
+            onSectionFieldChange={handleSectionFieldChange}
+            onAddArrayItem={handleAddArrayItem}
+            onRemoveArrayItem={handleRemoveArrayItem}
             renderImageField={renderImageField}
           />
         </div>
@@ -813,24 +1057,27 @@ export default function AdminPage() {
         </div>
         <nav className="p-3">
           <ul>
-            {sections.map((section) => (
-              <li key={section}>
+            {sectionNavItems.map((item) => (
+              <li key={item.id}>
                 <button
                   onClick={() => {
-                    setActiveSection(section);
+                    setActiveSection(item.section);
+                    if (item.aboutMediaMode) {
+                      setActiveAboutMediaMode(item.aboutMediaMode);
+                    }
                     setMobileLanguage('pt');
                   }}
                   className={`w-full text-left p-3 my-1 rounded-lg text-sm font-medium transition-all duration-150 ${
-                    activeSection === section
+                    activeSection === item.section && (!item.aboutMediaMode || activeAboutMediaMode === item.aboutMediaMode)
                       ? 'bg-blue-600 text-white shadow-md'
                       : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span>{String(section).charAt(0).toUpperCase() + String(section).slice(1).replace(/_/g, ' ')}</span>
-                    {(sectionDirtyCountMap[section] ?? 0) > 0 ? (
+                    <span>{item.label}</span>
+                    {sectionNavDirtyCount(item) > 0 ? (
                       <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
-                        {sectionDirtyCountMap[section]}
+                        {sectionNavDirtyCount(item)}
                       </span>
                     ) : null}
                   </div>
@@ -872,30 +1119,33 @@ export default function AdminPage() {
                     </div>
                     <nav className="h-[calc(100%-64px)] overflow-y-auto pr-1">
                       <ul className="space-y-2">
-                        {sections.map((section) => (
-                          <li key={section}>
+                        {sectionNavItems.map((item) => (
+                          <li key={item.id}>
                             <button
                               type="button"
                               onClick={() => {
-                                setActiveSection(section);
+                                setActiveSection(item.section);
+                                if (item.aboutMediaMode) {
+                                  setActiveAboutMediaMode(item.aboutMediaMode);
+                                }
                                 setMobileLanguage('pt');
                                 setIsSectionsDrawerOpen(false);
                               }}
                               className={`w-full rounded-lg p-3 text-left text-sm font-medium transition ${
-                                activeSection === section
+                                activeSection === item.section && (!item.aboutMediaMode || activeAboutMediaMode === item.aboutMediaMode)
                                   ? 'bg-blue-600 text-white shadow-sm'
                                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                               }`}
                             >
                               <div className="flex items-center justify-between gap-2">
-                                <span>{String(section).charAt(0).toUpperCase() + String(section).slice(1).replace(/_/g, ' ')}</span>
-                                {(sectionDirtyCountMap[section] ?? 0) > 0 ? (
+                                <span>{item.label}</span>
+                                {sectionNavDirtyCount(item) > 0 ? (
                                   <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                                    activeSection === section
+                                    activeSection === item.section && (!item.aboutMediaMode || activeAboutMediaMode === item.aboutMediaMode)
                                       ? 'bg-white/20 text-white'
                                       : 'bg-amber-100 text-amber-700'
                                   }`}>
-                                    {sectionDirtyCountMap[section]}
+                                    {sectionNavDirtyCount(item)}
                                   </span>
                                 ) : null}
                               </div>
@@ -910,7 +1160,7 @@ export default function AdminPage() {
 
               <h2 className="text-lg font-bold text-gray-800 lg:text-2xl">
                 <span className="hidden lg:inline">Editando: </span>
-                <span className="text-blue-600">{String(activeSection).charAt(0).toUpperCase() + String(activeSection).slice(1).replace(/_/g, ' ')}</span>
+                <span className="text-blue-600">{activeSectionTitle}</span>
               </h2>
             </div>
 
@@ -951,26 +1201,28 @@ export default function AdminPage() {
         </header>
 
         <div className="flex-1 overflow-y-auto p-4 pb-28 lg:p-8 lg:pb-8">
-          <Tabs.Root
-            className="mb-4 lg:hidden"
-            value={mobileLanguage}
-            onValueChange={(value) => setMobileLanguage(value as CmsLanguage)}
-          >
-            <Tabs.List className="grid w-full grid-cols-2 rounded-lg bg-gray-200 p-1">
-              <Tabs.Trigger
-                value="pt"
-                className="rounded-md px-3 py-2 text-sm font-semibold text-gray-600 transition data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
-              >
-                Portugues
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="en"
-                className="rounded-md px-3 py-2 text-sm font-semibold text-gray-600 transition data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
-              >
-                Ingles
-              </Tabs.Trigger>
-            </Tabs.List>
-          </Tabs.Root>
+          {activeSection === 'aboutMedia' ? null : (
+            <Tabs.Root
+              className="mb-4 lg:hidden"
+              value={mobileLanguage}
+              onValueChange={(value) => setMobileLanguage(value as CmsLanguage)}
+            >
+              <Tabs.List className="grid w-full grid-cols-2 rounded-lg bg-gray-200 p-1">
+                <Tabs.Trigger
+                  value="pt"
+                  className="rounded-md px-3 py-2 text-sm font-semibold text-gray-600 transition data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                >
+                  Portugues
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="en"
+                  className="rounded-md px-3 py-2 text-sm font-semibold text-gray-600 transition data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                >
+                  Ingles
+                </Tabs.Trigger>
+              </Tabs.List>
+            </Tabs.Root>
+          )}
 
           {renderSectionEditor()}
         </div>

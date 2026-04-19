@@ -46,8 +46,8 @@ const fallbackPT: CmsLandingData = {
   aboutMedia: {
     tickerImages: aboutTickerImages,
     youtubeVideos: [
-      { id: 'rwniUxBd5OI', title: 'Exemplo de vídeo 1' },
-      { id: 'F5g_i93m-lU', title: 'Exemplo de vídeo 2' },
+      { id: 'rwniUxBd5OI', titles: { pt: 'Exemplo de vídeo 1', en: 'Sample video 1' } },
+      { id: 'F5g_i93m-lU', titles: { pt: 'Exemplo de vídeo 2', en: 'Sample video 2' } },
     ],
   },
   gallery: mockDataPT.gallery,
@@ -89,8 +89,8 @@ const fallbackEN: CmsLandingData = {
   aboutMedia: {
     tickerImages: aboutTickerImages,
     youtubeVideos: [
-      { id: 'rwniUxBd5OI', title: 'Sample video 1' },
-      { id: 'F5g_i93m-lU', title: 'Sample video 2' },
+      { id: 'rwniUxBd5OI', titles: { pt: 'Exemplo de vídeo 1', en: 'Sample video 1' } },
+      { id: 'F5g_i93m-lU', titles: { pt: 'Exemplo de vídeo 2', en: 'Sample video 2' } },
     ],
   },
   gallery: mockDataEN.gallery,
