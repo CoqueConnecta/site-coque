@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { CmsLandingByLanguage } from '../types';
-import type { CmsLandingData, CmsLanguage } from '../../types/cms';
+import type { CmsLandingData, CmsLanguage } from '../../../types/cms';
 import { deepEqual } from '../utils/cmsNormalize';
 import { getValueAtPath } from '../utils/editorPath';
 

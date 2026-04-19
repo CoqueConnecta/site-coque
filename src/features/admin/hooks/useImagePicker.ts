@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { localImageCategories, localImageLibrary } from '../../data/localImageLibrary';
+import { localImageCategories, localImageLibrary } from '../../../data/localImageLibrary';
+import type { CmsLanguage } from '../../../types/cms';
 import type { MediaAsset, PickerState } from '../types';
 
 export function useImagePicker() {
@@ -29,7 +30,7 @@ export function useImagePicker() {
   }, [mediaAssets, mediaSearch, selectedMediaCategory]);
 
   const openImagePicker = (
-    language: import('../../types/cms').CmsLanguage,
+    language: CmsLanguage,
     path: Array<string | number>,
     label: string,
   ) => {

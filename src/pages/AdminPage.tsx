@@ -1,5 +1,6 @@
 // src/pages/AdminPage.tsx
 import { useEffect, useMemo, useState } from 'react';
+import * as Tabs from '@radix-ui/react-tabs';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { ref, update } from 'firebase/database';
@@ -8,7 +9,7 @@ import { auth, database } from '../../firebase';
 import { cmsFallbackByLanguage } from '../data/cmsFallback';
 import { ImageField } from '../features/admin/components/ImageField';
 import { ImageLibraryModal } from '../features/admin/components/ImageLibraryModal';
-import { AdminSectionNav } from '../features/admin/components/AdminSectionNav';
+import { AdminHeader } from '../features/admin/components/AdminNavShell';
 import { AdminDiscardModal } from '../features/admin/components/AdminDiscardModal';
 import { GalleryEditor } from '../features/admin/components/sections/GalleryEditor';
 import { DynamicSectionEditor } from '../features/admin/components/sections/DynamicSectionEditor';
@@ -33,8 +34,8 @@ import {
   setValueAtPath,
 } from '../features/admin/utils/editorPath';
 import type { CmsAboutMediaData, CmsLandingData, CmsLanguage } from '../types/cms';
-import type { MediaAsset } from '../features/admin/types';
-import type { SectionNavItem } from '../features/admin/components/AdminSectionNav';
+import type { CmsLandingByLanguage, MediaAsset } from '../features/admin/types';
+import type { SectionNavItem } from '../features/admin/components/AdminNavShell';
 
 export default function AdminPage() {
   const navigate = useNavigate();
@@ -252,7 +253,7 @@ export default function AdminPage() {
       const savePromise = update(ref(database), { [`cms/v2/landing/global/${sectionKey}`]: currentGlobalSection }).then(() => {
         if (sectionKey === 'aboutMedia') {
           const nextAboutMedia = currentGlobalSection as CmsAboutMediaData;
-          const applyAM = (prev: typeof cmsData) => {
+          const applyAM = (prev: CmsLandingByLanguage | null): CmsLandingByLanguage | null => {
             if (!prev) return prev;
             return { ...prev, pt: { ...prev.pt, aboutMedia: nextAboutMedia }, en: { ...prev.en, aboutMedia: nextAboutMedia } };
           };
@@ -397,30 +398,50 @@ export default function AdminPage() {
 
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
-      <AdminSectionNav
-        sectionNavItems={sectionNavItems}
-        activeSection={activeSection}
-        activeAboutMediaMode={activeAboutMediaMode}
-        sectionNavDirtyCount={sectionNavDirtyCount}
-        activeSectionTitle={activeSectionTitle}
-        activeSectionDirtyCount={activeSectionDirtyCount}
-        mobileLanguage={mobileLanguage}
-        showMobileLanguageTabs={activeSection !== 'aboutMedia'}
-        isDrawerOpen={isSectionsDrawerOpen}
-        onDrawerOpenChange={setIsSectionsDrawerOpen}
-        onSelectSection={(section, aboutMediaMode) => {
-          setActiveSection(section);
-          if (aboutMediaMode) setActiveAboutMediaMode(aboutMediaMode);
-          setMobileLanguage('pt');
-        }}
-        onMobileLanguageChange={setMobileLanguage}
-        onSave={handleSave}
-        onDiscard={requestDiscardActiveSectionChanges}
-        onLogout={handleLogout}
-      />
-
       <main className="flex-1 flex flex-col overflow-hidden">
+        <AdminHeader
+          sectionNavItems={sectionNavItems}
+          activeSection={activeSection}
+          activeAboutMediaMode={activeAboutMediaMode}
+          sectionNavDirtyCount={sectionNavDirtyCount}
+          onSelectSection={(section, aboutMediaMode) => {
+            setActiveSection(section);
+            if (aboutMediaMode) setActiveAboutMediaMode(aboutMediaMode);
+            setMobileLanguage('pt');
+          }}
+          activeSectionTitle={activeSectionTitle}
+          activeSectionDirtyCount={activeSectionDirtyCount}
+          isDrawerOpen={isSectionsDrawerOpen}
+          onDrawerOpenChange={setIsSectionsDrawerOpen}
+          onSave={handleSave}
+          onDiscard={requestDiscardActiveSectionChanges}
+          onLogout={handleLogout}
+        />
+
         <div className="flex-1 overflow-y-auto p-4 pb-28 lg:p-8 lg:pb-8">
+          {activeSection !== 'aboutMedia' ? (
+            <Tabs.Root
+              className="mb-4 lg:hidden"
+              value={mobileLanguage}
+              onValueChange={(value) => setMobileLanguage(value as CmsLanguage)}
+            >
+              <Tabs.List className="grid w-full grid-cols-2 rounded-lg bg-gray-200 p-1">
+                <Tabs.Trigger
+                  value="pt"
+                  className="rounded-md px-3 py-2 text-sm font-semibold text-gray-600 transition data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                >
+                  Portugues
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="en"
+                  className="rounded-md px-3 py-2 text-sm font-semibold text-gray-600 transition data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                >
+                  Ingles
+                </Tabs.Trigger>
+              </Tabs.List>
+            </Tabs.Root>
+          ) : null}
+
           {renderSectionEditor()}
         </div>
       </main>

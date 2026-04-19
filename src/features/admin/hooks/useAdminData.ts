@@ -1,11 +1,11 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { ref, get } from 'firebase/database';
 import toast from 'react-hot-toast';
-import { database } from '../../../firebase';
-import { cmsFallbackByLanguage } from '../../data/cmsFallback';
+import { database } from '../../../../firebase';
+import { cmsFallbackByLanguage } from '../../../data/cmsFallback';
 import { mergeWithFallback } from '../utils/editorPath';
 import { normalizeAboutMedia } from '../utils/cmsNormalize';
-import type { CmsLandingData, CmsLanguage } from '../../types/cms';
+import type { CmsLandingData, CmsLanguage } from '../../../types/cms';
 import type { CmsLandingByLanguage } from '../types';
 
 type UseAdminDataReturn = {
