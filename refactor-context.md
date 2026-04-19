@@ -244,3 +244,8 @@ Entregas:
 - Front público foi adaptado para priorizar `global/aboutMedia` no loader, mantendo fallback por idioma quando o nó global não existir.
 - Admin foi adaptado para tratar `aboutMedia` como seção global: edições sincronizam PT/EN no estado e o save da seção escreve no caminho global.
 - Build validado após a migração compatível de `aboutMedia` para global (`npm run build` ✅).
+- `StatsEditor` e `FooterEditor` criados e conectados no `AdminPage`, substituindo o uso do `DynamicSectionEditor` nessas seções para uma UX dedicada.
+- Fluxo de migração RTDB adicionado no próprio `/admin` via botão `Migrar campos globais`, aproveitando autenticação da sessão admin para evitar `permission_denied` de scripts externos.
+- Tentativa de migração via script Node local retornou `PERMISSION_DENIED` no RTDB; estratégia alterada para migração autenticada no painel.
+- Build validado após inclusão dos novos editores e da ação de migração autenticada (`npm run build` ✅).
+- Migração executada com sucesso pelo painel admin e botão temporário de migração removido em seguida para manter a interface limpa.

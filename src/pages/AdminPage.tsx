@@ -16,6 +16,8 @@ import { GalleryEditor } from '../features/admin/components/sections/GalleryEdit
 import { DynamicSectionEditor } from '../features/admin/components/sections/DynamicSectionEditor';
 import { HeroEditor } from '../features/admin/components/sections/HeroEditor';
 import { NavEditor } from '../features/admin/components/sections/NavEditor';
+import { StatsEditor } from '../features/admin/components/sections/StatsEditor';
+import { FooterEditor } from '../features/admin/components/sections/FooterEditor';
 import type { CmsLandingByLanguage, MediaAsset, PickerState } from '../features/admin/types';
 import {
   buildEmptyFromTemplate,
@@ -750,6 +752,34 @@ export default function AdminPage() {
             onRemoveArrayItem={handleRemoveArrayItem}
             onToggleGalleryBlockquote={handleToggleGalleryBlockquote}
             renderImageField={renderImageField}
+          />
+        </div>
+      );
+    }
+
+    if (activeSection === 'stats') {
+      return (
+        <div className={mobilePanelMaskClass}>
+          <StatsEditor
+            cmsData={cmsData}
+            isFieldDirty={isFieldDirty}
+            onSectionFieldChange={handleSectionFieldChange}
+            onAddArrayItem={handleAddArrayItem}
+            onRemoveArrayItem={handleRemoveArrayItem}
+          />
+        </div>
+      );
+    }
+
+    if (activeSection === 'footer') {
+      return (
+        <div className={mobilePanelMaskClass}>
+          <FooterEditor
+            cmsData={cmsData}
+            isFieldDirty={isFieldDirty}
+            onSectionFieldChange={handleSectionFieldChange}
+            onAddArrayItem={handleAddArrayItem}
+            onRemoveArrayItem={handleRemoveArrayItem}
           />
         </div>
       );
