@@ -20,10 +20,26 @@ export interface PublicLayoutContextValue {
  * Converte CmsNavLink (global com labels PT/EN) para NavLink (específico de idioma com label único)
  */
 function convertNavLinksToLanguage(navLinks: CmsLandingData['nav']['links'], language: CmsLanguage) {
-  return navLinks.map((link) => ({
-    ...link,
-    label: (link.labels as Record<CmsLanguage, string>)[language] || (link.labels as Record<CmsLanguage, string>).pt,
-  }));
+  if (!Array.isArray(navLinks)) {
+    return [];
+  }
+
+  return navLinks.map((link) => {
+    const labels = (link as { labels?: Partial<Record<CmsLanguage, string>> }).labels;
+    const legacyLabel = (link as { label?: string }).label;
+
+    return {
+      ...link,
+      label: labels?.[language] || labels?.pt || legacyLabel || '',
+    };
+  });
+}
+
+function getCtaLabel(cta: CmsLandingData['nav']['cta'], language: CmsLanguage) {
+  const labels = (cta as { labels?: Partial<Record<CmsLanguage, string>> }).labels;
+  const legacyLabel = (cta as { label?: string }).label;
+
+  return labels?.[language] || labels?.pt || legacyLabel || 'Faça Parte';
 }
 
 export default function PublicLayout() {
@@ -98,7 +114,7 @@ export default function PublicLayout() {
       <HeaderBar
         navLinks={navLinks}
         activeLink={activeLink}
-        ctaText={(content.nav.cta.labels as Record<CmsLanguage, string>)[language] || (content.nav.cta.labels as Record<CmsLanguage, string>).pt}
+        ctaText={getCtaLabel(content.nav.cta, language)}
         ctaHref={content.nav.cta.href}
         onNavClick={handleNavClick}
         onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
