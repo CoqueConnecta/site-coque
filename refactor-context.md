@@ -135,6 +135,8 @@ Entregas:
 - Decisão confirmada: manter a lib pesada apenas para a animação do Hero, mas fora do bundle inicial; reescrita manual do shader não é prioridade neste momento.
 - `vite.config.ts` recebeu `manualChunks` conservador para separar `vendor-hero-shader` (shader/three stack) sem mover Firebase do caminho principal de renderização.
 - Build após `manualChunks`: `index-*.js` ~825 KB (gzip ~227 KB) e `vendor-hero-shader-*.js` ~1.13 MB (gzip ~286 KB), mantendo a estratégia de não degradar fetch inicial do conteúdo no Firebase.
+- `App.tsx` atualizado com lazy loading de rotas não críticas: `LoginPage`, `AdminPage`, `ProtectedRoute`, `PrivacyPage`, `TransparencyPage` e `NotFoundPage`; Home e `PublicLayout` seguem eager para preservar primeira renderização pública.
+- Build após split de rotas: chunk principal caiu para ~758 KB (gzip ~211 KB), com chunks dedicados para login/admin/privacidade/transparência e sem alterar a estratégia do Firebase no caminho crítico.
 
 - Ordem da landing ajustada para refletir o prototipo: About vem imediatamente apos o Hero.
 - Topo da AboutSection simplificado para bloco branco com o texto "Tudo comecou com uma ideia...".

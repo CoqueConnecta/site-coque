@@ -1,16 +1,18 @@
+import { lazy } from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import PublicLayout from "./pages/PublicLayout";
-import Site from "./pages/Site";
-import LoginPage from "./pages/LoginPage";
-import AdminPage from "./pages/AdminPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import PrivacyPage from "./pages/PrivacyPage";
-import TransparencyPage from "./pages/TransparencyPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import PublicLayout from './pages/PublicLayout';
+import Site from './pages/Site';
+
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const TransparencyPage = lazy(() => import('./pages/TransparencyPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const router = createBrowserRouter([
   {
