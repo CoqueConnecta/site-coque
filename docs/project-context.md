@@ -202,6 +202,7 @@ refactor-context.md
 Documentos ativos:
 
 - `docs/project-context.md` -> estado técnico atual e fonte principal
+- `docs/backlog.md` -> backlog de features futuras e decisões adiadas
 - `refactor-context.md` -> log operacional curto
 - `README.md` -> onboarding rápido e comandos
 
@@ -220,3 +221,4 @@ Regra prática de atualização:
 - A base atual já opera com CMS v2 e idioma persistido no front público.
 - Novas decisões devem evitar reintroduzir dependência de contexto histórico espalhado em múltiplos markdowns.
 - Scripts de migração via terminal foram removidos da superfície ativa do projeto; o fluxo preferencial para migrações continua sendo a UI autenticada do admin.
+- Backlog detalhado em `docs/backlog.md`.

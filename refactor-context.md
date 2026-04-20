@@ -38,6 +38,8 @@ Documentos historicos:
 - Admin Home: secao "Midia" foi desmembrada em duas secoes independentes no painel (`Carrossel` e `YouTube Videos`), removendo as abas internas.
 - Tipo agregado `CmsAboutMediaData` removido para reduzir ambiguidade; o shape de `aboutMedia` agora usa diretamente `CmsTickerImage[]` e `CmsYoutubeVideo[]`.
 - Admin ganhou componente reutilizavel de sessao do usuario (`AdminUserMenu`) com avatar arredondado (fallback por iniciais), nome, e-mail e menu de acoes; integrado na sidebar desktop e no drawer mobile.
+- Feature futura documentada: biblioteca de imagens no admin sem uso de Storage (plano Spark), com foco nas opcoes 1 e 2 baseadas em issue no GitHub e anexo manual da imagem.
+- Backlog movido para arquivo dedicado (`docs/backlog.md`) e template padrao de issue criado em `.github/ISSUE_TEMPLATE/image-library-request.md`.
 
 ## Pendencias imediatas
 
