@@ -133,6 +133,8 @@ Entregas:
 - Hero shader movido para lazy load em `HeroSection.tsx`, com fallback visual estático laranja no first paint e carregamento do canvas em idle time.
 - Resultado medido no build após o split do Hero: chunk principal caiu para ~834 KB gzip 230 KB, enquanto o shader ficou isolado em `HeroCanvas-*.js` com ~1.12 MB gzip 283 KB.
 - Decisão confirmada: manter a lib pesada apenas para a animação do Hero, mas fora do bundle inicial; reescrita manual do shader não é prioridade neste momento.
+- `vite.config.ts` recebeu `manualChunks` conservador para separar `vendor-hero-shader` (shader/three stack) sem mover Firebase do caminho principal de renderização.
+- Build após `manualChunks`: `index-*.js` ~825 KB (gzip ~227 KB) e `vendor-hero-shader-*.js` ~1.13 MB (gzip ~286 KB), mantendo a estratégia de não degradar fetch inicial do conteúdo no Firebase.
 
 - Ordem da landing ajustada para refletir o prototipo: About vem imediatamente apos o Hero.
 - Topo da AboutSection simplificado para bloco branco com o texto "Tudo comecou com uma ideia...".
