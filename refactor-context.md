@@ -128,6 +128,8 @@ Entregas:
 - Blueprint técnico/visual do admin documentado em `docs/admin-refactor-blueprint.md`.
 - Limpeza concluída do legado imediato do admin: `src/features/admin/components/AdminNavShell.tsx` removido por não ter mais referências.
 - Validação concluída: `npm run build` ok após a nova arquitetura do admin.
+- Refinamento visual dos editores internos do admin concluído: criado kit compartilhado com `AdminEditorCard.tsx` e `adminEditorStyles.ts` para padronizar cards, grupos internos, campos, botões de ação e hierarquia visual.
+- Hero, Nav, Gallery, Stats, Footer, AboutMedia, DynamicSectionEditor e ImageField agora seguem o mesmo padrão visual do shell novo, aproximando melhor o interior das seções ao estilo do Music-Ed.
 
 - Ordem da landing ajustada para refletir o prototipo: About vem imediatamente apos o Hero.
 - Topo da AboutSection simplificado para bloco branco com o texto "Tudo comecou com uma ideia...".

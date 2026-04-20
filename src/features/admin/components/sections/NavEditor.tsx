@@ -1,5 +1,17 @@
 import type { CmsLanguage } from '../../../../types/cms';
 import type { CmsLandingByLanguage } from '../../types';
+import { AdminEditorCard } from '../AdminEditorCard';
+import {
+  adminDangerButtonClass,
+  adminFieldLabelClass,
+  adminMetaLabelClass,
+  adminPanelGridClass,
+  adminPrimaryGhostButtonClass,
+  adminSectionGroupClass,
+  adminSectionItemClass,
+  adminSectionTitleClass,
+  getAdminInputClass,
+} from '../adminEditorStyles';
 
 type NavEditorProps = {
   cmsData: CmsLandingByLanguage;
@@ -36,13 +48,13 @@ function NavLanguagePanel({
 
   return (
     <div className="space-y-5">
-      <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
+      <div className={adminSectionGroupClass}>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm font-semibold text-gray-700">Links do menu</p>
+          <p className={adminSectionTitleClass}>Links do menu</p>
           <button
             type="button"
             onClick={() => onAddArrayItem(language, ['links'])}
-            className="rounded-md bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-200"
+            className={adminPrimaryGhostButtonClass}
           >
             + Adicionar link
           </button>
@@ -50,59 +62,47 @@ function NavLanguagePanel({
 
         <div className="space-y-3">
           {navData.links.map((link, index) => (
-            <div key={`${language}-nav-link-${index}`} className="space-y-3 rounded-md border border-gray-200 bg-white p-3 sm:p-4">
+            <div key={`${language}-nav-link-${index}`} className={adminSectionItemClass}>
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Link {index + 1}</p>
+                <p className={adminMetaLabelClass}>Link {index + 1}</p>
                 <button
                   type="button"
                   onClick={() => onRemoveArrayItem(language, ['links'], index)}
-                  className="rounded-md bg-red-100 px-2 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-200"
+                  className={adminDangerButtonClass}
                 >
                   Remover
                 </button>
               </div>
 
               <label className="block">
-                <span className="block text-sm font-medium text-gray-700 mb-2">Identificador interno</span>
+                <span className={adminFieldLabelClass}>Identificador interno</span>
                 <input
                   type="text"
                   value={link.id}
                   onChange={(e) => onSectionFieldChange(language, ['links', index, 'id'], e.target.value)}
-                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
-                    isFieldDirty(language, ['links', index, 'id'])
-                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-                  }`}
+                  className={getAdminInputClass(isFieldDirty(language, ['links', index, 'id']))}
                   placeholder="about"
                 />
               </label>
 
               <label className="block">
-                <span className="block text-sm font-medium text-gray-700 mb-2">Texto exibido</span>
+                <span className={adminFieldLabelClass}>Texto exibido</span>
                 <input
                   type="text"
                   value={(link as any).labels?.[language] || ''}
                   onChange={(e) => onSectionFieldChange(language, ['links', index, 'labels', language], e.target.value)}
-                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
-                    isFieldDirty(language, ['links', index, 'labels', language])
-                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-                  }`}
+                  className={getAdminInputClass(isFieldDirty(language, ['links', index, 'labels', language]))}
                   placeholder="Quem Somos"
                 />
               </label>
 
               <label className="block">
-                <span className="block text-sm font-medium text-gray-700 mb-2">Link (href)</span>
+                <span className={adminFieldLabelClass}>Link (href)</span>
                 <input
                   type="text"
                   value={link.href}
                   onChange={(e) => onSectionFieldChange(language, ['links', index, 'href'], e.target.value)}
-                  className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
-                    isFieldDirty(language, ['links', index, 'href'])
-                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-                  }`}
+                  className={getAdminInputClass(isFieldDirty(language, ['links', index, 'href']))}
                   placeholder="/#about"
                 />
               </label>
@@ -111,35 +111,27 @@ function NavLanguagePanel({
         </div>
       </div>
 
-      <div className="space-y-3 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
-        <p className="text-sm font-semibold text-gray-700">Botão principal (CTA)</p>
+      <div className={adminSectionGroupClass}>
+        <p className={adminSectionTitleClass}>Botão principal (CTA)</p>
 
         <label className="block">
-          <span className="block text-sm font-medium text-gray-700 mb-2">Texto do botão</span>
+          <span className={adminFieldLabelClass}>Texto do botão</span>
           <input
             type="text"
             value={(navData.cta as any).labels?.[language] || ''}
             onChange={(e) => onSectionFieldChange(language, ['cta', 'labels', language], e.target.value)}
-            className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
-              isFieldDirty(language, ['cta', 'labels', language])
-                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-            }`}
+            className={getAdminInputClass(isFieldDirty(language, ['cta', 'labels', language]))}
             placeholder="DOE AGORA"
           />
         </label>
 
         <label className="block">
-          <span className="block text-sm font-medium text-gray-700 mb-2">Link do botão</span>
+          <span className={adminFieldLabelClass}>Link do botão</span>
           <input
             type="text"
             value={navData.cta.href}
             onChange={(e) => onSectionFieldChange(language, ['cta', 'href'], e.target.value)}
-            className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
-              isFieldDirty(language, ['cta', 'href'])
-                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-            }`}
+            className={getAdminInputClass(isFieldDirty(language, ['cta', 'href']))}
             placeholder="https://..."
           />
         </label>
@@ -156,10 +148,12 @@ export function NavEditor({
   onRemoveArrayItem,
 }: NavEditorProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
-      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-        <h3 className="mb-4 border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:mb-6 lg:text-xl">Português (PT)</h3>
-        <p className="mb-3 text-sm text-gray-500">Editor premium de navegação com campos guiados.</p>
+    <div className={adminPanelGridClass}>
+      <AdminEditorCard
+        title="Português (PT)"
+        description="Editor de navegação com campos guiados."
+        badgeText="Idioma"
+      >
         <NavLanguagePanel
           language="pt"
           cmsData={cmsData}
@@ -168,11 +162,13 @@ export function NavEditor({
           onAddArrayItem={onAddArrayItem}
           onRemoveArrayItem={onRemoveArrayItem}
         />
-      </div>
+      </AdminEditorCard>
 
-      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-        <h3 className="mb-4 border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:mb-6 lg:text-xl">Inglês (EN)</h3>
-        <p className="mb-3 text-sm text-gray-500">Premium navigation editor with guided fields.</p>
+      <AdminEditorCard
+        title="Inglês (EN)"
+        description="Navigation editor with guided fields."
+        badgeText="Idioma"
+      >
         <NavLanguagePanel
           language="en"
           cmsData={cmsData}
@@ -181,7 +177,7 @@ export function NavEditor({
           onAddArrayItem={onAddArrayItem}
           onRemoveArrayItem={onRemoveArrayItem}
         />
-      </div>
+      </AdminEditorCard>
     </div>
   );
 }

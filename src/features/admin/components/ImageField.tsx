@@ -7,6 +7,12 @@ type ImageFieldProps = {
   onOpenLibrary: () => void;
 };
 
+import {
+  adminFieldLabelClass,
+  adminPrimaryGhostButtonClass,
+  getAdminInputClass,
+} from './adminEditorStyles';
+
 export function ImageField({
   label,
   value,
@@ -19,25 +25,21 @@ export function ImageField({
   const canPreview = previewSource.startsWith('http') || previewSource.startsWith('/');
 
   return (
-    <div className={`space-y-3 rounded-lg border bg-gray-50 p-3 ${isDirty ? 'border-amber-400' : 'border-gray-200'}`}>
+    <div className={`space-y-3 rounded-2xl border bg-gray-50/80 p-4 ${isDirty ? 'border-amber-300' : 'border-gray-100'}`}>
       <label className="block">
-        <span className="block text-sm font-medium text-gray-700 mb-2">{label}</span>
+        <span className={adminFieldLabelClass}>{label}</span>
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
-              isDirty
-                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-            }`}
+            className={getAdminInputClass(isDirty)}
             placeholder={placeholder}
           />
           <button
             type="button"
             onClick={onOpenLibrary}
-            className="h-11 whitespace-nowrap rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 sm:h-auto"
+            className={`h-11 whitespace-nowrap sm:h-auto ${adminPrimaryGhostButtonClass}`}
           >
             Biblioteca local
           </button>
@@ -45,7 +47,7 @@ export function ImageField({
       </label>
 
       {canPreview ? (
-        <div className="rounded-lg border border-gray-200 bg-white p-2">
+        <div className="rounded-xl border border-gray-200 bg-white p-2 shadow-sm shadow-gray-100/70">
           <img src={previewSource} alt="Prévia da imagem" className="max-h-40 w-full rounded object-cover" />
         </div>
       ) : null}

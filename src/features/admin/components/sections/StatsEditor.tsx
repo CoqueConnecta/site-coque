@@ -1,5 +1,17 @@
 import type { CmsLanguage } from '../../../../types/cms';
 import type { CmsLandingByLanguage } from '../../types';
+import { AdminEditorCard } from '../AdminEditorCard';
+import {
+  adminDangerButtonClass,
+  adminFieldLabelClass,
+  adminMetaLabelClass,
+  adminPanelGridClass,
+  adminPrimaryGhostButtonClass,
+  adminSectionGroupClass,
+  adminSectionItemClass,
+  adminSectionTitleClass,
+  getAdminInputClass,
+} from '../adminEditorStyles';
 
 type StatsEditorProps = {
   cmsData: CmsLandingByLanguage;
@@ -35,13 +47,13 @@ function StatsLanguagePanel({
   const statsData = cmsData[language].stats;
 
   return (
-    <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
+    <div className={adminSectionGroupClass}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-semibold text-gray-700">Itens de impacto</p>
+        <p className={adminSectionTitleClass}>Itens de impacto</p>
         <button
           type="button"
           onClick={() => onAddArrayItem(language, ['items'])}
-          className="rounded-md bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-200"
+          className={adminPrimaryGhostButtonClass}
         >
           + Adicionar item
         </button>
@@ -49,44 +61,36 @@ function StatsLanguagePanel({
 
       <div className="space-y-3">
         {statsData.items.map((item, index) => (
-          <div key={`${language}-stats-item-${index}`} className="space-y-3 rounded-md border border-gray-200 bg-white p-3 sm:p-4">
+          <div key={`${language}-stats-item-${index}`} className={adminSectionItemClass}>
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Item {index + 1}</p>
+              <p className={adminMetaLabelClass}>Item {index + 1}</p>
               <button
                 type="button"
                 onClick={() => onRemoveArrayItem(language, ['items'], index)}
-                className="rounded-md bg-red-100 px-2 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-200"
+                className={adminDangerButtonClass}
               >
                 Remover
               </button>
             </div>
 
             <label className="block">
-              <span className="block text-sm font-medium text-gray-700 mb-2">Valor</span>
+              <span className={adminFieldLabelClass}>Valor</span>
               <input
                 type="text"
                 value={item.value}
                 onChange={(e) => onSectionFieldChange(language, ['items', index, 'value'], e.target.value)}
-                className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
-                  isFieldDirty(language, ['items', index, 'value'])
-                    ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                    : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-                }`}
+                className={getAdminInputClass(isFieldDirty(language, ['items', index, 'value']))}
                 placeholder="+2.000"
               />
             </label>
 
             <label className="block">
-              <span className="block text-sm font-medium text-gray-700 mb-2">Rótulo</span>
+              <span className={adminFieldLabelClass}>Rótulo</span>
               <input
                 type="text"
                 value={item.label}
                 onChange={(e) => onSectionFieldChange(language, ['items', index, 'label'], e.target.value)}
-                className={`h-11 w-full rounded-lg border bg-white px-3 text-sm text-gray-800 outline-none focus:ring-2 ${
-                  isFieldDirty(language, ['items', index, 'label'])
-                    ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                    : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-                }`}
+                className={getAdminInputClass(isFieldDirty(language, ['items', index, 'label']))}
                 placeholder="Jovens impactados"
               />
             </label>
@@ -105,10 +109,12 @@ export function StatsEditor({
   onRemoveArrayItem,
 }: StatsEditorProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
-      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-        <h3 className="mb-4 border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:mb-6 lg:text-xl">Português (PT)</h3>
-        <p className="mb-3 text-sm text-gray-500">Edite os indicadores e seus rótulos.</p>
+    <div className={adminPanelGridClass}>
+      <AdminEditorCard
+        title="Português (PT)"
+        description="Edite os indicadores e seus rótulos."
+        badgeText="Idioma"
+      >
         <StatsLanguagePanel
           language="pt"
           cmsData={cmsData}
@@ -117,11 +123,13 @@ export function StatsEditor({
           onAddArrayItem={onAddArrayItem}
           onRemoveArrayItem={onRemoveArrayItem}
         />
-      </div>
+      </AdminEditorCard>
 
-      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-        <h3 className="mb-4 border-b border-gray-200 pb-3 text-lg font-bold text-gray-800 sm:pb-4 lg:mb-6 lg:text-xl">Inglês (EN)</h3>
-        <p className="mb-3 text-sm text-gray-500">Edit impact indicators and labels.</p>
+      <AdminEditorCard
+        title="Inglês (EN)"
+        description="Edit impact indicators and labels."
+        badgeText="Idioma"
+      >
         <StatsLanguagePanel
           language="en"
           cmsData={cmsData}
@@ -130,7 +138,7 @@ export function StatsEditor({
           onAddArrayItem={onAddArrayItem}
           onRemoveArrayItem={onRemoveArrayItem}
         />
-      </div>
+      </AdminEditorCard>
     </div>
   );
 }
