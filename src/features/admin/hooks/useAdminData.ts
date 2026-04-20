@@ -5,7 +5,7 @@ import { database } from '../../../../firebase';
 import { cmsFallbackByLanguage } from '../../../data/cmsFallback';
 import { mergeWithFallback } from '../utils/editorPath';
 import { normalizeAboutMedia } from '../utils/cmsNormalize';
-import type { CmsLandingData, CmsLanguage } from '../../../types/cms';
+import type { CmsLanguage } from '../../../types/cms';
 import type { CmsLandingByLanguage } from '../types';
 
 type UseAdminDataReturn = {
@@ -13,8 +13,6 @@ type UseAdminDataReturn = {
   setCmsData: Dispatch<SetStateAction<CmsLandingByLanguage | null>>;
   originalCmsData: CmsLandingByLanguage | null;
   setOriginalCmsData: Dispatch<SetStateAction<CmsLandingByLanguage | null>>;
-  activeSection: keyof CmsLandingData | '';
-  setActiveSection: Dispatch<SetStateAction<keyof CmsLandingData | ''>>;
   mobileLanguage: CmsLanguage;
   setMobileLanguage: Dispatch<SetStateAction<CmsLanguage>>;
 };
@@ -22,7 +20,6 @@ type UseAdminDataReturn = {
 export function useAdminData(): UseAdminDataReturn {
   const [cmsData, setCmsData] = useState<CmsLandingByLanguage | null>(null);
   const [originalCmsData, setOriginalCmsData] = useState<CmsLandingByLanguage | null>(null);
-  const [activeSection, setActiveSection] = useState<keyof CmsLandingData | ''>('');
   const [mobileLanguage, setMobileLanguage] = useState<CmsLanguage>('pt');
 
   useEffect(() => {
@@ -69,10 +66,6 @@ export function useAdminData(): UseAdminDataReturn {
         setCmsData(normalized);
         setOriginalCmsData(normalized);
 
-        const firstSection = Object.keys(normalized.pt)[0] as keyof CmsLandingData | undefined;
-        if (firstSection) {
-          setActiveSection(firstSection);
-        }
       } catch (error) {
         toast.error('Falha ao carregar os dados do painel.');
         console.error('Erro ao buscar dados do Firebase:', error);
@@ -87,8 +80,6 @@ export function useAdminData(): UseAdminDataReturn {
     setCmsData,
     originalCmsData,
     setOriginalCmsData,
-    activeSection,
-    setActiveSection,
     mobileLanguage,
     setMobileLanguage,
   };
