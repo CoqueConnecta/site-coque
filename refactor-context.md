@@ -40,10 +40,11 @@ Documentos historicos:
 - Admin ganhou componente reutilizavel de sessao do usuario (`AdminUserMenu`) com avatar arredondado (fallback por iniciais), nome, e-mail e menu de acoes; integrado na sidebar desktop e no drawer mobile.
 - Feature futura documentada: biblioteca de imagens no admin sem uso de Storage (plano Spark), com foco nas opcoes 1 e 2 baseadas em issue no GitHub e anexo manual da imagem.
 - Backlog movido para arquivo dedicado (`docs/backlog.md`) e template padrao de issue criado em `.github/ISSUE_TEMPLATE/image-library-request.md`.
+- Bootstrap legado de i18n desativado no `src/main.tsx` (removido `import './i18n'`), eliminando dependencia ativa de `locales` no RTDB.
+- Limpeza completa do legado de i18n: arquivo `src/i18n.ts` removido e `locales` considerado descontinuado no contexto tecnico.
 
 ## Pendencias imediatas
 
-- Manter o bloco legado de i18n sem mudancas por enquanto.
 - Quando houver nova mudanca estrutural, refletir primeiro em `docs/project-context.md`.
 
 ## Proximo passo objetivo

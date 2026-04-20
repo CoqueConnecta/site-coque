@@ -96,7 +96,7 @@ Fluxo atual:
 
 Decisões vigentes:
 
-- `locales/*` é legado e não deve voltar a ser a fonte principal;
+- `locales/*` foi descontinuado (removido do RTDB e sem consumo no front);
 - `aboutMedia` já opera com suporte a `global`;
 - Firebase permanece no caminho crítico da renderização pública.
 
@@ -217,7 +217,7 @@ Regra prática de atualização:
 
 ## Pendências e atenção atual
 
-- O bloco legado de i18n permanece no projeto, mas não é o foco atual.
+- O bootstrap legado de i18n foi desativado no `main.tsx`; a chave RTDB `locales` deixou de ser dependência ativa da aplicação.
 - A base atual já opera com CMS v2 e idioma persistido no front público.
 - Novas decisões devem evitar reintroduzir dependência de contexto histórico espalhado em múltiplos markdowns.
 - Scripts de migração via terminal foram removidos da superfície ativa do projeto; o fluxo preferencial para migrações continua sendo a UI autenticada do admin.
