@@ -1,26 +1,50 @@
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { cn } from '../../../lib/cn';
 import type { HeroData } from '../../../data/mockData';
 import { Block } from '../../ui/Block';
-import { HeroCanvas } from './HeroCanvas';
+
+const LazyHeroCanvas = lazy(async () => {
+  const module = await import('./HeroCanvas');
+  return { default: module.HeroCanvas };
+});
 
 export interface HeroSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: HeroData;
 }
 
 export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => {
+  const [shouldRenderCanvas, setShouldRenderCanvas] = useState(false);
+
+  useEffect(() => {
+    const loadCanvas = () => setShouldRenderCanvas(true);
+
+    if (typeof window.requestIdleCallback === 'function') {
+      const idleId = window.requestIdleCallback(loadCanvas, { timeout: 1200 });
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const timeoutId = globalThis.setTimeout(loadCanvas, 180);
+    return () => globalThis.clearTimeout(timeoutId);
+  }, []);
+
   return (
     <section
       id="hero"
       className={cn(
         // Framer: height:100vh; min-height:700px; overflow:hidden; padding-bottom:60px
-        'relative w-full overflow-hidden',
+        'relative w-full overflow-hidden bg-[#ff6a1a]',
         'flex flex-col justify-end',
         'min-h-[720px]',
         className
       )}
       {...props}
     >
-      <HeroCanvas />
+      <div className="absolute inset-0 z-0 pointer-events-none bg-[#ff6a1a]" aria-hidden="true" />
+      {shouldRenderCanvas ? (
+        <Suspense fallback={null}>
+          <LazyHeroCanvas />
+        </Suspense>
+      ) : null}
 
       {/* Conteúdo alinhado no canto inferior esquerdo (padding-bottom: 60px do Framer) */}
       <Block className="relative z-10 pb-16">
@@ -33,7 +57,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
                 className={cn(
                   'block',
                   i === 0
-                    ? 'font-[var(--font-body)] font-extrabold text-[40px] sm:text-[46px] lg:text-[51px]'
+                    ? '[font-family:var(--font-body)] font-extrabold text-[40px] sm:text-[46px] lg:text-[51px]'
                     : 'text-[48px] sm:text-[56px] lg:text-[64px]'
                 )}
                 style={i === 1 ? { fontFamily: 'var(--font-display)' } : undefined}

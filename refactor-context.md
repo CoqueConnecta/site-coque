@@ -130,6 +130,9 @@ Entregas:
 - Validação concluída: `npm run build` ok após a nova arquitetura do admin.
 - Refinamento visual dos editores internos do admin concluído: criado kit compartilhado com `AdminEditorCard.tsx` e `adminEditorStyles.ts` para padronizar cards, grupos internos, campos, botões de ação e hierarquia visual.
 - Hero, Nav, Gallery, Stats, Footer, AboutMedia, DynamicSectionEditor e ImageField agora seguem o mesmo padrão visual do shell novo, aproximando melhor o interior das seções ao estilo do Music-Ed.
+- Hero shader movido para lazy load em `HeroSection.tsx`, com fallback visual estático laranja no first paint e carregamento do canvas em idle time.
+- Resultado medido no build após o split do Hero: chunk principal caiu para ~834 KB gzip 230 KB, enquanto o shader ficou isolado em `HeroCanvas-*.js` com ~1.12 MB gzip 283 KB.
+- Decisão confirmada: manter a lib pesada apenas para a animação do Hero, mas fora do bundle inicial; reescrita manual do shader não é prioridade neste momento.
 
 - Ordem da landing ajustada para refletir o prototipo: About vem imediatamente apos o Hero.
 - Topo da AboutSection simplificado para bloco branco com o texto "Tudo comecou com uma ideia...".
