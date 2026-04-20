@@ -120,6 +120,15 @@ Entregas:
 
 ## Delta Recente
 
+- Admin CMS refatorado para navegação por rota pública real (Home, Privacy, Transparency) em vez de navegação primária por seção.
+- Nova shell visual do admin implementada com referência direta ao Music-Ed: sidebar fixa no desktop, overlay no mobile, header interno por página e cards expansíveis por seção.
+- Nova arquitetura adicionada em `src/features/admin/`: `config/adminRoutes.ts`, `hooks/useAdminRoute.tsx`, `components/AdminLayout.tsx`, `components/AdminPageHeader.tsx` e `components/SectionCard.tsx`.
+- `AdminPage.tsx` reescrito para operar com salvar/descartar por rota inteira, mantendo os editores de seção existentes dentro do novo shell.
+- `useAdminData.ts` simplificado: `activeSection` saiu desse hook e foi migrado para `useAdminRoute.tsx`.
+- Blueprint técnico/visual do admin documentado em `docs/admin-refactor-blueprint.md`.
+- Limpeza concluída do legado imediato do admin: `src/features/admin/components/AdminNavShell.tsx` removido por não ter mais referências.
+- Validação concluída: `npm run build` ok após a nova arquitetura do admin.
+
 - Ordem da landing ajustada para refletir o prototipo: About vem imediatamente apos o Hero.
 - Topo da AboutSection simplificado para bloco branco com o texto "Tudo comecou com uma ideia...".
 - Mantida a estrutura restante da About para iteracoes seguintes sem perder conteudo ja construido.

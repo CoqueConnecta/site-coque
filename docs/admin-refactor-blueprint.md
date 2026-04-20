@@ -4,6 +4,8 @@
 > Branch alvo: `novo-site-coque`  
 > Baseado em: respostas de alinhamento do usuário + análise do Music-Ed
 
+Status atual: implementado na base em 20/04/2026, com navegação por rota, shell novo e save/discard por página.
+
 ---
 
 ## 1. Decisões de Design
@@ -271,28 +273,28 @@ handleSaveRoute(activeRouteId):
 ## 8. Ordem de Implementação
 
 ### Fase 1 — Config e hook de rota
-- [ ] Criar `src/features/admin/config/adminRoutes.ts`
-- [ ] Criar `src/features/admin/hooks/useAdminRoute.ts`
+- [x] Criar `src/features/admin/config/adminRoutes.ts`
+- [x] Criar `src/features/admin/hooks/useAdminRoute.tsx`
 
 ### Fase 2 — Shell visual (AdminLayout)
-- [ ] Criar `src/features/admin/components/AdminLayout.tsx`
+- [x] Criar `src/features/admin/components/AdminLayout.tsx`
   - Sidebar desktop (Music-Ed style)
   - Mobile overlay
   - Mobile sticky header
 
 ### Fase 3 — Componentes de conteúdo
-- [ ] Criar `src/features/admin/components/AdminPageHeader.tsx`
-- [ ] Criar `src/features/admin/components/LanguageColumns.tsx` (PT|EN wrapper)
-- [ ] Criar `src/features/admin/components/SectionCard.tsx`
+- [x] Criar `src/features/admin/components/AdminPageHeader.tsx`
+- [x] Criar `src/features/admin/components/LanguageColumns.tsx` (PT|EN wrapper, ainda reservado para evoluções)
+- [x] Criar `src/features/admin/components/SectionCard.tsx`
 
 ### Fase 4 — Integração em AdminPage
-- [ ] Refatorar `src/pages/AdminPage.tsx` para usar AdminLayout + useAdminRoute
-- [ ] Adaptar `handleSave` → `handleSaveRoute`
-- [ ] Adaptar `handleDiscard` → `handleDiscardRoute`
+- [x] Refatorar `src/pages/AdminPage.tsx` para usar AdminLayout + useAdminRoute
+- [x] Adaptar `handleSave` → `handleSaveRoute`
+- [x] Adaptar `handleDiscard` → `handleDiscardRoute`
 
 ### Fase 5 — Limpeza
-- [ ] Deletar `AdminNavShell.tsx`
-- [ ] Remover `activeSection`/`setActiveSection` de `useAdminData.ts` (migrado para useAdminRoute)
+- [x] Deletar `AdminNavShell.tsx`
+- [x] Remover `activeSection`/`setActiveSection` de `useAdminData.ts` (migrado para useAdminRoute)
 - [ ] Commit + push
 
 ---
