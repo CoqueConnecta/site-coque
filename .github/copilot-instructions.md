@@ -16,11 +16,11 @@ Objetivo: reduzir falhas por excesso de contexto e manter continuidade entre ses
 
 ## Regras de continuidade
 
-- Antes de editar, ler o estado atual em refactor-context.md e produzir um plano curto.
-- Depois de mudancas relevantes, atualizar refactor-context.md com:
-  - o que mudou
-  - o que falta
-  - proximo passo objetivo
+- Antes de editar, ler `docs/project-context.md` e `refactor-context.md` e produzir um plano curto.
+- `docs/project-context.md` e a fonte principal de verdade tecnica do projeto e deve refletir o estado atual da base.
+- Depois de mudancas relevantes:
+  - atualizar `docs/project-context.md` se a mudanca alterar arquitetura, fluxo, stack, rotas, convencoes ou comportamento estrutural
+  - atualizar `refactor-context.md` com o delta recente e o proximo passo objetivo
 - Em casos de risco de perda de contexto, registrar resumo tecnico em no maximo 20 linhas.
 
 ## Regras de execucao

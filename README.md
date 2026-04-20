@@ -1,35 +1,72 @@
 # Site Coque Connecta
 
-Este é o repositório da ONG Coque Connecta.
+Repositório do site institucional da ONG Coque Connecta.
 
-URL de produção: [https://coqueconnecta.ong.br/](https://coqueconnecta.ong.br/)
+## Links
 
-URL de staging: [https://site-coque-staging.onrender.com/](https://site-coque-staging.onrender.com/)
+- Produção: [https://coqueconnecta.ong.br/](https://coqueconnecta.ong.br/)
+- Staging: [https://site-coque-staging.onrender.com/](https://site-coque-staging.onrender.com/)
 
-## Tecnologias
+## Documentação principal
+
+- Contexto técnico atual: `docs/project-context.md`
+- Log operacional curto: `refactor-context.md`
+- Documentos históricos: `docs/archive/`
+
+Se você precisa entender o estado real do projeto antes de editar, comece por `docs/project-context.md`.
+
+## Stack atual
 
 - React 19
-- Node 22 LTS Version
-- Github Pages
-- Render.com [Logar com a conta do github da CoqueConnecta]
+- TypeScript 5
+- Vite 6
+- Tailwind CSS 4
+- React Router 7
+- Firebase Auth + Realtime Database
+- Storybook 10
 
-## Libs
+## Comandos principais
 
-- i18next -> Internacionalização do projeto
+- `npm run dev` -> desenvolvimento local
+- `npm run build` -> build de produção
+- `npm run lint` -> lint
+- `npm run preview` -> preview do build
+- `npm run deploy:staging -- <branch>` -> merge local em `staging` e push opcional para o Render
+- `npm run storybook` -> ambiente Storybook
+- `npm run build-storybook` -> build do Storybook
 
-## Como rodar o projeto localmente?
+## Execução local
 
-Com o node.js 22 instalado rode o comando: `npm run dev`
+Com Node.js 22 instalado:
 
-## Como deployar o projeto em staging?
+```bash
+npm install
+npm run dev
+```
 
-O projeto atualmente está conectado ao render.com através da branch `staging`.
-A qualquer commit na branch `staging`, a pipeline será acionada automaticamente e atualizará a url: [https://site-coque-staging.onrender.com/](https://site-coque-staging.onrender.com/).
+## Deploy
 
-## Como deployar o projeto em produção?
+### Staging
 
-- Commit e push do trabalho na branch `main`
-- Certifique-se que a branch esteja clean `git status`
-- rode o comando: `npm run deploy`.
+O projeto está conectado ao Render através da branch `staging`. Novos commits nessa branch disparam deploy automático.
 
-Este comando irá buildar o projeto com o código atual salvo na sua máquina, por isso tenha certeza de estar com a branch tree limpa.
+Fluxo recomendado:
+
+```bash
+npm run deploy:staging -- novo-site-coque
+```
+
+O script:
+
+- valida se a working tree está limpa;
+- atualiza `staging` com `origin/staging`;
+- faz merge da branch informada em `staging`;
+- pede confirmação antes do push.
+
+### Produção
+
+1. Garanta que a branch de trabalho esteja no estado correto.
+2. Confirme que não há alterações locais indevidas.
+3. Rode `npm run deploy`.
+
+O comando faz build local e publica o conteúdo de `dist`.
