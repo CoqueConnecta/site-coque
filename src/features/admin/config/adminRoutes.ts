@@ -6,7 +6,7 @@ export interface AdminSectionConfig {
   key: keyof CmsLandingData;
   label: string;
   isGlobal: boolean;
-  subSections?: Array<{ key: string; label: string }>;
+  aboutMediaMode?: 'carousel' | 'youtubeVideos';
 }
 
 export interface AdminRouteConfig {
@@ -27,15 +27,8 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
       { key: 'nav',         label: 'Navegação',     isGlobal: true  },
       { key: 'hero',        label: 'Hero',           isGlobal: false },
       { key: 'about',       label: 'Quem Somos',    isGlobal: false },
-      {
-        key: 'aboutMedia',
-        label: 'Mídia',
-        isGlobal: true,
-        subSections: [
-          { key: 'carousel',      label: 'Carrossel' },
-          { key: 'youtubeVideos', label: 'YouTube'   },
-        ],
-      },
+      { key: 'aboutMedia',  label: 'Carrossel',      isGlobal: true, aboutMediaMode: 'carousel' },
+      { key: 'aboutMedia',  label: 'YouTube Videos', isGlobal: true, aboutMediaMode: 'youtubeVideos' },
       { key: 'gallery',    label: 'Galeria',         isGlobal: false },
       { key: 'stats',      label: 'Estatísticas',    isGlobal: true  },
       { key: 'newsletter', label: 'Newsletter',      isGlobal: false },

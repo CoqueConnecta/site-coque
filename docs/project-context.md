@@ -130,6 +130,7 @@ Comportamento atual do admin:
 - PT/EN em abas no mobile;
 - salvar e descartar por rota inteira;
 - dirty tracking por campo, com persistência parcial no RTDB.
+- na Home, `Carrossel` e `YouTube Videos` são seções separadas no painel (sem aba interna "Mídia").
 
 Seções globais continuam tratadas como casos especiais onde aplicável.
 

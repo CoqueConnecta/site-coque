@@ -35,6 +35,9 @@ Documentos historicos:
 - Substituido por uma utility top bar de largura total (`bg-[#2e3350]`, `h-8`) que nao faz scroll com a pagina (elemento normal no topo do DOM, antes do HeaderBar).
 - Top bar exibe label descritivo + botoes PT / EN; texto do label alterna para o idioma oposto ao ativo (convida o usuario a trocar).
 - Menu mobile mantem o toggle de idioma dentro do overlay (sem alteracao).
+- Admin Home: secao "Midia" foi desmembrada em duas secoes independentes no painel (`Carrossel` e `YouTube Videos`), removendo as abas internas.
+- Tipo agregado `CmsAboutMediaData` removido para reduzir ambiguidade; o shape de `aboutMedia` agora usa diretamente `CmsTickerImage[]` e `CmsYoutubeVideo[]`.
+- Admin ganhou componente reutilizavel de sessao do usuario (`AdminUserMenu`) com avatar arredondado (fallback por iniciais), nome, e-mail e menu de acoes; integrado na sidebar desktop e no drawer mobile.
 
 ## Pendencias imediatas
 

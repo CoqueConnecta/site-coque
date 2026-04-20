@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, LogOut, Layers } from 'lucide-react';
+import { Menu, Layers } from 'lucide-react';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+import { auth } from '../../../../firebase';
 import { ADMIN_ROUTES } from '../config/adminRoutes';
 import type { AdminRouteId } from '../config/adminRoutes';
+import { AdminUserMenu } from './AdminUserMenu';
 
 type AdminLayoutProps = {
   activeRouteId: AdminRouteId;
@@ -16,9 +19,15 @@ function NavContent({
   activeRouteId,
   onSelectRoute,
   routeDirtyCount,
+  user,
+  isUserLoading,
   onLogout,
   onNavClick,
-}: Omit<AdminLayoutProps, 'children'> & { onNavClick?: () => void }) {
+}: Omit<AdminLayoutProps, 'children'> & {
+  user: User | null;
+  isUserLoading: boolean;
+  onNavClick?: () => void;
+}) {
   return (
     <div className="flex flex-col h-full">
       {/* Logo */}
@@ -79,14 +88,7 @@ function NavContent({
           <span className="text-base leading-none">🌐</span>
           Ver site público
         </Link>
-        <button
-          type="button"
-          onClick={onLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-red-50 text-gray-500 hover:text-red-700 text-sm font-medium transition-all"
-        >
-          <LogOut className="w-4 h-4" />
-          Sair
-        </button>
+        <AdminUserMenu user={user} isLoading={isUserLoading} onLogout={onLogout} />
       </div>
     </div>
   );
@@ -100,15 +102,41 @@ export function AdminLayout({
   onLogout,
 }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(auth.currentUser);
+  const [isUserLoading, setIsUserLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (nextUser) => {
+      if (!nextUser) {
+        setUser(null);
+        setIsUserLoading(false);
+        return;
+      }
+
+      try {
+        // Refresh cached profile data (displayName/photoURL) after OAuth updates.
+        await nextUser.reload();
+      } catch {
+        // Ignore reload errors and keep the current session info.
+      }
+
+      setUser(auth.currentUser ?? nextUser);
+      setIsUserLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen bg-gray-50/50 [&_button]:cursor-pointer [&_button:disabled]:cursor-not-allowed">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-white border-r border-gray-100 z-30">
         <NavContent
           activeRouteId={activeRouteId}
           onSelectRoute={onSelectRoute}
           routeDirtyCount={routeDirtyCount}
+          user={user}
+          isUserLoading={isUserLoading}
           onLogout={onLogout}
         />
       </aside>
@@ -125,6 +153,8 @@ export function AdminLayout({
               activeRouteId={activeRouteId}
               onSelectRoute={onSelectRoute}
               routeDirtyCount={routeDirtyCount}
+              user={user}
+              isUserLoading={isUserLoading}
               onLogout={onLogout}
               onNavClick={() => setSidebarOpen(false)}
             />

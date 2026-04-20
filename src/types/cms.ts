@@ -32,11 +32,6 @@ export interface CmsYoutubeVideo {
   };
 }
 
-export interface CmsAboutMediaData {
-  tickerImages: CmsTickerImage[];
-  youtubeVideos: CmsYoutubeVideo[];
-}
-
 export interface CmsPrivacySection {
   title: string;
   paragraphs: string[];
@@ -89,7 +84,10 @@ export interface CmsLandingData {
   nav: CmsNavData;
   hero: HeroData;
   about: AboutData;
-  aboutMedia: CmsAboutMediaData;
+  aboutMedia: {
+    tickerImages: CmsTickerImage[];
+    youtubeVideos: CmsYoutubeVideo[];
+  };
   gallery: GalleryData;
   stats: StatsData;
   newsletter: NewsletterData;
@@ -99,7 +97,10 @@ export interface CmsLandingData {
 }
 
 export interface CmsLandingGlobalData {
-  aboutMedia: CmsAboutMediaData;
+  aboutMedia: {
+    tickerImages: CmsTickerImage[];
+    youtubeVideos: CmsYoutubeVideo[];
+  };
   nav: CmsNavData;
   stats: CmsStatsData;
   footer: CmsFooterData;

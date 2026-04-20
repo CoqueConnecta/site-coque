@@ -1,4 +1,4 @@
-import type { CmsAboutMediaData, CmsLandingData, CmsYoutubeVideo } from '../../../types/cms';
+import type { CmsLandingData, CmsYoutubeVideo } from '../../../types/cms';
 
 export function deepEqual(left: unknown, right: unknown): boolean {
   if (Object.is(left, right)) {
@@ -41,9 +41,9 @@ export function normalizeYoutubeVideos(
 }
 
 export function normalizeAboutMedia(
-  aboutMedia: CmsAboutMediaData,
+  aboutMedia: CmsLandingData['aboutMedia'],
   dropLegacyYoutubeTitle = false,
-): CmsAboutMediaData {
+): CmsLandingData['aboutMedia'] {
   return {
     ...aboutMedia,
     youtubeVideos: normalizeYoutubeVideos(aboutMedia.youtubeVideos, dropLegacyYoutubeTitle),

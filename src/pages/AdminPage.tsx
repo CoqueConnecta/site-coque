@@ -58,8 +58,6 @@ export default function AdminPage() {
     setActiveRouteId,
     activeRoute,
     activeSection,
-    activeAboutMediaMode,
-    setActiveAboutMediaMode,
     routeDirtyCount,
     handleSaveRoute,
     handleDiscardRoute,
@@ -256,7 +254,10 @@ export default function AdminPage() {
   const getSectionDirtyCount = (sectionKey: keyof CmsLandingData, aboutMediaMode?: 'carousel' | 'youtubeVideos') =>
     sectionNavDirtyCount({ section: sectionKey, aboutMediaMode });
 
-  const renderSectionContent = (sectionKey: keyof CmsLandingData) => {
+  const renderSectionContent = (
+    sectionKey: keyof CmsLandingData,
+    aboutMediaMode?: 'carousel' | 'youtubeVideos',
+  ) => {
     if (!cmsData) return null;
 
     const onFieldChange = (language: CmsLanguage, path: Array<string | number>, value: unknown) =>
@@ -304,31 +305,11 @@ export default function AdminPage() {
       );
     }
     if (sectionKey === 'aboutMedia') {
+      const mode = aboutMediaMode ?? 'carousel';
       return (
         <div>
-          <div className="flex gap-2 mb-5">
-            {(['carousel', 'youtubeVideos'] as const).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => setActiveAboutMediaMode(mode)}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  activeAboutMediaMode === mode
-                    ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                {mode === 'carousel' ? 'Carrossel' : 'YouTube Videos'}
-                {getSectionDirtyCount('aboutMedia', mode) > 0 && (
-                  <span className="ml-2 text-xs bg-orange-100 text-orange-700 rounded-full px-2 py-0.5">
-                    {getSectionDirtyCount('aboutMedia', mode)}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
           <AboutMediaEditor
-            mode={activeAboutMediaMode}
+            mode={mode}
             cmsData={cmsData}
             isFieldDirty={isFieldDirty}
             onSectionFieldChange={onFieldChange}
@@ -418,16 +399,18 @@ export default function AdminPage() {
         <div className="space-y-4">
           {activeRoute.sections.map((sectionCfg) => (
             <SectionCard
-              key={sectionCfg.key}
+              key={`${sectionCfg.key}:${sectionCfg.aboutMediaMode ?? 'default'}`}
               title={sectionCfg.label}
               dirtyCount={
-                sectionCfg.key === 'aboutMedia'
-                  ? getSectionDirtyCount('aboutMedia', 'carousel') + getSectionDirtyCount('aboutMedia', 'youtubeVideos')
+                sectionCfg.key === 'aboutMedia' && sectionCfg.aboutMediaMode
+                  ? getSectionDirtyCount('aboutMedia', sectionCfg.aboutMediaMode)
+                  : sectionCfg.key === 'aboutMedia'
+                    ? getSectionDirtyCount('aboutMedia', 'carousel') + getSectionDirtyCount('aboutMedia', 'youtubeVideos')
                   : getSectionDirtyCount(sectionCfg.key)
               }
               defaultOpen={activeRoute.sections.length === 1}
             >
-              {renderSectionContent(sectionCfg.key)}
+              {renderSectionContent(sectionCfg.key, sectionCfg.aboutMediaMode)}
             </SectionCard>
           ))}
         </div>
