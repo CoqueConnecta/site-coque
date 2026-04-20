@@ -29,11 +29,12 @@ Documentos historicos:
 
 ## Delta recente
 
-- A documentacao foi reorganizada para separar contexto vigente de historico.
-- Criado `docs/project-context.md` como fonte de verdade tecnica.
-- `refactor-context.md` foi reduzido para log operacional curto.
-- Scripts de migracao por terminal foram removidos da superficie ativa do projeto.
-- Criado `scripts/deploy-staging.sh` e exposto `npm run deploy:staging -- <branch>` para padronizar o fluxo de staging fora de configuracoes locais da shell.
+- Documentacao reorganizada; `docs/project-context.md` criado como fonte de verdade tecnica.
+- Scripts de migracao por terminal removidos; `scripts/deploy-staging.sh` criado e exposto via `npm run deploy:staging -- <branch>`.
+- Seletor de idioma do desktop removido da capsula do header.
+- Substituido por uma utility top bar de largura total (`bg-[#2e3350]`, `h-8`) que nao faz scroll com a pagina (elemento normal no topo do DOM, antes do HeaderBar).
+- Top bar exibe label descritivo + botoes PT / EN; texto do label alterna para o idioma oposto ao ativo (convida o usuario a trocar).
+- Menu mobile mantem o toggle de idioma dentro do overlay (sem alteracao).
 
 ## Pendencias imediatas
 

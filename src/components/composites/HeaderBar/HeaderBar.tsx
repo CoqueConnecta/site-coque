@@ -3,8 +3,6 @@ import { CloseIcon, CoqueConnectaWordmark, MenuIcon } from '../../icons';
 import { cn } from '../../../lib/cn';
 import { IconButton } from '../../ui/IconButton';
 import { NavMenu, type NavLink } from '../NavMenu';
-import { LanguageToggle } from '../../ui/LanguageToggle/LanguageToggle';
-import type { CmsLanguage } from '../../../types/cms';
 
 export interface HeaderBarProps extends HTMLAttributes<HTMLElement> {
   navLinks: NavLink[];
@@ -14,8 +12,6 @@ export interface HeaderBarProps extends HTMLAttributes<HTMLElement> {
   onNavClick?: (href: string) => void;
   onMobileMenuClick?: () => void;
   showMobileMenu?: boolean;
-  language?: CmsLanguage;
-  onLanguageChange?: (language: CmsLanguage) => void;
   variant?: 'light' | 'dark';
   /** Opcional: fixa o header no topo da janela */
   isFixed?: boolean;
@@ -33,8 +29,6 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
       onNavClick,
       onMobileMenuClick,
       showMobileMenu,
-      language = 'pt',
-      onLanguageChange,
       variant = 'light',
       isFixed = true,
       isTransparent = false,
@@ -78,12 +72,6 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
               onLinkClick={onNavClick}
               tone={navTone}
               className="items-center"
-            />
-
-            <LanguageToggle
-              value={language}
-              onChange={(nextLanguage) => onLanguageChange?.(nextLanguage)}
-              compact
             />
 
             {/* CTA Button */}
