@@ -47,6 +47,10 @@ Documentos historicos:
 - Compatibilidade legada mantida: quando `bodyMd` nao existe, o front compoe markdown a partir de `paragraphs` + `bullets`.
 - Links no Markdown agora passam por validacao de protocolo (permitidos: `https`, `mailto`, `tel`, alem de caminhos relativos/hash).
 - Dependencia `react-markdown` adicionada para renderizacao do conteudo.
+- Transparency migrada de `body[]` para `sections[]` com `bodyMd`, alinhando modelo com Privacy.
+- Pagina publica de Transparencia passou a renderizar secoes com markdown seguro via `MarkdownContent`.
+- Compatibilidade legada adicionada no carregamento publico e admin: payload antigo `transparency.body[]` e convertido para `sections[]` automaticamente.
+- Fallback local atualizado para o novo modelo de `transparency.sections`.
 
 ## Pendencias imediatas
 

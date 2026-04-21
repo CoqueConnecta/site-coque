@@ -49,7 +49,9 @@ export interface CmsPrivacyData {
 export interface CmsTransparencyData {
   title: string;
   intro: string;
-  body: string[];
+  sections: CmsPrivacySection[];
+  // Legacy support: older payloads may still contain a root body array.
+  body?: string[];
 }
 
 export interface CmsStatItem {

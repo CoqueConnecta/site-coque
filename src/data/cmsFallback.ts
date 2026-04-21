@@ -64,9 +64,11 @@ const fallbackPT: CmsLandingData = {
   transparency: {
     title: 'Transparência',
     intro: 'Em breve, publicaremos aqui documentos e indicadores de prestação de contas.',
-    body: [
-      'Esta página foi criada para centralizar informações de governança e transparência da Coque Connecta, incluindo relatórios, resultados e dados institucionais relevantes.',
-      'Para solicitações imediatas, entre em contato pelo e-mail contato@coqueconnecta.com.br.',
+    sections: [
+      {
+        title: 'Informações institucionais',
+        bodyMd: 'Esta página foi criada para centralizar informações de governança e transparência da Coque Connecta, incluindo relatórios, resultados e dados institucionais relevantes.\n\nPara solicitações imediatas, entre em contato pelo e-mail contato@coqueconnecta.com.br.',
+      },
     ],
   },
 };
@@ -107,9 +109,11 @@ const fallbackEN: CmsLandingData = {
   transparency: {
     title: 'Transparency',
     intro: 'Soon, we will publish accountability documents and indicators here.',
-    body: [
-      'This page was created to centralize governance and transparency information from Coque Connecta, including reports, outcomes, and institutional data.',
-      'For immediate requests, contact us at contact@coqueconnecta.com.br.',
+    sections: [
+      {
+        title: 'Institutional information',
+        bodyMd: 'This page was created to centralize governance and transparency information from Coque Connecta, including reports, outcomes, and institutional data.\n\nFor immediate requests, contact us at contact@coqueconnecta.com.br.',
+      },
     ],
   },
 };

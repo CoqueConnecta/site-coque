@@ -23,11 +23,39 @@ export function useAdminData(): UseAdminDataReturn {
   const [mobileLanguage, setMobileLanguage] = useState<CmsLanguage>('pt');
 
   useEffect(() => {
+    const normalizeLegacyTransparency = (landing: Record<string, unknown>) => {
+      const transparency = landing.transparency;
+      if (!transparency || typeof transparency !== 'object' || Array.isArray(transparency)) {
+        return;
+      }
+
+      const record = transparency as Record<string, unknown>;
+      const sections = record.sections;
+      const body = record.body;
+      const hasSections = Array.isArray(sections) && sections.length > 0;
+
+      if (hasSections || !Array.isArray(body) || body.length === 0) {
+        return;
+      }
+
+      record.sections = body.map((paragraph, index) => ({
+        title: `Seção ${index + 1}`,
+        bodyMd: String(paragraph ?? '').trim(),
+      }));
+    };
+
     const fetchData = async () => {
       const cmsRef = ref(database, 'cms/v2/landing');
       try {
         const snapshot = await get(cmsRef);
         const incoming = snapshot.exists() ? snapshot.val() : {};
+
+        if (incoming?.pt && typeof incoming.pt === 'object' && !Array.isArray(incoming.pt)) {
+          normalizeLegacyTransparency(incoming.pt as Record<string, unknown>);
+        }
+        if (incoming?.en && typeof incoming.en === 'object' && !Array.isArray(incoming.en)) {
+          normalizeLegacyTransparency(incoming.en as Record<string, unknown>);
+        }
 
         const normalized: CmsLandingByLanguage = {
           pt: mergeWithFallback(cmsFallbackByLanguage.pt, incoming.pt),

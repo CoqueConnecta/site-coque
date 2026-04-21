@@ -32,6 +32,26 @@ function mergeWithFallback<T>(fallback: T, incoming: unknown): T {
   return (incoming === undefined || incoming === null ? fallback : incoming) as T;
 }
 
+function normalizeLegacyTransparency(landing: Record<string, unknown>) {
+  const transparency = landing.transparency;
+  if (!isPlainObject(transparency)) {
+    return;
+  }
+
+  const sections = transparency.sections;
+  const body = transparency.body;
+  const hasSections = Array.isArray(sections) && sections.length > 0;
+
+  if (hasSections || !Array.isArray(body) || body.length === 0) {
+    return;
+  }
+
+  transparency.sections = body.map((paragraph, index) => ({
+    title: `Seção ${index + 1}`,
+    bodyMd: String(paragraph ?? '').trim(),
+  }));
+}
+
 export async function getCmsLandingData(language: CmsLanguage): Promise<CmsLandingData> {
   const fallback = cmsFallbackByLanguage[language] ?? cmsFallbackByLanguage.pt;
 
@@ -42,6 +62,9 @@ export async function getCmsLandingData(language: CmsLanguage): Promise<CmsLandi
     ]);
 
     const languageData = languageSnapshot.exists() ? languageSnapshot.val() : {};
+    if (isPlainObject(languageData)) {
+      normalizeLegacyTransparency(languageData);
+    }
     const mergedByLanguage = mergeWithFallback(fallback, languageData);
 
     const globalData = globalSnapshot.exists() ? globalSnapshot.val() : {};

@@ -1,67 +1,8 @@
 import { Block } from '../components/ui/Block';
+import { MarkdownContent } from '../components/ui/MarkdownContent';
 import { Typography } from '../components/ui/Typography';
 import { useOutletContext } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import type { Components } from 'react-markdown';
 import type { PublicLayoutContextValue } from './PublicLayout';
-
-const markdownComponents: Components = {
-  h2: ({ children }) => (
-    <Typography variant="h2" className="text-2xl font-bold text-[#f58634]">
-      {children}
-    </Typography>
-  ),
-  p: ({ children }) => (
-    <Typography variant="body" className="leading-relaxed">
-      {children}
-    </Typography>
-  ),
-  ul: ({ children }) => (
-    <ul className="ml-6 list-disc space-y-2 text-base leading-relaxed [font-family:var(--font-body)] md:text-lg">
-      {children}
-    </ul>
-  ),
-  li: ({ children }) => <li>{children}</li>,
-  strong: ({ children }) => <strong>{children}</strong>,
-  a: ({ href, children }) => {
-    const url = href?.trim() ?? '';
-    const isRelative = url.startsWith('/') || url.startsWith('#');
-
-    if (!url) {
-      return <>{children}</>;
-    }
-
-    if (isRelative) {
-      return (
-        <a href={url} className="text-[#f58634] underline hover:text-[#c73c00]">
-          {children}
-        </a>
-      );
-    }
-
-    try {
-      const parsedUrl = new URL(url);
-      const safeProtocols = new Set(['https:', 'mailto:', 'tel:']);
-
-      if (!safeProtocols.has(parsedUrl.protocol)) {
-        return <>{children}</>;
-      }
-
-      return (
-        <a
-          href={url}
-          className="text-[#f58634] underline hover:text-[#c73c00]"
-          target={parsedUrl.protocol === 'https:' ? '_blank' : undefined}
-          rel={parsedUrl.protocol === 'https:' ? 'noopener noreferrer' : undefined}
-        >
-          {children}
-        </a>
-      );
-    } catch {
-      return <>{children}</>;
-    }
-  },
-};
 
 function getSectionMarkdown(section: PublicLayoutContextValue['content']['privacy']['sections'][number]) {
   if (section.bodyMd?.trim()) {
@@ -112,9 +53,7 @@ export default function PrivacyPage() {
                 {section.title}
               </Typography>
 
-              <ReactMarkdown components={markdownComponents}>
-                {getSectionMarkdown(section)}
-              </ReactMarkdown>
+              <MarkdownContent content={getSectionMarkdown(section)} />
             </section>
           ))}
         </div>
