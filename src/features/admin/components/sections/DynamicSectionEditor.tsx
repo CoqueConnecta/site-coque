@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { CmsLanguage } from '../../../../types/cms';
 import { isRecord } from '../../utils/editorPath';
 import { AdminEditorCard } from '../AdminEditorCard';
@@ -57,6 +58,46 @@ function isImageFieldPath(path: Array<string | number>) {
   }
 
   return ['image', 'backgroundimage', 'src', 'avatar', 'authoravatar'].includes(key.toLowerCase());
+}
+
+function isMarkdownFieldPath(path: Array<string | number>) {
+  const key = path[path.length - 1];
+  return typeof key === 'string' && key.toLowerCase() === 'bodymd';
+}
+
+function MarkdownHelpAccordion() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="mt-2 overflow-hidden rounded-xl border border-amber-200 bg-amber-50/60">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-amber-100/60 transition-colors"
+      >
+        <span className="text-xs font-semibold text-amber-900">Mini-guia Markdown</span>
+        {open ? (
+          <ChevronUp className="h-4 w-4 text-amber-700" />
+        ) : (
+          <ChevronDown className="h-4 w-4 text-amber-700" />
+        )}
+      </button>
+
+      {open ? (
+        <div className="border-t border-amber-200 px-3 py-3 text-xs text-amber-900">
+          <p>Use os exemplos abaixo para formatar o conteudo da secao:</p>
+          <pre className="mt-2 overflow-x-auto rounded-md bg-white p-2 text-[11px] leading-relaxed text-gray-700">
+{`## Subtitulo da secao
+
+- Primeiro item da lista
+- Segundo item com **destaque**
+
+Veja mais em [site oficial](https://exemplo.com)`}
+          </pre>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 export function DynamicSectionEditor({
@@ -154,29 +195,39 @@ export function DynamicSectionEditor({
     }
 
     const textValue = value === null || value === undefined ? '' : String(value);
-    const useTextarea = textValue.includes('\n') || textValue.length > 80;
+    const useTextarea = isMarkdownFieldPath(path) || textValue.includes('\n') || textValue.length > 80;
 
     if (isImageFieldPath(path)) {
       return renderImageField(language, textValue, path, label);
     }
 
+    if (useTextarea) {
+      return (
+        <div className="block">
+          <label className="block">
+            <span className={adminFieldLabelClass}>{label}</span>
+            <textarea
+              value={textValue}
+              onChange={(e) => onSectionFieldChange(language, path, e.target.value)}
+              className={getAdminTextareaClass(isFieldDirty(language, path))}
+            />
+          </label>
+          {isMarkdownFieldPath(path) ? (
+            <MarkdownHelpAccordion />
+          ) : null}
+        </div>
+      );
+    }
+
     return (
       <label className="block">
         <span className={adminFieldLabelClass}>{label}</span>
-        {useTextarea ? (
-          <textarea
-            value={textValue}
-            onChange={(e) => onSectionFieldChange(language, path, e.target.value)}
-            className={getAdminTextareaClass(isFieldDirty(language, path))}
-          />
-        ) : (
-          <input
-            type="text"
-            value={textValue}
-            onChange={(e) => onSectionFieldChange(language, path, e.target.value)}
-            className={getAdminInputClass(isFieldDirty(language, path))}
-          />
-        )}
+        <input
+          type="text"
+          value={textValue}
+          onChange={(e) => onSectionFieldChange(language, path, e.target.value)}
+          className={getAdminInputClass(isFieldDirty(language, path))}
+        />
       </label>
     );
   };

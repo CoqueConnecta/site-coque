@@ -130,7 +130,13 @@ export default function AdminPage() {
         const currentValue = getValueAtPath(currentGlobalSection, path);
         if (!Array.isArray(currentValue)) return prev;
         const fallbackValue = getValueAtPath(cmsFallbackByLanguage.pt[sectionKey] as unknown, path);
-        const fallbackItem = Array.isArray(fallbackValue) && fallbackValue.length > 0 ? buildEmptyFromTemplate(fallbackValue[0]) : '';
+        const templateSource =
+          Array.isArray(fallbackValue) && fallbackValue.length > 0
+            ? fallbackValue[0]
+            : currentValue.length > 0
+              ? currentValue[0]
+              : '';
+        const fallbackItem = buildEmptyFromTemplate(templateSource);
         const updatedArray = [...currentValue, fallbackItem];
         const updatedGlobalSection = setValueAtPath(currentGlobalSection, path, updatedArray) as CmsLandingData[keyof CmsLandingData];
         markDirtyField('pt', sectionKey, path, updatedArray);
@@ -146,7 +152,13 @@ export default function AdminPage() {
       if (!Array.isArray(currentValue)) return prev;
       const fallbackSectionData = cmsFallbackByLanguage[language][sectionKey] as unknown;
       const fallbackValue = getValueAtPath(fallbackSectionData, path);
-      const fallbackItem = Array.isArray(fallbackValue) && fallbackValue.length > 0 ? buildEmptyFromTemplate(fallbackValue[0]) : '';
+      const templateSource =
+        Array.isArray(fallbackValue) && fallbackValue.length > 0
+          ? fallbackValue[0]
+          : currentValue.length > 0
+            ? currentValue[0]
+            : '';
+      const fallbackItem = buildEmptyFromTemplate(templateSource);
       const updatedArray = [...currentValue, fallbackItem];
       const updatedSectionData = setValueAtPath(currentSectionData, path, updatedArray) as CmsLandingData[keyof CmsLandingData];
       markDirtyField(language, sectionKey, path, updatedArray);

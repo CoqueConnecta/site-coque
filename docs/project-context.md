@@ -131,6 +131,7 @@ Comportamento atual do admin:
 - salvar e descartar por rota inteira;
 - dirty tracking por campo, com persistência parcial no RTDB.
 - na Home, `Carrossel` e `YouTube Videos` são seções separadas no painel (sem aba interna "Mídia").
+- na rota de Privacidade, cada seção aceita conteúdo rico em Markdown no campo `bodyMd`, com renderização segura no público e compatibilidade legada com `paragraphs`/`bullets`.
 
 Seções globais continuam tratadas como casos especiais onde aplicável.
 

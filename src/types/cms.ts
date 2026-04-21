@@ -34,7 +34,8 @@ export interface CmsYoutubeVideo {
 
 export interface CmsPrivacySection {
   title: string;
-  paragraphs: string[];
+  bodyMd?: string;
+  paragraphs?: string[];
   bullets?: string[];
 }
 

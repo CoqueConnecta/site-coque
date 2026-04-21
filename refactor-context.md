@@ -42,6 +42,11 @@ Documentos historicos:
 - Backlog movido para arquivo dedicado (`docs/backlog.md`) e template padrao de issue criado em `.github/ISSUE_TEMPLATE/image-library-request.md`.
 - Bootstrap legado de i18n desativado no `src/main.tsx` (removido `import './i18n'`), eliminando dependencia ativa de `locales` no RTDB.
 - Limpeza completa do legado de i18n: arquivo `src/i18n.ts` removido e `locales` considerado descontinuado no contexto tecnico.
+- Evolucao da rota de Privacidade iniciada com plano registrado neste documento antes da implementacao.
+- Suporte a conteudo rico em Markdown aplicado em `privacy.sections` via campo `bodyMd`, com renderizacao segura no front.
+- Compatibilidade legada mantida: quando `bodyMd` nao existe, o front compoe markdown a partir de `paragraphs` + `bullets`.
+- Links no Markdown agora passam por validacao de protocolo (permitidos: `https`, `mailto`, `tel`, alem de caminhos relativos/hash).
+- Dependencia `react-markdown` adicionada para renderizacao do conteudo.
 
 ## Pendencias imediatas
 
@@ -51,3 +56,18 @@ Documentos historicos:
 
 - Continuar evolucoes do produto usando `docs/project-context.md` como referencia principal e `refactor-context.md` apenas como acompanhamento curto da sprint.
 - Manter novas migracoes ligadas ao fluxo autenticado do admin sempre que esse caminho existir, evitando depender de scripts locais por desenvolvedor.
+- Ajustar os registros de privacidade no RTDB gradualmente para usar `bodyMd` como formato preferencial.
+
+## Plano ativo - Privacidade com conteudo rico
+
+Objetivo:
+
+- Permitir conteudo rico na pagina de privacidade consumindo dados do Firebase sem adotar editor complexo agora.
+
+Passos:
+
+- Adicionar suporte a Markdown em `privacy.sections` via campo `bodyMd` (mantendo compatibilidade com `paragraphs` + `bullets`).
+- Renderizar Markdown na pagina de privacidade com mapeamento para componentes/estilos atuais.
+- Restringir links a protocolos seguros (`https:`, `mailto:`, `tel:`) e bloquear protocolos inseguros.
+- Manter fallback atual quando nao houver secoes no CMS.
+- Atualizar contexto tecnico em `docs/project-context.md` para registrar a convencao de conteudo da pagina de privacidade.
