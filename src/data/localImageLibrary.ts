@@ -4,7 +4,7 @@ export type LocalImageAsset = {
   name: string;
   title?: string;
   alt?: string;
-  category: 'gallery' | 'brand' | 'background' | 'about';
+  category: 'gallery' | 'brand' | 'background' | 'about' | 'placeholder';
 };
 
 export const localImageCategories = [
@@ -13,6 +13,7 @@ export const localImageCategories = [
   { id: 'gallery', label: 'Galeria' },
   { id: 'brand', label: 'Marca' },
   { id: 'background', label: 'Fundos' },
+  { id: 'placeholder', label: 'Placeholder' },
 ] as const;
 
 export const localImageLibrary: LocalImageAsset[] = [
@@ -111,5 +112,13 @@ export const localImageLibrary: LocalImageAsset[] = [
     title: 'Jovens no auditório',
     alt: 'Jovens reunidos em auditório durante atividade da organização.',
     category: 'about',
+  },
+  {
+    id: 'placeholder-image',
+    url: '/placeholder.png',
+    name: 'placeholder.png',
+    title: 'Imagem placeholder',
+    alt: 'Imagem placeholder',
+    category: 'placeholder',
   },
 ];
