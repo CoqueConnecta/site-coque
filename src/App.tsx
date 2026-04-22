@@ -13,6 +13,7 @@ const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TransparencyPage = lazy(() => import('./pages/TransparencyPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "transparencia",
         element: <TransparencyPage />,
+      },
+      {
+        path: "nossos-projetos",
+        element: <ProjectsPage />,
       },
       {
         path: "*",

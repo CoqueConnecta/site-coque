@@ -71,6 +71,7 @@ const fallbackPT: CmsLandingData = {
       },
     ],
   },
+  projects: [],
 };
 
 const fallbackEN: CmsLandingData = {
@@ -116,6 +117,7 @@ const fallbackEN: CmsLandingData = {
       },
     ],
   },
+  projects: [],
 };
 
 export const cmsFallbackByLanguage: Record<CmsLanguage, CmsLandingData> = {

@@ -52,6 +52,7 @@ Rotas públicas:
 - `/privacidade` -> página de privacidade
 - `/transparencia` -> página de transparência
 - `*` -> fallback 404 dentro do layout público
+- `/nossos-projetos` -> página de projetos
 
 Rotas internas:
 
@@ -87,6 +88,43 @@ Fonte de verdade atual de conteúdo:
 - `cms/v2/landing/pt`
 - `cms/v2/landing/en`
 - `cms/v2/landing/global` para campos compartilhados
+- `cms/v2/projects/pt`
+- `cms/v2/projects/en`
+- `cms/v2/projects/global` para campos compartilhados de projetos
+
+exemplo JSON:
+
+```JSON
+{
+  "global": {
+    "projects": [
+      {
+        "id": "projeto-01",
+        "image": "/placeholder-image.jpg",
+        "location": "Coque, Recife"
+      }
+    ]
+  },
+  "pt": {
+    "projects": [
+      {
+        "id": "projeto-01",
+        "title": "Alfabetização de Adultos",
+        "bodyMd": "Descrição do projeto em **Markdown**..."
+      }
+    ]
+  },
+  "en": {
+    "projects": [
+      {
+        "id": "projeto-01",
+        "title": "Literacy Program",
+        "bodyMd": "Description of the project in **Markdown**..."
+      }
+    ]
+  }
+}
+```
 
 Fluxo atual:
 
@@ -219,8 +257,30 @@ Regra prática de atualização:
 
 ## Pendências e atenção atual
 
-- O bootstrap legado de i18n foi desativado no `main.tsx`; a chave RTDB `locales` deixou de ser dependência ativa da aplicação.
 - A base atual já opera com CMS v2 e idioma persistido no front público.
 - Novas decisões devem evitar reintroduzir dependência de contexto histórico espalhado em múltiplos markdowns.
 - Scripts de migração via terminal foram removidos da superfície ativa do projeto; o fluxo preferencial para migrações continua sendo a UI autenticada do admin.
 - Backlog detalhado em `docs/backlog.md`.
+
+## Lições Aprendidas: Extensão do Admin e Integrações (CMS v2)
+
+Durante a integração da funcionalidade "Nossos Projetos" (que exigia gravar e ler de uma coleção RTDB separada `cms/v2/projects`, em oposição ao padrão `cms/v2/landing`), consolidadaram-se três padrões arquiteturais críticos que devem ser seguidos em futuras evoluções:
+
+### 1. Adicionando seções apontando para novas coleções RTDB
+Não limite o hook de dados a um único endpoint. Quando uma nova seção exigir uma nova árvore no Firebase:
+- **Fetch Concorrente:** Atualize `useAdminData.ts` para disparar `Promise.all` em ambas as coleções (`landing` e a nova).
+- **Merge no Estado:** Incorpore os dados da nova coleção nas árvores unificadas `pt` e `en` na memória do formulário (`cmsData`). O formulário do React não precisa saber que a origem dos dados são duas coleções diferentes.
+- **Save Particionado (O pulo do gato):** O segredo reside em `useAdminRoute.tsx` (na função `handleSaveRoute`). É lá que a alteração do formulário é interceptada com um `if (section === 'nova-secao')` para desmembrar o payload parcial e enviá-lo ao caminho RTDB correto (como `cms/v2/projects/global/projects`).
+
+### 2. Escalando o ImagePicker para novas seções
+A biblioteca de imagens local usa um modal global (`ImageLibraryModal`). Para que ela funcione nativamente com novos componentes e seções recém-criadas, o gerenciador de estado (`useImagePicker.ts`) deve obrigatoriamente armazenar a `sectionKey` no momento da abertura do modal. 
+- Anteriormente, o picker tentava adivinhar a seção baseando-se em variáveis de aba ativa (o que falha em rotas independentes).
+- A regra de ouro é: Ao acionar `openImagePicker(sectionKey, language, path, label)`, assegure-se de que o estado guarde quem pediu a imagem para poder injetar a resposta no campo correto com exatidão, sem vazamento de estado.
+
+### 3. Padrão "Painel Global Único" para arrays multilíngues
+Ao criar listas (arrays) onde os itens possuem campos globais (ex: Imagem, ID) e campos localizados (PT e EN), **nunca renderize duas abas separadas (PT e EN) que gerenciem a estrutura do array independentemente**. Isso causa descompasso: o usuário adiciona um item em PT e esquece do EN, corrompendo a contagem e causando bugs de dados incompletos.
+- **A Solução:** Crie um **Painel Global Unificado** (`ProjectsGlobalPanel`).
+- Itere sobre a lista de um idioma principal (ex: `cmsData.pt.projects`) para ditar a estrutura e a quantidade de cartões.
+- Quando o usuário clicar em "Adicionar" ou "Remover", o componente deve disparar as ações para `pt` e `en` _simultaneamente_.
+- Renderize os campos globais apenas uma vez no card. Qualquer mudança neles dispara atualizações para os arrays em memória de `pt` e `en`.
+- Logo abaixo, renderize os inputs localizados (ex: Título PT vs Título EN) lado a lado, direcionando cada mudança para sua respectiva linguagem no array. Isso garante sincronia estrutural absoluta com uma experiência de uso excepcional.

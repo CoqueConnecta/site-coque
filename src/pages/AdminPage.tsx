@@ -18,6 +18,7 @@ import { NavEditor } from '../features/admin/components/sections/NavEditor';
 import { StatsEditor } from '../features/admin/components/sections/StatsEditor';
 import { FooterEditor } from '../features/admin/components/sections/FooterEditor';
 import { AboutMediaEditor } from '../features/admin/components/sections/AboutMediaEditor';
+import { ProjectsEditor } from '../features/admin/components/sections/ProjectsEditor';
 import { useAdminData } from '../features/admin/hooks/useAdminData';
 import { useDirtyFields } from '../features/admin/hooks/useDirtyFields';
 import { useImagePicker } from '../features/admin/hooks/useImagePicker';
@@ -229,14 +230,13 @@ export default function AdminPage() {
       isDirty={isFieldDirty(language, path, sectionKey)}
       placeholder={placeholder}
       onChange={(nextValue) => handleSectionFieldChange(sectionKey, language, path, nextValue)}
-      onOpenLibrary={() => openImagePicker(language, path, label)}
+      onOpenLibrary={() => openImagePicker(sectionKey, language, path, label)}
     />
   );
 
   const applyAssetToField = (asset: MediaAsset) => {
-    if (!pickerState || !activeSection || !cmsData) return;
-    const { language, path } = pickerState;
-    const sectionKey = activeSection as keyof CmsLandingData;
+    if (!pickerState || !cmsData) return;
+    const { sectionKey, language, path } = pickerState;
     handleSectionFieldChange(sectionKey, language, path, asset.url);
     if (!shouldApplyMetadata) { closeImagePicker(); return; }
     const parentPath = path.slice(0, -1);
@@ -343,6 +343,13 @@ export default function AdminPage() {
       return (
         <div className={mobileMask}>
           <FooterEditor cmsData={cmsData} isFieldDirty={isFieldDirty} onSectionFieldChange={onFieldChange} onAddArrayItem={onAdd} onRemoveArrayItem={onRemove} />
+        </div>
+      );
+    }
+    if (sectionKey === 'projects') {
+      return (
+        <div className={mobileMask}>
+          <ProjectsEditor cmsData={cmsData} isFieldDirty={isFieldDirty} onSectionFieldChange={onFieldChange} onAddArrayItem={onAdd} onRemoveArrayItem={onRemove} renderImageField={onImageField} />
         </div>
       );
     }

@@ -1,4 +1,4 @@
-import { Home, Lock, FileText } from 'lucide-react';
+import { Home, Lock, FileText, FolderOpen } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { CmsLandingData } from '../../../types/cms';
 
@@ -10,7 +10,7 @@ export interface AdminSectionConfig {
 }
 
 export interface AdminRouteConfig {
-  id: 'home' | 'privacy' | 'transparency';
+  id: 'home' | 'privacy' | 'transparency' | 'projects';
   label: string;
   description: string;
   icon: LucideIcon;
@@ -51,6 +51,15 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
     icon: FileText,
     sections: [
       { key: 'transparency', label: 'Transparência', isGlobal: false },
+    ],
+  },
+  {
+    id: 'projects',
+    label: 'Nossos Projetos',
+    description: 'Gerenciar projetos',
+    icon: FolderOpen,
+    sections: [
+      { key: 'projects', label: 'Projetos', isGlobal: false },
     ],
   },
 ];

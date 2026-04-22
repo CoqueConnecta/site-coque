@@ -18,4 +18,5 @@ export type PickerState = {
   language: CmsLanguage;
   path: Array<string | number>;
   label: string;
+  sectionKey: keyof CmsLandingData;
 } | null;

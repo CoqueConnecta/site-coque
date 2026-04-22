@@ -59,7 +59,46 @@ export function useAdminRoute(
       const language = languagePart as CmsLanguage;
       const section = sectionPart as keyof CmsLandingData;
 
-      if (isGlobalSection(section)) {
+      if (section === 'projects') {
+        const typedPath = rawPath.map(parsePathSegment);
+        const sourceSection = cmsData[language][section];
+        const value = typedPath.length > 0 ? getValueAtPath(sourceSection, typedPath) : sourceSection;
+        
+        // Ensure index is number if rawPath has length >= 2 e.g. ["projects", 0, "title"]
+        const fieldName = rawPath[rawPath.length - 1];
+        
+        // If rawPath is empty or just ["projects"], it means the whole array is replaced (e.g. reorder or remove).
+        // Since we edit via specific fields, usually rawPath has length > 1.
+        // If rawPath is empty or length 1, we shouldn't get here because we mark specific fields dirty.
+        // Wait, if an item is added/removed, the whole array might be dirty.
+        if (rawPath.length === 0) {
+           // We'd have to sync the whole array to global, pt, and en, which is tricky.
+           // AdminPage adds/removes items by updating the whole array path.
+           // If value is the whole array:
+           const projectsArray = value as any[];
+           const globalProjects = projectsArray.map(p => ({ id: p.id, image: p.image, location: p.location, actionHref: p.actionHref }));
+           const ptProjects = (cmsData.pt.projects || []).map(p => ({ id: p.id, title: p.title, bodyMd: p.bodyMd, actionLabel: p.actionLabel }));
+           const enProjects = (cmsData.en.projects || []).map(p => ({ id: p.id, title: p.title, bodyMd: p.bodyMd, actionLabel: p.actionLabel }));
+           
+           partialPayload[`cms/v2/projects/global/projects`] = globalProjects;
+           partialPayload[`cms/v2/projects/pt/projects`] = ptProjects;
+           partialPayload[`cms/v2/projects/en/projects`] = enProjects;
+        } else {
+           // Field specific update e.g. ["0", "title"]
+           const index = rawPath[0];
+           if (['image', 'location', 'actionHref'].includes(fieldName)) {
+             partialPayload[`cms/v2/projects/global/projects/${index}/${fieldName}`] = value ?? null;
+           } else if (['title', 'bodyMd', 'actionLabel'].includes(fieldName)) {
+             partialPayload[`cms/v2/projects/${language}/projects/${index}/${fieldName}`] = value ?? null;
+           } else if (fieldName === 'id') {
+             partialPayload[`cms/v2/projects/global/projects/${index}/id`] = value ?? null;
+             partialPayload[`cms/v2/projects/pt/projects/${index}/id`] = value ?? null;
+             partialPayload[`cms/v2/projects/en/projects/${index}/id`] = value ?? null;
+           } else {
+             partialPayload[`cms/v2/projects/${language}/projects/${rawPath.join('/')}`] = value ?? null;
+           }
+        }
+      } else if (isGlobalSection(section)) {
         // Global sections are stored under /global/{section}
         const currentSection =
           section === 'aboutMedia'

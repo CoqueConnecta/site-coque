@@ -30,11 +30,12 @@ export function useImagePicker() {
   }, [mediaAssets, mediaSearch, selectedMediaCategory]);
 
   const openImagePicker = (
+    sectionKey: keyof import('../../../types/cms').CmsLandingData,
     language: CmsLanguage,
     path: Array<string | number>,
     label: string,
   ) => {
-    setPickerState({ language, path, label });
+    setPickerState({ sectionKey, language, path, label });
     setShouldApplyMetadata(true);
     setIsMediaModalOpen(true);
   };

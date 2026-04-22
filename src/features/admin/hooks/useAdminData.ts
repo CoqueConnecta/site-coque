@@ -46,9 +46,14 @@ export function useAdminData(): UseAdminDataReturn {
 
     const fetchData = async () => {
       const cmsRef = ref(database, 'cms/v2/landing');
+      const projectsRef = ref(database, 'cms/v2/projects');
       try {
-        const snapshot = await get(cmsRef);
+        const [snapshot, projectsSnapshot] = await Promise.all([
+          get(cmsRef),
+          get(projectsRef),
+        ]);
         const incoming = snapshot.exists() ? snapshot.val() : {};
+        const incomingProjects = projectsSnapshot.exists() ? projectsSnapshot.val() : {};
 
         if (incoming?.pt && typeof incoming.pt === 'object' && !Array.isArray(incoming.pt)) {
           normalizeLegacyTransparency(incoming.pt as Record<string, unknown>);
@@ -90,6 +95,24 @@ export function useAdminData(): UseAdminDataReturn {
         );
         normalized.pt.footer = mergedGlobalFooter;
         normalized.en.footer = mergedGlobalFooter;
+
+        // Process projects
+        const ptProjectsRaw = incomingProjects?.pt?.projects || [];
+        const enProjectsRaw = incomingProjects?.en?.projects || [];
+        const globalProjectsRaw = incomingProjects?.global?.projects || [];
+
+        const ptMergedProjects = ptProjectsRaw.map((langProj: any) => {
+          const globProj = globalProjectsRaw.find((gp: any) => gp.id === langProj.id);
+          return { ...globProj, ...langProj };
+        });
+
+        const enMergedProjects = enProjectsRaw.map((langProj: any) => {
+          const globProj = globalProjectsRaw.find((gp: any) => gp.id === langProj.id);
+          return { ...globProj, ...langProj };
+        });
+
+        normalized.pt.projects = ptMergedProjects;
+        normalized.en.projects = enMergedProjects;
 
         setCmsData(normalized);
         setOriginalCmsData(normalized);

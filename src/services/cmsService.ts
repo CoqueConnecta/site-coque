@@ -94,3 +94,32 @@ export async function getCmsLandingData(language: CmsLanguage): Promise<CmsLandi
     return fallback;
   }
 }
+
+export async function getCmsProjectsData(language: CmsLanguage): Promise<{ projects: import('../types/cms').CmsProject[] }> {
+  try {
+    const [languageSnapshot, globalSnapshot] = await Promise.all([
+      get(ref(database, `cms/v2/projects/${language}`)),
+      get(ref(database, `cms/v2/projects/global`)),
+    ]);
+
+    const languageData = languageSnapshot.exists() ? languageSnapshot.val() : { projects: [] };
+    const globalData = globalSnapshot.exists() ? globalSnapshot.val() : { projects: [] };
+
+    const globalProjects = Array.isArray(globalData.projects) ? globalData.projects : [];
+    const languageProjects = Array.isArray(languageData.projects) ? languageData.projects : [];
+
+    // Merge by id
+    const mergedProjects = languageProjects.map((langProj: any) => {
+      const globProj = globalProjects.find((gp: any) => gp.id === langProj.id);
+      return {
+        ...globProj,
+        ...langProj,
+      };
+    });
+
+    return { projects: mergedProjects as import('../types/cms').CmsProject[] };
+  } catch (error) {
+    console.error('Erro ao carregar cms/v2/projects.', error);
+    return { projects: [] };
+  }
+}

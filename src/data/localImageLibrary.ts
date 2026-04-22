@@ -115,8 +115,8 @@ export const localImageLibrary: LocalImageAsset[] = [
   },
   {
     id: 'placeholder-image',
-    url: '/placeholder.png',
-    name: 'placeholder.png',
+    url: '/placeholder-image.png',
+    name: 'placeholder-image.png',
     title: 'Imagem placeholder',
     alt: 'Imagem placeholder',
     category: 'placeholder',

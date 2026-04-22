@@ -97,6 +97,7 @@ export interface CmsLandingData {
   footer: FooterData;
   privacy: CmsPrivacyData;
   transparency: CmsTransparencyData;
+  projects: CmsProject[];
 }
 
 export interface CmsLandingGlobalData {
@@ -107,4 +108,18 @@ export interface CmsLandingGlobalData {
   nav: CmsNavData;
   stats: CmsStatsData;
   footer: CmsFooterData;
+}
+
+export interface CmsProject {
+  id: string;
+  image: string;
+  location: string;
+  title: string;
+  bodyMd: string;
+  actionLabel?: string;
+  actionHref?: string;
+}
+
+export interface CmsProjectsData {
+  projects: CmsProject[];
 }
