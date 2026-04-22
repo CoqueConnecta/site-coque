@@ -270,7 +270,7 @@ Durante a integração da funcionalidade "Nossos Projetos" (que exigia gravar e 
 Não limite o hook de dados a um único endpoint. Quando uma nova seção exigir uma nova árvore no Firebase:
 - **Fetch Concorrente:** Atualize `useAdminData.ts` para disparar `Promise.all` em ambas as coleções (`landing` e a nova).
 - **Merge no Estado:** Incorpore os dados da nova coleção nas árvores unificadas `pt` e `en` na memória do formulário (`cmsData`). O formulário do React não precisa saber que a origem dos dados são duas coleções diferentes.
-- **Save Particionado (O pulo do gato):** O segredo reside em `useAdminRoute.tsx` (na função `handleSaveRoute`). É lá que a alteração do formulário é interceptada com um `if (section === 'nova-secao')` para desmembrar o payload parcial e enviá-lo ao caminho RTDB correto (como `cms/v2/projects/global/projects`).
+- **Save Particionado via Dicionário Declarativo:** O arquivo `useAdminRoute.tsx` não contém lógicas acopladas (`ifs` manuais). O roteamento é estritamente definido no arquivo de configuração `rtdbRouting.ts`. Para adicionar um novo módulo que salve em uma coleção distinta, basta adicionar a `sectionKey` e sua respectiva estratégia de persistência (como `split-array` ou `standard-local`) no mapa `RTDB_MAPPINGS`. O hook montará o payload com o caminho RTDB correto de forma autônoma.
 
 ### 2. Escalando o ImagePicker para novas seções
 A biblioteca de imagens local usa um modal global (`ImageLibraryModal`). Para que ela funcione nativamente com novos componentes e seções recém-criadas, o gerenciador de estado (`useImagePicker.ts`) deve obrigatoriamente armazenar a `sectionKey` no momento da abertura do modal. 

@@ -6,6 +6,7 @@ import { ADMIN_ROUTES } from '../config/adminRoutes';
 import type { AdminRouteId } from '../config/adminRoutes';
 import type { CmsLandingData, CmsLanguage } from '../../../types/cms';
 import type { CmsLandingByLanguage } from '../types';
+import { getRtdbConfig } from '../config/rtdbRouting';
 import { isGlobalSection, normalizeAboutMedia, parsePathSegment } from '../utils/cmsNormalize';
 import { getValueAtPath } from '../utils/editorPath';
 
@@ -59,59 +60,58 @@ export function useAdminRoute(
       const language = languagePart as CmsLanguage;
       const section = sectionPart as keyof CmsLandingData;
 
-      if (section === 'projects') {
-        const typedPath = rawPath.map(parsePathSegment);
-        const sourceSection = cmsData[language][section];
-        const value = typedPath.length > 0 ? getValueAtPath(sourceSection, typedPath) : sourceSection;
-        
-        // Ensure index is number if rawPath has length >= 2 e.g. ["projects", 0, "title"]
-        const fieldName = rawPath[rawPath.length - 1];
-        
-        // If rawPath is empty or just ["projects"], it means the whole array is replaced (e.g. reorder or remove).
-        // Since we edit via specific fields, usually rawPath has length > 1.
-        // If rawPath is empty or length 1, we shouldn't get here because we mark specific fields dirty.
-        // Wait, if an item is added/removed, the whole array might be dirty.
+      const rtdbConfig = getRtdbConfig(section, isGlobalSection(section));
+      const { basePath, strategy, splitConfig } = rtdbConfig;
+      
+      const typedPath = rawPath.map(parsePathSegment);
+      const sourceSection = cmsData[language][section];
+      const value = typedPath.length > 0 ? getValueAtPath(sourceSection, typedPath) : sourceSection;
+
+      if (strategy === 'split-array' && splitConfig) {
+        const fieldName = rawPath[rawPath.length - 1] as string;
+
         if (rawPath.length === 0) {
-           // We'd have to sync the whole array to global, pt, and en, which is tricky.
-           // AdminPage adds/removes items by updating the whole array path.
-           // If value is the whole array:
-           const projectsArray = value as any[];
-           const globalProjects = projectsArray.map(p => ({ id: p.id, image: p.image, location: p.location, actionHref: p.actionHref }));
-           const ptProjects = (cmsData.pt.projects || []).map(p => ({ id: p.id, title: p.title, bodyMd: p.bodyMd, actionLabel: p.actionLabel }));
-           const enProjects = (cmsData.en.projects || []).map(p => ({ id: p.id, title: p.title, bodyMd: p.bodyMd, actionLabel: p.actionLabel }));
+           const arrayValue = value as any[];
+           const globalItems = arrayValue.map(p => {
+             const obj: any = {};
+             splitConfig.globalFields.forEach(f => obj[f] = p[f]);
+             splitConfig.duplicatedFields?.forEach(f => obj[f] = p[f]);
+             return obj;
+           });
            
-           partialPayload[`cms/v2/projects/global/projects`] = globalProjects;
-           partialPayload[`cms/v2/projects/pt/projects`] = ptProjects;
-           partialPayload[`cms/v2/projects/en/projects`] = enProjects;
+           const extractLocal = (langData: any) => (langData[section] || []).map((p: any) => {
+             const obj: any = {};
+             splitConfig.localFields.forEach(f => obj[f] = p[f]);
+             splitConfig.duplicatedFields?.forEach(f => obj[f] = p[f]);
+             return obj;
+           });
+
+           partialPayload[`${basePath}/global/${section}`] = globalItems;
+           partialPayload[`${basePath}/pt/${section}`] = extractLocal(cmsData.pt);
+           partialPayload[`${basePath}/en/${section}`] = extractLocal(cmsData.en);
         } else {
-           // Field specific update e.g. ["0", "title"]
            const index = rawPath[0];
-           if (['image', 'location', 'actionHref'].includes(fieldName)) {
-             partialPayload[`cms/v2/projects/global/projects/${index}/${fieldName}`] = value ?? null;
-           } else if (['title', 'bodyMd', 'actionLabel'].includes(fieldName)) {
-             partialPayload[`cms/v2/projects/${language}/projects/${index}/${fieldName}`] = value ?? null;
-           } else if (fieldName === 'id') {
-             partialPayload[`cms/v2/projects/global/projects/${index}/id`] = value ?? null;
-             partialPayload[`cms/v2/projects/pt/projects/${index}/id`] = value ?? null;
-             partialPayload[`cms/v2/projects/en/projects/${index}/id`] = value ?? null;
+           if (splitConfig.globalFields.includes(fieldName)) {
+             partialPayload[`${basePath}/global/${section}/${index}/${fieldName}`] = value ?? null;
+           } else if (splitConfig.localFields.includes(fieldName)) {
+             partialPayload[`${basePath}/${language}/${section}/${index}/${fieldName}`] = value ?? null;
+           } else if (splitConfig.duplicatedFields?.includes(fieldName)) {
+             partialPayload[`${basePath}/global/${section}/${index}/${fieldName}`] = value ?? null;
+             partialPayload[`${basePath}/pt/${section}/${index}/${fieldName}`] = value ?? null;
+             partialPayload[`${basePath}/en/${section}/${index}/${fieldName}`] = value ?? null;
            } else {
-             partialPayload[`cms/v2/projects/${language}/projects/${rawPath.join('/')}`] = value ?? null;
+             partialPayload[`${basePath}/${language}/${section}/${rawPath.join('/')}`] = value ?? null;
            }
         }
-      } else if (isGlobalSection(section)) {
-        // Global sections are stored under /global/{section}
+      } else if (strategy === 'standard-global') {
         const currentSection =
           section === 'aboutMedia'
-            ? normalizeAboutMedia(cmsData.pt.aboutMedia, true)
+            ? normalizeAboutMedia(cmsData.pt.aboutMedia as any, true)
             : cmsData.pt[section];
-        const typedPath = rawPath.map(parsePathSegment);
-        const value = typedPath.length > 0 ? getValueAtPath(currentSection, typedPath) : currentSection;
-        partialPayload[`cms/v2/landing/global/${section}/${rawPath.join('/')}`] = value ?? null;
+        const globalValue = typedPath.length > 0 ? getValueAtPath(currentSection, typedPath) : currentSection;
+        partialPayload[`${basePath}/global/${section}/${rawPath.join('/')}`] = globalValue ?? null;
       } else {
-        const typedPath = rawPath.map(parsePathSegment);
-        const sourceSection = cmsData[language][section];
-        const value = typedPath.length > 0 ? getValueAtPath(sourceSection, typedPath) : sourceSection;
-        partialPayload[`cms/v2/landing/${language}/${section}/${rawPath.join('/')}`] = value ?? null;
+        partialPayload[`${basePath}/${language}/${section}/${rawPath.join('/')}`] = value ?? null;
       }
     });
 
