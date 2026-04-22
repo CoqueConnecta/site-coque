@@ -8,24 +8,27 @@ import { ProjectCard } from '../components/composites/ProjectCard';
 import { useCmsProjectsData } from '../hooks/useCmsProjectsData';
 import type { PublicLayoutContextValue } from './PublicLayout';
 
-const ITEMS_PER_PAGE = 4;
+import { FadeIn } from '../components/ui/FadeIn';
+
+const INITIAL_ITEMS = 5; // 2 on first row, 3 on second row
+const LOAD_MORE_ITEMS = 3;
 
 export default function ProjectsPage() {
   const { language } = useOutletContext<PublicLayoutContextValue>();
   const { data, isLoading } = useCmsProjectsData(language);
-  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_ITEMS);
 
   const projects = data.projects;
   const visibleProjects = projects.slice(0, visibleCount);
   const hasMore = visibleCount < projects.length;
 
   const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + ITEMS_PER_PAGE);
+    setVisibleCount((prev) => prev + LOAD_MORE_ITEMS);
   };
 
   const pageTitle = language === 'pt' ? 'Nossos Projetos' : 'Our Projects';
-  const pageDescription = language === 'pt' 
-    ? 'Conheça as iniciativas que transformam a realidade da nossa comunidade.' 
+  const pageDescription = language === 'pt'
+    ? 'Conheça as iniciativas que transformam a realidade da nossa comunidade.'
     : 'Discover the initiatives that transform the reality of our community.';
   const loadMoreText = language === 'pt' ? 'CARREGAR MAIS' : 'LOAD MORE';
 
@@ -47,18 +50,34 @@ export default function ProjectsPage() {
           </div>
         ) : (
           <div className="space-y-12">
-            <ProjectGrid>
-              {visibleProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </ProjectGrid>
+            {/* First Row: 2 projects side by side */}
+            {visibleProjects.length > 0 && (
+              <ProjectGrid>
+                {visibleProjects.slice(0, 2).map((project, index) => (
+                  <FadeIn key={project.id} delay={index * 100}>
+                    <ProjectCard project={project} />
+                  </FadeIn>
+                ))}
+              </ProjectGrid>
+            )}
+
+            {/* Subsequent Rows: 3 projects side by side */}
+            {visibleProjects.length > 2 && (
+              <ProjectGrid className="lg:grid-cols-3">
+                {visibleProjects.slice(2).map((project, index) => (
+                  <FadeIn key={project.id} delay={index * 100}>
+                    <ProjectCard project={project} />
+                  </FadeIn>
+                ))}
+              </ProjectGrid>
+            )}
 
             {hasMore && (
               <div className="flex justify-center">
                 <Button
                   variant="ghost"
                   onClick={handleLoadMore}
-                  className="font-semibold uppercase tracking-wider text-[color:var(--color-text-secondary)]"
+                  className="cursor-pointer font-semibold uppercase tracking-wider text-[color:var(--color-text-secondary)]"
                 >
                   {loadMoreText}
                 </Button>

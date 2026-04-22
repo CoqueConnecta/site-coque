@@ -115,7 +115,19 @@ export function useAdminRoute(
       }
     });
 
-    const savePromise = update(ref(database), partialPayload).then(() => {
+    const finalPayload: Record<string, unknown> = {};
+    const sortedKeys = Object.keys(partialPayload).sort();
+
+    sortedKeys.forEach((key) => {
+      const isDescendant = Object.keys(finalPayload).some((ancestorKey) =>
+        key.startsWith(`${ancestorKey}/`)
+      );
+      if (!isDescendant) {
+        finalPayload[key] = partialPayload[key];
+      }
+    });
+
+    const savePromise = update(ref(database), finalPayload).then(() => {
       setOriginalCmsData(cmsData);
       setDirtyFields((prev) => {
         const next: Record<string, true> = {};
