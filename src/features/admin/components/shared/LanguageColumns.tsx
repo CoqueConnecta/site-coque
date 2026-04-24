@@ -1,5 +1,5 @@
 import * as Tabs from '@radix-ui/react-tabs';
-import type { CmsLanguage } from '../../../types/cms';
+import type { CmsLanguage } from '../../../../types/cms';
 
 type LanguageColumnsProps = {
   mobileLanguage: CmsLanguage;

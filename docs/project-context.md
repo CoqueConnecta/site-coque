@@ -22,7 +22,7 @@ O projeto é o site institucional da ONG Coque Connecta, com:
 - área pública em React + Vite;
 - conteúdo gerenciado via Firebase Realtime Database em `cms/v2`;
 - painel `/admin` protegido por autenticação Firebase;
-- páginas públicas principais para Home, Privacidade e Transparência.
+- páginas públicas: Home, Nossos Projetos, Privacidade e Transparência.
 
 ## Stack atual
 
@@ -145,19 +145,21 @@ O admin atual foi reorganizado por rota pública real, não mais por seção sol
 Rotas do admin:
 
 - Home
+- Nossos Projetos
 - Privacy
 - Transparency
 
 Base técnica do admin:
 
-- `src/pages/AdminPage.tsx`
-- `src/features/admin/config/adminRoutes.ts`
-- `src/features/admin/hooks/useAdminRoute.tsx`
-- `src/features/admin/hooks/useAdminData.ts`
-- `src/features/admin/hooks/useDirtyFields.ts`
-- `src/features/admin/components/AdminLayout.tsx`
-- `src/features/admin/components/AdminPageHeader.tsx`
-- `src/features/admin/components/SectionCard.tsx`
+- `src/pages/AdminPage.tsx` — orquestra a rota ativa delegando para o componente de rota correto
+- `src/features/admin/config/adminRoutes.ts` — declaração de rotas e seções do painel
+- `src/features/admin/config/rtdbRouting.ts` — mapa declarativo de estratégias de persistência por `sectionKey`
+- `src/features/admin/hooks/useAdminRoute.tsx` — motor de salvamento; constrói payload e chama Firebase `update`
+- `src/features/admin/hooks/useAdminData.ts` — carrega e mescla dados de múltiplas coleções RTDB
+- `src/features/admin/hooks/useDirtyFields.ts` — rastreamento de campos alterados
+- `src/features/admin/routes/` — organização por rota pública (`home/`, `projects/`, `privacy/`, `transparency/`)
+- `src/features/admin/shared/` — componentes de formulário reutilizáveis (`ImageField`, `AdminEditorCard`, etc.)
+- `src/features/admin/layout/` — casca do painel (`AdminLayout`, `AdminPageHeader`)
 
 Comportamento atual do admin:
 
@@ -195,26 +197,36 @@ Objetivo dessas decisões:
 ```txt
 src/
   components/
-    composites/
+    composites/      # ProjectCard, ProjectGrid, etc.
     icons/
-    sections/
-    ui/
+    sections/        # Seções públicas (Hero, About, etc.)
+    ui/              # Átomos: Button, FadeIn, Modal, etc.
   data/
   features/
     admin/
-      components/
-      config/
-      hooks/
+      config/        # adminRoutes.ts, rtdbRouting.ts
+      hooks/         # useAdminRoute, useAdminData, useDirtyFields
+      layout/        # AdminLayout, AdminPageHeader
+      routes/        # Pastas por rota pública do admin
+        home/
+          editors/   # HeroEditor, CarouselEditor, YoutubeEditor, etc.
+        projects/
+          editors/   # ProjectsEditor
+        privacy/
+        transparency/
+      shared/        # Componentes de formulário reutilizáveis
+      types.ts
       utils/
-  hooks/
+  hooks/             # useCmsLandingData, useCmsProjectsData
   pages/
   services/
   types/
 docs/
   project-context.md
+  backlog.md
+  walkthrough.md
   archive/
 firebase.ts
-refactor-context.md
 ```
 
 ## Comandos principais
@@ -264,7 +276,7 @@ Regra prática de atualização:
 
 ## Lições Aprendidas: Extensão do Admin e Integrações (CMS v2)
 
-Durante a integração da funcionalidade "Nossos Projetos" (que exigia gravar e ler de uma coleção RTDB separada `cms/v2/projects`, em oposição ao padrão `cms/v2/landing`), consolidadaram-se três padrões arquiteturais críticos que devem ser seguidos em futuras evoluções:
+Durante a integração da funcionalidade "Nossos Projetos" (que exigia gravar e ler de uma coleção RTDB separada `cms/v2/projects`, em oposição ao padrão `cms/v2/landing`), consolidadaram-se cinco padrões arquiteturais críticos que devem ser seguidos em futuras evoluções:
 
 ### 1. Adicionando seções apontando para novas coleções RTDB
 Não limite o hook de dados a um único endpoint. Quando uma nova seção exigir uma nova árvore no Firebase:
@@ -284,3 +296,14 @@ Ao criar listas (arrays) onde os itens possuem campos globais (ex: Imagem, ID) e
 - Quando o usuário clicar em "Adicionar" ou "Remover", o componente deve disparar as ações para `pt` e `en` _simultaneamente_.
 - Renderize os campos globais apenas uma vez no card. Qualquer mudança neles dispara atualizações para os arrays em memória de `pt` e `en`.
 - Logo abaixo, renderize os inputs localizados (ex: Título PT vs Título EN) lado a lado, direcionando cada mudança para sua respectiva linguagem no array. Isso garante sincronia estrutural absoluta com uma experiência de uso excepcional.
+
+### 4. Sanitização de payload antes do Firebase `update` (ancestor path conflict)
+O Firebase RTDB lança `validateFirebaseMergePaths` se o payload passado ao `update()` contiver ao mesmo tempo um caminho pai e um caminho filho (ex: `/projects` e `/projects/8/actionLabel`). Isso ocorre tipicamente ao adicionar um novo item a um array: o item inteiro e os campos individualmente ficam ambos como "dirty".
+- **A Solução (já implementada em `useAdminRoute.tsx`):** Antes de chamar `update`, ordene as chaves do payload e filtre quaisquer chaves que sejam descendentes de outra chave já presente no payload. O caminho pai engloba o filho; mantenha somente o pai.
+- **Regra:** Sempre que o hook montar um payload que possa incluir uma lista inteira e campos individuais dessa lista, aplique esse filtro.
+
+### 5. Grid assimétrico com paginação coerente (layout `2+3`)
+Ao implementar layouts onde a primeira linha tem N colunas e as seguintes têm M colunas, a lógica de paginação inicial e de carregamento incremental deve respeitar essa assimetria.
+- **Regra atual (ProjectsPage):** `INITIAL_ITEMS = 5` (preenche a primeira linha com 2 e a segunda com 3) e `LOAD_MORE_ITEMS = 3` (carrega sempre em múltiplos de 3 para manter o grid inferior alinhado).
+- Qualquer alteração no número de colunas de qualquer grid deve revisitar essas constantes para evitar linhas incompletas ou espaços em branco indesejados.
+- Os dois grupos de projetos são renderizados em `<ProjectGrid>` separados com classes distintas (`grid-cols-2` e `lg:grid-cols-3`).

@@ -5,20 +5,17 @@ import { signOut } from 'firebase/auth';
 import toast from 'react-hot-toast';
 import { auth } from '../../firebase';
 import { cmsFallbackByLanguage } from '../data/cmsFallback';
-import { ImageField } from '../features/admin/components/ImageField';
-import { ImageLibraryModal } from '../features/admin/components/ImageLibraryModal';
-import { AdminLayout } from '../features/admin/components/AdminLayout';
-import { AdminPageHeader } from '../features/admin/components/AdminPageHeader';
-import { SectionCard } from '../features/admin/components/SectionCard';
-import { AdminDiscardModal } from '../features/admin/components/AdminDiscardModal';
-import { GalleryEditor } from '../features/admin/components/sections/GalleryEditor';
-import { DynamicSectionEditor } from '../features/admin/components/sections/DynamicSectionEditor';
-import { HeroEditor } from '../features/admin/components/sections/HeroEditor';
-import { NavEditor } from '../features/admin/components/sections/NavEditor';
-import { StatsEditor } from '../features/admin/components/sections/StatsEditor';
-import { FooterEditor } from '../features/admin/components/sections/FooterEditor';
-import { AboutMediaEditor } from '../features/admin/components/sections/AboutMediaEditor';
-import { ProjectsEditor } from '../features/admin/components/sections/ProjectsEditor';
+import { ImageField } from '../features/admin/components/shared/ImageField';
+import { ImageLibraryModal } from '../features/admin/components/layout/ImageLibraryModal';
+import { AdminLayout } from '../features/admin/components/layout/AdminLayout';
+import { AdminPageHeader } from '../features/admin/components/layout/AdminPageHeader';
+import { AdminDiscardModal } from '../features/admin/components/layout/AdminDiscardModal';
+
+import { HomeRoute } from '../features/admin/routes/home/HomeRoute';
+import { ProjectsRoute } from '../features/admin/routes/projects/ProjectsRoute';
+import { PrivacyRoute } from '../features/admin/routes/privacy/PrivacyRoute';
+import { TransparencyRoute } from '../features/admin/routes/transparency/TransparencyRoute';
+
 import { useAdminData } from '../features/admin/hooks/useAdminData';
 import { useDirtyFields } from '../features/admin/hooks/useDirtyFields';
 import { useImagePicker } from '../features/admin/hooks/useImagePicker';
@@ -58,7 +55,6 @@ export default function AdminPage() {
     activeRouteId,
     setActiveRouteId,
     activeRoute,
-    activeSection,
     routeDirtyCount,
     handleSaveRoute,
     handleDiscardRoute,
@@ -266,110 +262,6 @@ export default function AdminPage() {
   const getSectionDirtyCount = (sectionKey: keyof CmsLandingData, aboutMediaMode?: 'carousel' | 'youtubeVideos') =>
     sectionNavDirtyCount({ section: sectionKey, aboutMediaMode });
 
-  const renderSectionContent = (
-    sectionKey: keyof CmsLandingData,
-    aboutMediaMode?: 'carousel' | 'youtubeVideos',
-  ) => {
-    if (!cmsData) return null;
-
-    const onFieldChange = (language: CmsLanguage, path: Array<string | number>, value: unknown) =>
-      handleSectionFieldChange(sectionKey, language, path, value);
-    const onAdd = (language: CmsLanguage, path: Array<string | number>) =>
-      handleAddArrayItem(sectionKey, language, path);
-    const onRemove = (language: CmsLanguage, path: Array<string | number>, index: number) =>
-      handleRemoveArrayItem(sectionKey, language, path, index);
-    const onImageField = (language: CmsLanguage, value: string, path: Array<string | number>, label: string, placeholder?: string) =>
-      renderImageField(sectionKey, language, value, path, label, placeholder);
-
-    const mobileMask = sectionKey === 'aboutMedia'
-      ? ''
-      : mobileLanguage === 'pt'
-        ? 'max-lg:[&>div>div:nth-child(2)]:hidden'
-        : 'max-lg:[&>div>div:nth-child(1)]:hidden';
-
-    if (sectionKey === 'hero') {
-      return (
-        <div className={mobileMask}>
-          <HeroEditor cmsData={cmsData} isFieldDirty={isFieldDirty} onHeroFieldChange={handleHeroFieldChange} renderImageField={onImageField} />
-        </div>
-      );
-    }
-    if (sectionKey === 'nav') {
-      return (
-        <div className={mobileMask}>
-          <NavEditor cmsData={cmsData} isFieldDirty={isFieldDirty} onSectionFieldChange={onFieldChange} onAddArrayItem={onAdd} onRemoveArrayItem={onRemove} />
-        </div>
-      );
-    }
-    if (sectionKey === 'gallery') {
-      return (
-        <div className={mobileMask}>
-          <GalleryEditor
-            cmsData={cmsData}
-            isFieldDirty={isFieldDirty}
-            onSectionFieldChange={onFieldChange}
-            onAddArrayItem={onAdd}
-            onRemoveArrayItem={onRemove}
-            onToggleGalleryBlockquote={(language, cardIndex, enabled) => handleToggleGalleryBlockquote(sectionKey, language, cardIndex, enabled)}
-            renderImageField={onImageField}
-          />
-        </div>
-      );
-    }
-    if (sectionKey === 'aboutMedia') {
-      const mode = aboutMediaMode ?? 'carousel';
-      return (
-        <div>
-          <AboutMediaEditor
-            mode={mode}
-            cmsData={cmsData}
-            isFieldDirty={isFieldDirty}
-            onSectionFieldChange={onFieldChange}
-            onAddArrayItem={onAdd}
-            onRemoveArrayItem={onRemove}
-            renderImageField={onImageField}
-          />
-        </div>
-      );
-    }
-    if (sectionKey === 'stats') {
-      return (
-        <div className={mobileMask}>
-          <StatsEditor cmsData={cmsData} isFieldDirty={isFieldDirty} onSectionFieldChange={onFieldChange} onAddArrayItem={onAdd} onRemoveArrayItem={onRemove} />
-        </div>
-      );
-    }
-    if (sectionKey === 'footer') {
-      return (
-        <div className={mobileMask}>
-          <FooterEditor cmsData={cmsData} isFieldDirty={isFieldDirty} onSectionFieldChange={onFieldChange} onAddArrayItem={onAdd} onRemoveArrayItem={onRemove} />
-        </div>
-      );
-    }
-    if (sectionKey === 'projects') {
-      return (
-        <div className={mobileMask}>
-          <ProjectsEditor cmsData={cmsData} isFieldDirty={isFieldDirty} onSectionFieldChange={onFieldChange} onAddArrayItem={onAdd} onRemoveArrayItem={onRemove} renderImageField={onImageField} />
-        </div>
-      );
-    }
-
-    return (
-      <div className={mobileMask}>
-        <DynamicSectionEditor
-          sectionName={String(sectionKey)}
-          ptValue={cmsData.pt[sectionKey]}
-          enValue={cmsData.en[sectionKey]}
-          isFieldDirty={isFieldDirty}
-          onSectionFieldChange={onFieldChange}
-          onAddArrayItem={onAdd}
-          onRemoveArrayItem={onRemove}
-          renderImageField={onImageField}
-        />
-      </div>
-    );
-  };
-
   if (!cmsData) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-50 text-gray-500 text-sm">
@@ -380,6 +272,19 @@ export default function AdminPage() {
 
   const totalRouteDirty = routeDirtyCount(activeRouteId);
 
+  const routeProps = {
+    cmsData,
+    mobileLanguage,
+    isFieldDirty,
+    onSectionFieldChange: handleSectionFieldChange,
+    onAddArrayItem: handleAddArrayItem,
+    onRemoveArrayItem: handleRemoveArrayItem,
+    onHeroFieldChange: handleHeroFieldChange,
+    onToggleGalleryBlockquote: handleToggleGalleryBlockquote,
+    renderImageField: renderImageField,
+    getSectionDirtyCount,
+  };
+
   return (
     <AdminLayout
       activeRouteId={activeRouteId}
@@ -388,24 +293,23 @@ export default function AdminPage() {
       onLogout={handleLogout}
     >
       <div className="p-4 lg:p-8 space-y-6">
-        {activeSection !== 'aboutMedia' && (
-          <div className="lg:hidden flex rounded-lg bg-gray-100 p-1 gap-1">
-            {(['pt', 'en'] as const).map((lang) => (
-              <button
-                key={lang}
-                type="button"
-                onClick={() => setMobileLanguage(lang)}
-                className={`flex-1 rounded-md px-3 py-2 text-sm font-semibold transition-all ${
-                  mobileLanguage === lang
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600'
-                }`}
-              >
-                {lang === 'pt' ? 'Português' : 'English'}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Mobile Language Toggle */}
+        <div className="lg:hidden flex rounded-lg bg-gray-100 p-1 gap-1">
+          {(['pt', 'en'] as const).map((lang) => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => setMobileLanguage(lang)}
+              className={`flex-1 rounded-md px-3 py-2 text-sm font-semibold transition-all ${
+                mobileLanguage === lang
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600'
+              }`}
+            >
+              {lang === 'pt' ? 'Português' : 'English'}
+            </button>
+          ))}
+        </div>
 
         <AdminPageHeader
           title={activeRoute.label}
@@ -416,22 +320,10 @@ export default function AdminPage() {
         />
 
         <div className="space-y-4">
-          {activeRoute.sections.map((sectionCfg) => (
-            <SectionCard
-              key={`${sectionCfg.key}:${sectionCfg.aboutMediaMode ?? 'default'}`}
-              title={sectionCfg.label}
-              dirtyCount={
-                sectionCfg.key === 'aboutMedia' && sectionCfg.aboutMediaMode
-                  ? getSectionDirtyCount('aboutMedia', sectionCfg.aboutMediaMode)
-                  : sectionCfg.key === 'aboutMedia'
-                    ? getSectionDirtyCount('aboutMedia', 'carousel') + getSectionDirtyCount('aboutMedia', 'youtubeVideos')
-                  : getSectionDirtyCount(sectionCfg.key)
-              }
-              defaultOpen={activeRoute.sections.length === 1}
-            >
-              {renderSectionContent(sectionCfg.key, sectionCfg.aboutMediaMode)}
-            </SectionCard>
-          ))}
+          {activeRouteId === 'home' && <HomeRoute {...routeProps} />}
+          {activeRouteId === 'projects' && <ProjectsRoute {...routeProps} />}
+          {activeRouteId === 'privacy' && <PrivacyRoute {...routeProps} />}
+          {activeRouteId === 'transparency' && <TransparencyRoute {...routeProps} />}
         </div>
       </div>
 

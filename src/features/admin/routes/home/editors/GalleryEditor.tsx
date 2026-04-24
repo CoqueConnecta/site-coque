@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import type { CmsLanguage } from '../../../../types/cms';
-import type { CmsLandingByLanguage } from '../../types';
-import { AdminEditorCard } from '../AdminEditorCard';
+import type { CmsLanguage } from '../../../../../types/cms';
+import type { CmsLandingByLanguage } from '../../../types';
+import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminCheckboxClass,
   adminDangerButtonClass,
@@ -15,7 +15,7 @@ import {
   getAdminInputClass,
   getAdminSelectClass,
   getAdminTextareaClass,
-} from '../adminEditorStyles';
+} from '../../../components/shared/adminEditorStyles';
 
 type GalleryEditorProps = {
   cmsData: CmsLandingByLanguage;

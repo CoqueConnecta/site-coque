@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
-import type { CmsLanguage } from '../../../../types/cms';
-import type { CmsLandingByLanguage } from '../../types';
-import { AdminEditorCard } from '../AdminEditorCard';
+import type { CmsLanguage } from '../../../../../types/cms';
+import type { CmsLandingByLanguage } from '../../../types';
+import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,
   getAdminInputClass,
   getAdminTextareaClass,
-} from '../adminEditorStyles';
+} from '../../../components/shared/adminEditorStyles';
 
 type HeroEditorProps = {
   cmsData: CmsLandingByLanguage;

@@ -1,6 +1,6 @@
-import type { CmsLanguage } from '../../../../types/cms';
-import type { CmsLandingByLanguage } from '../../types';
-import { AdminEditorCard } from '../AdminEditorCard';
+import type { CmsLanguage } from '../../../../../types/cms';
+import type { CmsLandingByLanguage } from '../../../types';
+import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminDangerButtonClass,
   adminFieldLabelClass,
@@ -12,7 +12,7 @@ import {
   adminSectionTitleClass,
   getAdminInputClass,
   getAdminTextareaClass,
-} from '../adminEditorStyles';
+} from '../../../components/shared/adminEditorStyles';
 
 type FooterEditorProps = {
   cmsData: CmsLandingByLanguage;

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Layers } from 'lucide-react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
-import { auth } from '../../../../firebase';
-import { ADMIN_ROUTES } from '../config/adminRoutes';
-import type { AdminRouteId } from '../config/adminRoutes';
+import { auth } from '../../../../../firebase';
+import { ADMIN_ROUTES } from '../../config/adminRoutes';
+import type { AdminRouteId } from '../../config/adminRoutes';
 import { AdminUserMenu } from './AdminUserMenu';
 
 type AdminLayoutProps = {

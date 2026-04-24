@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { CmsLanguage } from '../../../../types/cms';
 import { isRecord } from '../../utils/editorPath';
-import { AdminEditorCard } from '../AdminEditorCard';
+import { AdminEditorCard } from './AdminEditorCard';
 import {
   adminCheckboxClass,
   adminDangerButtonClass,
@@ -15,7 +15,7 @@ import {
   adminSectionTitleClass,
   getAdminInputClass,
   getAdminTextareaClass,
-} from '../adminEditorStyles';
+} from './adminEditorStyles';
 
 type DynamicSectionEditorProps = {
   sectionName: string;
