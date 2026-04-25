@@ -2,21 +2,15 @@ import { useState } from 'react';
 import { Modal } from '../Modal';
 import { Typography } from '../../ui/Typography';
 import { Play } from 'lucide-react'; 
-import type { CmsYoutubeVideo } from '../../../types/cms';
+import type { ResolvedYoutubeVideo } from '../../../types/cms';
 
-const mockVideos: CmsYoutubeVideo[] = [
-  {
-    id: 'rwniUxBd5OI',
-    title: 'Exemplo de vídeo 1'
-  },
-  {
-    id: 'F5g_i93m-lU',
-    title: 'Exemplo de vídeo 2'
-  }
+const mockVideos: ResolvedYoutubeVideo[] = [
+  { id: 'rwniUxBd5OI', title: 'Exemplo de vídeo 1' },
+  { id: 'F5g_i93m-lU', title: 'Exemplo de vídeo 2' },
 ];
 
 interface YouTubeFeedProps {
-  videos?: CmsYoutubeVideo[];
+  videos?: ResolvedYoutubeVideo[];
 }
 
 export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {

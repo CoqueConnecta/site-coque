@@ -1,16 +1,14 @@
-import { Home, Lock, FileText, FolderOpen } from 'lucide-react';
+import { Home, Lock, FileText, FolderOpen, Settings } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { CmsLandingData } from '../../../types/cms';
 
 export interface AdminSectionConfig {
-  key: keyof CmsLandingData;
+  /** Unique key for this section, used as sectionPath in dirty tracking and rtdbRouting */
+  key: string;
   label: string;
-  isGlobal: boolean;
-  aboutMediaMode?: 'carousel' | 'youtubeVideos';
 }
 
 export interface AdminRouteConfig {
-  id: 'home' | 'privacy' | 'transparency' | 'projects';
+  id: 'home' | 'privacy' | 'transparency' | 'projects' | 'settings';
   label: string;
   description: string;
   icon: LucideIcon;
@@ -24,33 +22,12 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
     description: 'Página principal do site',
     icon: Home,
     sections: [
-      { key: 'nav',         label: 'Navegação',     isGlobal: true  },
-      { key: 'hero',        label: 'Hero',           isGlobal: false },
-      { key: 'about',       label: 'Quem Somos',    isGlobal: false },
-      { key: 'aboutMedia',  label: 'Carrossel',      isGlobal: true, aboutMediaMode: 'carousel' },
-      { key: 'aboutMedia',  label: 'YouTube Videos', isGlobal: true, aboutMediaMode: 'youtubeVideos' },
-      { key: 'gallery',    label: 'Galeria',         isGlobal: false },
-      { key: 'stats',      label: 'Estatísticas',    isGlobal: true  },
-      { key: 'newsletter', label: 'Newsletter',      isGlobal: false },
-      { key: 'footer',     label: 'Rodapé',          isGlobal: true  },
-    ],
-  },
-  {
-    id: 'privacy',
-    label: 'Privacidade',
-    description: 'Política de privacidade',
-    icon: Lock,
-    sections: [
-      { key: 'privacy', label: 'Privacidade', isGlobal: false },
-    ],
-  },
-  {
-    id: 'transparency',
-    label: 'Transparência',
-    description: 'Página de transparência',
-    icon: FileText,
-    sections: [
-      { key: 'transparency', label: 'Transparência', isGlobal: false },
+      { key: 'pages.home.hero',          label: 'Hero'           },
+      { key: 'pages.home.about',         label: 'Quem Somos'     },
+      { key: 'pages.home.carousel',      label: 'Carrossel'      },
+      { key: 'pages.home.youtubeVideos', label: 'YouTube Videos' },
+      { key: 'pages.home.gallery',       label: 'Galeria'        },
+      { key: 'pages.home.stats',         label: 'Estatísticas'   },
     ],
   },
   {
@@ -59,7 +36,36 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
     description: 'Gerenciar projetos',
     icon: FolderOpen,
     sections: [
-      { key: 'projects', label: 'Projetos', isGlobal: false },
+      { key: 'pages.projects', label: 'Projetos' },
+    ],
+  },
+  {
+    id: 'privacy',
+    label: 'Privacidade',
+    description: 'Política de privacidade',
+    icon: Lock,
+    sections: [
+      { key: 'pages.privacy', label: 'Privacidade' },
+    ],
+  },
+  {
+    id: 'transparency',
+    label: 'Transparência',
+    description: 'Página de transparência',
+    icon: FileText,
+    sections: [
+      { key: 'pages.transparency', label: 'Transparência' },
+    ],
+  },
+  {
+    id: 'settings',
+    label: 'Configurações',
+    description: 'Navegação, rodapé e newsletter',
+    icon: Settings,
+    sections: [
+      { key: 'shared.nav',        label: 'Navegação'   },
+      { key: 'shared.footer',     label: 'Rodapé'      },
+      { key: 'shared.newsletter', label: 'Newsletter'  },
     ],
   },
 ];

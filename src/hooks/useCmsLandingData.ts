@@ -1,79 +1,68 @@
 import { useEffect, useState } from 'react';
-import { getCmsLandingData } from '../services/cmsService';
-import { cmsFallbackByLanguage } from '../data/cmsFallback';
-import type { CmsLandingData, CmsLanguage } from '../types/cms';
+import type { CmsLanguage, ResolvedHeroData, ResolvedAboutData, ResolvedGalleryData, ResolvedStatsData, ResolvedYoutubeVideo } from '../types/cms';
+import type { CmsCarouselData } from '../types/cms';
+import {
+  getCmsHeroData,
+  getCmsAboutData,
+  getCmsCarouselData,
+  getCmsYoutubeData,
+  getCmsGalleryData,
+  getCmsStatsData,
+} from '../services/cmsService';
 
-const inMemoryCache: Partial<Record<CmsLanguage, CmsLandingData>> = {};
-
-function getStorageKey(language: CmsLanguage) {
-  return `cms-v2-landing-${language}`;
+export interface CmsHomeData {
+  hero: ResolvedHeroData;
+  about: ResolvedAboutData;
+  carousel: CmsCarouselData;
+  youtubeVideos: ResolvedYoutubeVideo[];
+  gallery: ResolvedGalleryData;
+  stats: ResolvedStatsData;
 }
 
-function getCachedFromStorage(language: CmsLanguage): CmsLandingData | null {
-  try {
-    const raw = window.sessionStorage.getItem(getStorageKey(language));
-    if (!raw) {
-      return null;
-    }
-    return JSON.parse(raw) as CmsLandingData;
-  } catch {
-    return null;
-  }
-}
+const EMPTY_HOME: CmsHomeData = {
+  hero:          { backgroundImage: '', headline: '', subheadline: '', ctaText: '' },
+  about:         { headline: '', subheadline: '', description: '', subdescription: '', mission: { title: '', description: '' }, vision: { title: '', description: '' }, values: { title: '', items: [] } },
+  carousel:      { images: [] },
+  youtubeVideos: [],
+  gallery:       { headline: '', subtitle: '', cards: [] },
+  stats:         { items: [] },
+};
 
-function setCache(language: CmsLanguage, data: CmsLandingData) {
-  inMemoryCache[language] = data;
-  try {
-    window.sessionStorage.setItem(getStorageKey(language), JSON.stringify(data));
-  } catch {
-    // Ignora erros de armazenamento local (quota/permissoes)
-  }
-}
+const inMemoryCache: Partial<Record<CmsLanguage, CmsHomeData>> = {};
 
 export function useCmsLandingData(language: CmsLanguage) {
-  const [data, setData] = useState<CmsLandingData>(() => {
-    return inMemoryCache[language] ?? cmsFallbackByLanguage[language];
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<CmsHomeData>(inMemoryCache[language] ?? EMPTY_HOME);
+  const [isLoading, setIsLoading] = useState(!inMemoryCache[language]);
 
   useEffect(() => {
     let isMounted = true;
 
-    const cached = inMemoryCache[language] ?? getCachedFromStorage(language);
-    if (cached) {
-      setData(cached);
+    if (inMemoryCache[language]) {
+      setData(inMemoryCache[language]!);
       setIsLoading(false);
+      return;
     }
 
-    const loadData = async () => {
-      if (!cached) {
-        setIsLoading(true);
-      }
-      const result = await getCmsLandingData(language);
+    setIsLoading(true);
 
-      if (!isMounted) {
-        return;
-      }
-
-      setCache(language, result);
-      setData(result);
+    Promise.all([
+      getCmsHeroData(language),
+      getCmsAboutData(language),
+      getCmsCarouselData(),
+      getCmsYoutubeData(language),
+      getCmsGalleryData(language),
+      getCmsStatsData(language),
+    ]).then(([hero, about, carousel, youtubeVideos, gallery, stats]) => {
+      if (!isMounted) return;
+      const resolved: CmsHomeData = { hero, about, carousel, youtubeVideos, gallery, stats };
+      inMemoryCache[language] = resolved;
+      setData(resolved);
       setIsLoading(false);
+    }).catch(() => {
+      if (isMounted) setIsLoading(false);
+    });
 
-      const alternateLanguage: CmsLanguage = language === 'pt' ? 'en' : 'pt';
-      if (!inMemoryCache[alternateLanguage]) {
-        getCmsLandingData(alternateLanguage)
-          .then((alternateData) => setCache(alternateLanguage, alternateData))
-          .catch(() => {
-            // Mantem fallback atual se o prefetch falhar
-          });
-      }
-    };
-
-    loadData();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [language]);
 
   return { data, isLoading };

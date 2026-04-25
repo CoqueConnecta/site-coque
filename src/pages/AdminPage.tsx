@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import toast from 'react-hot-toast';
 import { auth } from '../../firebase';
-import { cmsFallbackByLanguage } from '../data/cmsFallback';
 import { ImageField } from '../features/admin/components/shared/ImageField';
 import { ImageLibraryModal } from '../features/admin/components/layout/ImageLibraryModal';
 import { AdminLayout } from '../features/admin/components/layout/AdminLayout';
@@ -15,20 +14,20 @@ import { HomeRoute } from '../features/admin/routes/home/HomeRoute';
 import { ProjectsRoute } from '../features/admin/routes/projects/ProjectsRoute';
 import { PrivacyRoute } from '../features/admin/routes/privacy/PrivacyRoute';
 import { TransparencyRoute } from '../features/admin/routes/transparency/TransparencyRoute';
+import { SettingsRoute } from '../features/admin/routes/settings/SettingsRoute';
 
 import { useAdminData } from '../features/admin/hooks/useAdminData';
 import { useDirtyFields } from '../features/admin/hooks/useDirtyFields';
 import { useImagePicker } from '../features/admin/hooks/useImagePicker';
 import { useAdminRoute } from '../features/admin/hooks/useAdminRoute';
-import { isGlobalSection } from '../features/admin/utils/cmsNormalize';
 import {
   buildEmptyFromTemplate,
   getValueAtPath,
   isRecord,
   setValueAtPath,
 } from '../features/admin/utils/editorPath';
-import type { CmsLandingData, CmsLanguage } from '../types/cms';
 import type { MediaAsset } from '../features/admin/types';
+import type { CmsAdminState } from '../features/admin/types';
 
 export default function AdminPage() {
   const navigate = useNavigate();
@@ -37,8 +36,6 @@ export default function AdminPage() {
     setCmsData,
     originalCmsData,
     setOriginalCmsData,
-    mobileLanguage,
-    setMobileLanguage,
   } = useAdminData();
 
   const [isDiscardConfirmOpen, setIsDiscardConfirmOpen] = useState(false);
@@ -48,13 +45,15 @@ export default function AdminPage() {
     setDirtyFields,
     markDirtyField,
     isFieldDirty,
-    sectionNavDirtyCount,
-  } = useDirtyFields(originalCmsData, '', 'carousel');
+    sectionDirtyCount,
+  } = useDirtyFields(originalCmsData, '');
 
   const {
     activeRouteId,
     setActiveRouteId,
     activeRoute,
+    activeSectionKey,
+    setActiveSectionKey,
     routeDirtyCount,
     handleSaveRoute,
     handleDiscardRoute,
@@ -82,139 +81,80 @@ export default function AdminPage() {
     closeImagePicker,
   } = useImagePicker();
 
-  const getObjectAtPath = (source: unknown, path: Array<string | number>) => {
-    const value = getValueAtPath(source, path);
-    return isRecord(value) ? value : null;
-  };
-
-  const handleSectionFieldChange = (
-    sectionKey: keyof CmsLandingData,
-    language: CmsLanguage,
+  /**
+   * Navigate into cmsData using a dotted sectionKey, then set value at path.
+   * e.g. sectionKey = "pages.home.hero", path = ["headline", "pt"]
+   */
+  const handleFieldChange = (
+    sectionKey: string,
     path: Array<string | number>,
     value: unknown,
   ) => {
+    markDirtyField(sectionKey, path, value);
     setCmsData((prev) => {
       if (!prev) return prev;
-      if (isGlobalSection(sectionKey)) {
-        const currentGlobalSection = prev.pt[sectionKey];
-        const updatedGlobalSection = setValueAtPath(currentGlobalSection, path, value) as CmsLandingData[keyof CmsLandingData];
-        const nextValue = getValueAtPath(updatedGlobalSection, path);
-        markDirtyField('pt', sectionKey, path, nextValue);
-        markDirtyField('en', sectionKey, path, nextValue);
-        return {
-          ...prev,
-          pt: { ...prev.pt, [sectionKey]: updatedGlobalSection },
-          en: { ...prev.en, [sectionKey]: updatedGlobalSection },
-        };
+      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
+      const segments = sectionKey.split('.');
+      // Navigate to the section node
+      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
+      for (const seg of segments.slice(0, -1)) {
+        node = node[seg] as Record<string, unknown>;
       }
-      const currentSectionData = prev[language][sectionKey];
-      const updatedSectionData = setValueAtPath(currentSectionData, path, value) as CmsLandingData[keyof CmsLandingData];
-      const nextValue = getValueAtPath(updatedSectionData, path);
-      markDirtyField(language, sectionKey, path, nextValue);
-      return { ...prev, [language]: { ...prev[language], [sectionKey]: updatedSectionData } };
+      const lastSeg = segments[segments.length - 1];
+      node[lastSeg] = setValueAtPath(node[lastSeg], path, value);
+      return next;
     });
   };
 
-  const handleAddArrayItem = (
-    sectionKey: keyof CmsLandingData,
-    language: CmsLanguage,
-    path: Array<string | number>,
-  ) => {
+  const handleAddArrayItem = (sectionKey: string, path: Array<string | number>) => {
     setCmsData((prev) => {
       if (!prev) return prev;
-      if (isGlobalSection(sectionKey)) {
-        const currentGlobalSection = prev.pt[sectionKey];
-        const currentValue = getValueAtPath(currentGlobalSection, path);
-        if (!Array.isArray(currentValue)) return prev;
-        const fallbackValue = getValueAtPath(cmsFallbackByLanguage.pt[sectionKey] as unknown, path);
-        const templateSource =
-          Array.isArray(fallbackValue) && fallbackValue.length > 0
-            ? fallbackValue[0]
-            : currentValue.length > 0
-              ? currentValue[0]
-              : '';
-        const fallbackItem = buildEmptyFromTemplate(templateSource);
-        const updatedArray = [...currentValue, fallbackItem];
-        const updatedGlobalSection = setValueAtPath(currentGlobalSection, path, updatedArray) as CmsLandingData[keyof CmsLandingData];
-        markDirtyField('pt', sectionKey, path, updatedArray);
-        markDirtyField('en', sectionKey, path, updatedArray);
-        return {
-          ...prev,
-          pt: { ...prev.pt, [sectionKey]: updatedGlobalSection },
-          en: { ...prev.en, [sectionKey]: updatedGlobalSection },
-        };
-      }
-      const currentSectionData = prev[language][sectionKey];
-      const currentValue = getValueAtPath(currentSectionData, path);
+      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
+      const segments = sectionKey.split('.');
+      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
+      for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
+      const lastSeg = segments[segments.length - 1];
+      const sectionData = node[lastSeg];
+      const currentValue = getValueAtPath(sectionData, path);
       if (!Array.isArray(currentValue)) return prev;
-      const fallbackSectionData = cmsFallbackByLanguage[language][sectionKey] as unknown;
-      const fallbackValue = getValueAtPath(fallbackSectionData, path);
-      const templateSource =
-        Array.isArray(fallbackValue) && fallbackValue.length > 0
-          ? fallbackValue[0]
-          : currentValue.length > 0
-            ? currentValue[0]
-            : '';
-      const fallbackItem = buildEmptyFromTemplate(templateSource);
-      const updatedArray = [...currentValue, fallbackItem];
-      const updatedSectionData = setValueAtPath(currentSectionData, path, updatedArray) as CmsLandingData[keyof CmsLandingData];
-      markDirtyField(language, sectionKey, path, updatedArray);
-      return { ...prev, [language]: { ...prev[language], [sectionKey]: updatedSectionData } };
+      const templateSource = currentValue.length > 0 ? currentValue[0] : '';
+      const newItem = buildEmptyFromTemplate(templateSource);
+      const updatedArray = [...currentValue, newItem];
+      node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
+      markDirtyField(sectionKey, path, updatedArray);
+      return next;
     });
   };
 
   const handleRemoveArrayItem = (
-    sectionKey: keyof CmsLandingData,
-    language: CmsLanguage,
+    sectionKey: string,
     path: Array<string | number>,
     index: number,
   ) => {
     setCmsData((prev) => {
       if (!prev) return prev;
-      if (isGlobalSection(sectionKey)) {
-        const currentGlobalSection = prev.pt[sectionKey];
-        const currentValue = getValueAtPath(currentGlobalSection, path);
-        if (!Array.isArray(currentValue)) return prev;
-        const updatedArray = currentValue.filter((_, i) => i !== index);
-        const updatedGlobalSection = setValueAtPath(currentGlobalSection, path, updatedArray) as CmsLandingData[keyof CmsLandingData];
-        markDirtyField('pt', sectionKey, path, updatedArray);
-        markDirtyField('en', sectionKey, path, updatedArray);
-        return {
-          ...prev,
-          pt: { ...prev.pt, [sectionKey]: updatedGlobalSection },
-          en: { ...prev.en, [sectionKey]: updatedGlobalSection },
-        };
-      }
-      const currentSectionData = prev[language][sectionKey];
-      const currentValue = getValueAtPath(currentSectionData, path);
+      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
+      const segments = sectionKey.split('.');
+      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
+      for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
+      const lastSeg = segments[segments.length - 1];
+      const sectionData = node[lastSeg];
+      const currentValue = getValueAtPath(sectionData, path);
       if (!Array.isArray(currentValue)) return prev;
       const updatedArray = currentValue.filter((_, i) => i !== index);
-      const updatedSectionData = setValueAtPath(currentSectionData, path, updatedArray) as CmsLandingData[keyof CmsLandingData];
-      markDirtyField(language, sectionKey, path, updatedArray);
-      return { ...prev, [language]: { ...prev[language], [sectionKey]: updatedSectionData } };
+      node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
+      markDirtyField(sectionKey, path, updatedArray);
+      return next;
     });
   };
 
-  const handleHeroFieldChange = (language: CmsLanguage, field: keyof CmsLandingData['hero'], value: string) => {
-    markDirtyField(language, 'hero', [field], value);
-    setCmsData((prev) => {
-      if (!prev) return prev;
-      return { ...prev, [language]: { ...prev[language], hero: { ...prev[language].hero, [field]: value } } };
-    });
-  };
-
-  const handleToggleGalleryBlockquote = (sectionKey: keyof CmsLandingData, language: CmsLanguage, cardIndex: number, enabled: boolean) => {
-    if (!enabled) {
-      handleSectionFieldChange(sectionKey, language, ['cards', cardIndex, 'blockquote'], undefined);
-      return;
-    }
-    const fallbackBlockquote = cmsFallbackByLanguage[language].gallery.cards[cardIndex]?.blockquote ?? { text: '', authorName: '', authorAvatar: '' };
-    handleSectionFieldChange(sectionKey, language, ['cards', cardIndex, 'blockquote'], fallbackBlockquote);
+  const getObjectAtPath = (source: unknown, path: Array<string | number>) => {
+    const value = getValueAtPath(source, path);
+    return isRecord(value) ? value : null;
   };
 
   const renderImageField = (
-    sectionKey: keyof CmsLandingData,
-    language: CmsLanguage,
+    sectionKey: string,
     value: string,
     path: Array<string | number>,
     label: string,
@@ -223,23 +163,29 @@ export default function AdminPage() {
     <ImageField
       label={label}
       value={value}
-      isDirty={isFieldDirty(language, path, sectionKey)}
+      isDirty={isFieldDirty(path, sectionKey)}
       placeholder={placeholder}
-      onChange={(nextValue) => handleSectionFieldChange(sectionKey, language, path, nextValue)}
-      onOpenLibrary={() => openImagePicker(sectionKey, language, path, label)}
+      onChange={(nextValue) => handleFieldChange(sectionKey, path, nextValue)}
+      onOpenLibrary={() => openImagePicker(sectionKey, 'pt', path, label)}
     />
   );
 
   const applyAssetToField = (asset: MediaAsset) => {
     if (!pickerState || !cmsData) return;
-    const { sectionKey, language, path } = pickerState;
-    handleSectionFieldChange(sectionKey, language, path, asset.url);
+    const { sectionKey, path } = pickerState;
+    // Navigate to section
+    const segments = sectionKey.split('.');
+    let node: unknown = cmsData;
+    for (const seg of segments) node = (node as Record<string, unknown>)?.[seg];
+    handleFieldChange(sectionKey, path, asset.url);
     if (!shouldApplyMetadata) { closeImagePicker(); return; }
     const parentPath = path.slice(0, -1);
-    const parentObject = getObjectAtPath(cmsData[language][sectionKey], parentPath);
+    const parentObject = getObjectAtPath(node, parentPath);
     if (!parentObject) { closeImagePicker(); return; }
-    if (Object.prototype.hasOwnProperty.call(parentObject, 'alt') && asset.alt) handleSectionFieldChange(sectionKey, language, [...parentPath, 'alt'], asset.alt);
-    if (Object.prototype.hasOwnProperty.call(parentObject, 'title') && asset.title) handleSectionFieldChange(sectionKey, language, [...parentPath, 'title'], asset.title);
+    if (Object.prototype.hasOwnProperty.call(parentObject, 'alt') && asset.alt)
+      handleFieldChange(sectionKey, [...parentPath, 'alt'], asset.alt);
+    if (Object.prototype.hasOwnProperty.call(parentObject, 'title') && asset.title)
+      handleFieldChange(sectionKey, [...parentPath, 'title'], asset.title);
     closeImagePicker();
   };
 
@@ -259,9 +205,6 @@ export default function AdminPage() {
     navigate('/login');
   };
 
-  const getSectionDirtyCount = (sectionKey: keyof CmsLandingData, aboutMediaMode?: 'carousel' | 'youtubeVideos') =>
-    sectionNavDirtyCount({ section: sectionKey, aboutMediaMode });
-
   if (!cmsData) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-50 text-gray-500 text-sm">
@@ -274,15 +217,14 @@ export default function AdminPage() {
 
   const routeProps = {
     cmsData,
-    mobileLanguage,
+    activeSectionKey,
+    onActiveSectionChange: setActiveSectionKey,
     isFieldDirty,
-    onSectionFieldChange: handleSectionFieldChange,
+    onFieldChange: handleFieldChange,
     onAddArrayItem: handleAddArrayItem,
     onRemoveArrayItem: handleRemoveArrayItem,
-    onHeroFieldChange: handleHeroFieldChange,
-    onToggleGalleryBlockquote: handleToggleGalleryBlockquote,
-    renderImageField: renderImageField,
-    getSectionDirtyCount,
+    renderImageField,
+    sectionDirtyCount,
   };
 
   return (
@@ -293,24 +235,6 @@ export default function AdminPage() {
       onLogout={handleLogout}
     >
       <div className="p-4 lg:p-8 space-y-6">
-        {/* Mobile Language Toggle */}
-        <div className="lg:hidden flex rounded-lg bg-gray-100 p-1 gap-1">
-          {(['pt', 'en'] as const).map((lang) => (
-            <button
-              key={lang}
-              type="button"
-              onClick={() => setMobileLanguage(lang)}
-              className={`flex-1 rounded-md px-3 py-2 text-sm font-semibold transition-all ${
-                mobileLanguage === lang
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600'
-              }`}
-            >
-              {lang === 'pt' ? 'Português' : 'English'}
-            </button>
-          ))}
-        </div>
-
         <AdminPageHeader
           title={activeRoute.label}
           description={activeRoute.description}
@@ -320,10 +244,11 @@ export default function AdminPage() {
         />
 
         <div className="space-y-4">
-          {activeRouteId === 'home' && <HomeRoute {...routeProps} />}
-          {activeRouteId === 'projects' && <ProjectsRoute {...routeProps} />}
-          {activeRouteId === 'privacy' && <PrivacyRoute {...routeProps} />}
+          {activeRouteId === 'home'         && <HomeRoute         {...routeProps} />}
+          {activeRouteId === 'projects'     && <ProjectsRoute     {...routeProps} />}
+          {activeRouteId === 'privacy'      && <PrivacyRoute      {...routeProps} />}
           {activeRouteId === 'transparency' && <TransparencyRoute {...routeProps} />}
+          {activeRouteId === 'settings'     && <SettingsRoute     {...routeProps} />}
         </div>
       </div>
 

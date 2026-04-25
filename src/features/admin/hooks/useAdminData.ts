@@ -2,121 +2,79 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { ref, get } from 'firebase/database';
 import toast from 'react-hot-toast';
 import { database } from '../../../../firebase';
-import { cmsFallbackByLanguage } from '../../../data/cmsFallback';
-import { mergeWithFallback } from '../utils/editorPath';
-import { normalizeAboutMedia } from '../utils/cmsNormalize';
-import type { CmsLanguage } from '../../../types/cms';
-import type { CmsLandingByLanguage } from '../types';
+import type { CmsAdminState } from '../types';
 
-type UseAdminDataReturn = {
-  cmsData: CmsLandingByLanguage | null;
-  setCmsData: Dispatch<SetStateAction<CmsLandingByLanguage | null>>;
-  originalCmsData: CmsLandingByLanguage | null;
-  setOriginalCmsData: Dispatch<SetStateAction<CmsLandingByLanguage | null>>;
-  mobileLanguage: CmsLanguage;
-  setMobileLanguage: Dispatch<SetStateAction<CmsLanguage>>;
+const EMPTY_STATE: CmsAdminState = {
+  shared: {
+    nav: {},
+    footer: {},
+    newsletter: {},
+  },
+  pages: {
+    home: {
+      hero: {},
+      about: {},
+      carousel: {},
+      youtubeVideos: {},
+      gallery: {},
+      stats: {},
+    },
+    projects: {},
+    privacy: {},
+    transparency: {},
+  },
 };
 
+type UseAdminDataReturn = {
+  cmsData: CmsAdminState | null;
+  setCmsData: Dispatch<SetStateAction<CmsAdminState | null>>;
+  originalCmsData: CmsAdminState | null;
+  setOriginalCmsData: Dispatch<SetStateAction<CmsAdminState | null>>;
+};
+
+async function fetchNode(path: string): Promise<Record<string, unknown>> {
+  const snapshot = await get(ref(database, path));
+  return snapshot.exists() ? (snapshot.val() as Record<string, unknown>) : {};
+}
+
 export function useAdminData(): UseAdminDataReturn {
-  const [cmsData, setCmsData] = useState<CmsLandingByLanguage | null>(null);
-  const [originalCmsData, setOriginalCmsData] = useState<CmsLandingByLanguage | null>(null);
-  const [mobileLanguage, setMobileLanguage] = useState<CmsLanguage>('pt');
+  const [cmsData, setCmsData] = useState<CmsAdminState | null>(null);
+  const [originalCmsData, setOriginalCmsData] = useState<CmsAdminState | null>(null);
 
   useEffect(() => {
-    const normalizeLegacyTransparency = (landing: Record<string, unknown>) => {
-      const transparency = landing.transparency;
-      if (!transparency || typeof transparency !== 'object' || Array.isArray(transparency)) {
-        return;
-      }
-
-      const record = transparency as Record<string, unknown>;
-      const sections = record.sections;
-      const body = record.body;
-      const hasSections = Array.isArray(sections) && sections.length > 0;
-
-      if (hasSections || !Array.isArray(body) || body.length === 0) {
-        return;
-      }
-
-      record.sections = body.map((paragraph, index) => ({
-        title: `Seção ${index + 1}`,
-        bodyMd: String(paragraph ?? '').trim(),
-      }));
-    };
-
     const fetchData = async () => {
-      const cmsRef = ref(database, 'cms/v2/landing');
-      const projectsRef = ref(database, 'cms/v2/projects');
       try {
-        const [snapshot, projectsSnapshot] = await Promise.all([
-          get(cmsRef),
-          get(projectsRef),
+        const [shared, home, projects, privacy, transparency] = await Promise.all([
+          fetchNode('cms/v3/shared'),
+          fetchNode('cms/v3/pages/home'),
+          fetchNode('cms/v3/pages/projects'),
+          fetchNode('cms/v3/pages/privacy'),
+          fetchNode('cms/v3/pages/transparency'),
         ]);
-        const incoming = snapshot.exists() ? snapshot.val() : {};
-        const incomingProjects = projectsSnapshot.exists() ? projectsSnapshot.val() : {};
 
-        if (incoming?.pt && typeof incoming.pt === 'object' && !Array.isArray(incoming.pt)) {
-          normalizeLegacyTransparency(incoming.pt as Record<string, unknown>);
-        }
-        if (incoming?.en && typeof incoming.en === 'object' && !Array.isArray(incoming.en)) {
-          normalizeLegacyTransparency(incoming.en as Record<string, unknown>);
-        }
-
-        const normalized: CmsLandingByLanguage = {
-          pt: mergeWithFallback(cmsFallbackByLanguage.pt, incoming.pt),
-          en: mergeWithFallback(cmsFallbackByLanguage.en, incoming.en),
+        const state: CmsAdminState = {
+          shared: {
+            nav:        (shared.nav        as Record<string, unknown>) ?? {},
+            footer:     (shared.footer     as Record<string, unknown>) ?? {},
+            newsletter: (shared.newsletter as Record<string, unknown>) ?? {},
+          },
+          pages: {
+            home: {
+              hero:          (home.hero          as Record<string, unknown>) ?? {},
+              about:         (home.about         as Record<string, unknown>) ?? {},
+              carousel:      (home.carousel      as Record<string, unknown>) ?? {},
+              youtubeVideos: (home.youtubeVideos as Record<string, unknown>) ?? {},
+              gallery:       (home.gallery       as Record<string, unknown>) ?? {},
+              stats:         (home.stats         as Record<string, unknown>) ?? {},
+            },
+            projects,
+            privacy,
+            transparency,
+          },
         };
 
-        const mergedGlobalAboutMedia = mergeWithFallback(
-          cmsFallbackByLanguage.pt.aboutMedia,
-          incoming.global?.aboutMedia,
-        );
-        const normalizedAboutMedia = normalizeAboutMedia(mergedGlobalAboutMedia);
-        normalized.pt.aboutMedia = normalizedAboutMedia;
-        normalized.en.aboutMedia = normalizedAboutMedia;
-
-        const mergedGlobalNav = mergeWithFallback(
-          cmsFallbackByLanguage.pt.nav,
-          incoming.global?.nav,
-        );
-        normalized.pt.nav = mergedGlobalNav;
-        normalized.en.nav = mergedGlobalNav;
-
-        const mergedGlobalStats = mergeWithFallback(
-          cmsFallbackByLanguage.pt.stats,
-          incoming.global?.stats,
-        );
-        normalized.pt.stats = mergedGlobalStats;
-        normalized.en.stats = mergedGlobalStats;
-
-        const mergedGlobalFooter = mergeWithFallback(
-          cmsFallbackByLanguage.pt.footer,
-          incoming.global?.footer,
-        );
-        normalized.pt.footer = mergedGlobalFooter;
-        normalized.en.footer = mergedGlobalFooter;
-
-        // Process projects
-        const ptProjectsRaw = incomingProjects?.pt?.projects || [];
-        const enProjectsRaw = incomingProjects?.en?.projects || [];
-        const globalProjectsRaw = incomingProjects?.global?.projects || [];
-
-        const ptMergedProjects = ptProjectsRaw.map((langProj: any) => {
-          const globProj = globalProjectsRaw.find((gp: any) => gp.id === langProj.id);
-          return { ...globProj, ...langProj };
-        });
-
-        const enMergedProjects = enProjectsRaw.map((langProj: any) => {
-          const globProj = globalProjectsRaw.find((gp: any) => gp.id === langProj.id);
-          return { ...globProj, ...langProj };
-        });
-
-        normalized.pt.projects = ptMergedProjects;
-        normalized.en.projects = enMergedProjects;
-
-        setCmsData(normalized);
-        setOriginalCmsData(normalized);
-
+        setCmsData(state);
+        setOriginalCmsData(state);
       } catch (error) {
         toast.error('Falha ao carregar os dados do painel.');
         console.error('Erro ao buscar dados do Firebase:', error);
@@ -126,12 +84,5 @@ export function useAdminData(): UseAdminDataReturn {
     fetchData();
   }, []);
 
-  return {
-    cmsData,
-    setCmsData,
-    originalCmsData,
-    setOriginalCmsData,
-    mobileLanguage,
-    setMobileLanguage,
-  };
+  return { cmsData, setCmsData, originalCmsData, setOriginalCmsData };
 }

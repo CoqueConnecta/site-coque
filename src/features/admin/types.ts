@@ -1,8 +1,32 @@
-import type { CmsLandingData, CmsLanguage } from '../../types/cms';
+import type { CmsLanguage } from '../../types/cms';
 
-export type CmsLandingByLanguage = {
-  pt: CmsLandingData;
-  en: CmsLandingData;
+/**
+ * Shape do CMS v3 no admin — espelha exatamente a estrutura do Firebase.
+ * Todos os campos traduzíveis vivem como { pt: string; en: string }.
+ * O admin edita diretamente esse objeto; o serviço público faz o pickLang na hora de renderizar.
+ */
+export type CmsAdminData = Record<string, unknown>;
+
+/** Estado do admin com os dados brutos de ambas as línguas + global, para edição. */
+export type CmsAdminState = {
+  shared: {
+    nav: CmsAdminData;
+    footer: CmsAdminData;
+    newsletter: CmsAdminData;
+  };
+  pages: {
+    home: {
+      hero: CmsAdminData;
+      about: CmsAdminData;
+      carousel: CmsAdminData;
+      youtubeVideos: CmsAdminData;
+      gallery: CmsAdminData;
+      stats: CmsAdminData;
+    };
+    projects: CmsAdminData;
+    privacy: CmsAdminData;
+    transparency: CmsAdminData;
+  };
 };
 
 export type MediaAsset = {
@@ -18,5 +42,5 @@ export type PickerState = {
   language: CmsLanguage;
   path: Array<string | number>;
   label: string;
-  sectionKey: keyof CmsLandingData;
+  sectionKey: string;
 } | null;

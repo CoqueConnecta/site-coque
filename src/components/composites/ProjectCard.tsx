@@ -2,10 +2,10 @@ import { MapPin } from 'lucide-react';
 import { Typography } from '../ui/Typography';
 import { MarkdownContent } from '../ui/MarkdownContent';
 import { Tag } from '../ui/Tag';
-import type { CmsProject } from '../../types/cms';
+import type { ResolvedProject } from '../../types/cms';
 
 export interface ProjectCardProps {
-  project: CmsProject;
+  project: ResolvedProject;
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {

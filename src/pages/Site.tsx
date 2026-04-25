@@ -3,32 +3,29 @@ import { HeroSection } from '../components/sections/HeroSection';
 import { AboutSection } from '../components/sections/AboutSection';
 import { GallerySection } from '../components/sections/GallerySection';
 import { StatsSection } from '../components/sections/StatsSection';
+import { useCmsLandingData } from '../hooks/useCmsLandingData';
 import type { PublicLayoutContextValue } from './PublicLayout';
 
 function Site() {
-  const { content, language } = useOutletContext<PublicLayoutContextValue>();
-
-  const localizedYoutubeVideos = content.aboutMedia.youtubeVideos.map((video) => ({
-    ...video,
-    title: video.titles?.[language] || video.titles?.pt || video.title || '',
-  }));
+  const { language } = useOutletContext<PublicLayoutContextValue>();
+  const { data } = useCmsLandingData(language);
 
   return (
     <>
-      <HeroSection data={content.hero} />
+      <HeroSection data={data.hero} />
 
       <main>
         <AboutSection
-          data={content.about}
-          tickerImages={content.aboutMedia.tickerImages}
-          youtubeVideos={localizedYoutubeVideos}
+          data={data.about}
+          tickerImages={data.carousel.images}
+          youtubeVideos={data.youtubeVideos}
           id="about"
         />
-        <StatsSection data={content.stats} />
-        <GallerySection data={content.gallery} id="our-work" />
+        <StatsSection data={data.stats} />
+        <GallerySection data={data.gallery} id="our-work" />
       </main>
     </>
-  )
+  );
 }
 
-export default Site
+export default Site;

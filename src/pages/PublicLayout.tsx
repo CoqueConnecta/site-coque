@@ -6,42 +6,14 @@ import { NewsletterSection } from '../components/sections/NewsletterSection';
 import { FooterSection } from '../components/sections/FooterSection';
 import { Globe } from 'lucide-react';
 import { cn } from '../lib/cn';
-import { useCmsLandingData } from '../hooks/useCmsLandingData';
-import type { CmsLandingData, CmsLanguage } from '../types/cms';
+import { useCmsSharedData } from '../hooks/useCmsSharedData';
+import type { CmsLanguage } from '../types/cms';
 
 const LANGUAGE_STORAGE_KEY = 'site-coque-language';
 
 export interface PublicLayoutContextValue {
-  content: CmsLandingData;
   language: CmsLanguage;
   setLanguage: (language: CmsLanguage) => void;
-  isLoadingContent: boolean;
-}
-
-/**
- * Converte CmsNavLink (global com labels PT/EN) para NavLink (específico de idioma com label único)
- */
-function convertNavLinksToLanguage(navLinks: CmsLandingData['nav']['links'], language: CmsLanguage) {
-  if (!Array.isArray(navLinks)) {
-    return [];
-  }
-
-  return navLinks.map((link) => {
-    const labels = (link as { labels?: Partial<Record<CmsLanguage, string>> }).labels;
-    const legacyLabel = (link as { label?: string }).label;
-
-    return {
-      ...link,
-      label: labels?.[language] || labels?.pt || legacyLabel || '',
-    };
-  });
-}
-
-function getCtaLabel(cta: CmsLandingData['nav']['cta'], language: CmsLanguage) {
-  const labels = (cta as { labels?: Partial<Record<CmsLanguage, string>> }).labels;
-  const legacyLabel = (cta as { label?: string }).label;
-
-  return labels?.[language] || labels?.pt || legacyLabel || 'Faça Parte';
 }
 
 export default function PublicLayout() {
@@ -50,8 +22,8 @@ export default function PublicLayout() {
     const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
     return saved === 'en' ? 'en' : 'pt';
   });
-  const { data: content, isLoading } = useCmsLandingData(language);
-  const navLinks = convertNavLinksToLanguage(content.nav.links, language);
+
+  const { data: shared } = useCmsSharedData(language);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string | undefined>(undefined);
@@ -65,30 +37,20 @@ export default function PublicLayout() {
       setActiveLink(`/${location.hash}`);
       return;
     }
-
     if (location.pathname === '/') {
       setActiveLink('/#hero');
       return;
     }
-
     setActiveLink(undefined);
   }, [location.pathname, location.hash]);
 
   useEffect(() => {
-    if (location.pathname !== '/' || !location.hash) {
-      return;
-    }
-
+    if (location.pathname !== '/' || !location.hash) return;
     const targetId = location.hash.slice(1);
     const scrollToTarget = () => {
       const target = document.getElementById(targetId);
-      if (!target) {
-        return;
-      }
-
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
-
     const frame = window.requestAnimationFrame(scrollToTarget);
     return () => window.cancelAnimationFrame(frame);
   }, [location.pathname, location.hash]);
@@ -97,6 +59,10 @@ export default function PublicLayout() {
     setActiveLink(href);
     setMobileMenuOpen(false);
   };
+
+  const navLinks = shared.nav.links;
+  const ctaLabel = shared.nav.cta.label;
+  const ctaHref  = shared.nav.cta.href;
 
   return (
     <>
@@ -107,13 +73,13 @@ export default function PublicLayout() {
         onNavClick={handleNavClick}
         onClose={() => setMobileMenuOpen(false)}
         showNewsletter
-        ctaText={navLinks.find((link) => link.id === 'contact')?.label || 'Faça Parte'}
+        ctaText={navLinks.find((l) => l.id === 'contact')?.label || 'Faça Parte'}
         ctaHref="/#contact"
         language={language}
         onLanguageChange={setLanguage}
       />
 
-      {/* Utility top bar — scrolls with page, desktop only */}
+      {/* Utility top bar */}
       <div className="hidden h-8 w-full items-center justify-center gap-3 bg-[#2e3350] px-6 md:flex">
         <Globe className="h-3.5 w-3.5 text-white/40" />
         <span className="text-[11px] text-white/50">
@@ -123,10 +89,7 @@ export default function PublicLayout() {
           <button
             type="button"
             onClick={() => setLanguage('pt')}
-            className={cn(
-              'transition hover:text-white',
-              language === 'pt' ? 'font-semibold text-white' : 'text-white/60'
-            )}
+            className={cn('transition hover:text-white', language === 'pt' ? 'font-semibold text-white' : 'text-white/60')}
           >
             🇧🇷 PT
           </button>
@@ -134,10 +97,7 @@ export default function PublicLayout() {
           <button
             type="button"
             onClick={() => setLanguage('en')}
-            className={cn(
-              'transition hover:text-white',
-              language === 'en' ? 'font-semibold text-white' : 'text-white/60'
-            )}
+            className={cn('transition hover:text-white', language === 'en' ? 'font-semibold text-white' : 'text-white/60')}
           >
             🇬🇧 EN
           </button>
@@ -147,22 +107,17 @@ export default function PublicLayout() {
       <HeaderBar
         navLinks={navLinks}
         activeLink={activeLink}
-        ctaText={getCtaLabel(content.nav.cta, language)}
-        ctaHref={content.nav.cta.href}
+        ctaText={ctaLabel}
+        ctaHref={ctaHref}
         onNavClick={handleNavClick}
         onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         showMobileMenu={mobileMenuOpen}
       />
 
-      <Outlet context={{
-        content,
-        language,
-        setLanguage,
-        isLoadingContent: isLoading,
-      }} />
+      <Outlet context={{ language, setLanguage } satisfies PublicLayoutContextValue} />
 
-      <NewsletterSection data={content.newsletter} id="contact" />
-      <FooterSection data={content.footer} />
+      <NewsletterSection data={shared.newsletter} id="contact" />
+      <FooterSection data={shared.footer} />
     </>
   );
 }

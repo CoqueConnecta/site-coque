@@ -1,0 +1,78 @@
+import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
+import {
+  adminFieldLabelClass,
+  adminPanelGridClass,
+  getAdminInputClass,
+} from '../../../components/shared/adminEditorStyles';
+import { Button } from '../../../../../components/ui/Button';
+import { Plus, Trash2 } from 'lucide-react';
+
+type I18nField = { pt?: string; en?: string };
+
+type NavEditorProps = {
+  data: {
+    links?: Array<{ id?: string; href?: string; labels?: I18nField }>;
+    cta?: { href?: string; labels?: I18nField };
+  };
+  sectionKey: string;
+  isFieldDirty: (path: Array<string | number>) => boolean;
+  onFieldChange: (path: Array<string | number>, value: unknown) => void;
+  onAddArrayItem: (path: Array<string | number>) => void;
+  onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+};
+
+export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: NavEditorProps) {
+  const links = Array.isArray(data?.links) ? data.links : [];
+
+  return (
+    <div className="space-y-6">
+      <h4 className="text-sm font-semibold text-gray-700">Links de Navegação</h4>
+      {links.map((link, index) => (
+        <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold">Link {index + 1}</span>
+            <button type="button" onClick={() => onRemoveArrayItem(['links'], index)} className="text-red-500 hover:text-red-700">
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <label className="block">
+              <span className={adminFieldLabelClass}>ID</span>
+              <input type="text" value={link.id ?? ''} onChange={(e) => onFieldChange(['links', index, 'id'], e.target.value)} className={getAdminInputClass(isFieldDirty(['links', index, 'id']))} />
+            </label>
+            <label className="block">
+              <span className={adminFieldLabelClass}>href</span>
+              <input type="text" value={link.href ?? ''} onChange={(e) => onFieldChange(['links', index, 'href'], e.target.value)} className={getAdminInputClass(isFieldDirty(['links', index, 'href']))} />
+            </label>
+          </div>
+          <div className={adminPanelGridClass}>
+            {(['pt', 'en'] as const).map((lang) => (
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'} badgeText="Idioma">
+                <label className="block">
+                  <span className={adminFieldLabelClass}>Texto</span>
+                  <input type="text" value={link.labels?.[lang] ?? ''} onChange={(e) => onFieldChange(['links', index, 'labels', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['links', index, 'labels', lang]))} />
+                </label>
+              </AdminEditorCard>
+            ))}
+          </div>
+        </div>
+      ))}
+      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['links'])} className="flex items-center gap-2 text-sm">
+        <Plus className="h-4 w-4" /> Adicionar link
+      </Button>
+
+      <h4 className="text-sm font-semibold text-gray-700 mt-6">Botão CTA</h4>
+      <label className="block">
+        <span className={adminFieldLabelClass}>href do CTA</span>
+        <input type="text" value={data.cta?.href ?? ''} onChange={(e) => onFieldChange(['cta', 'href'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cta', 'href']))} />
+      </label>
+      <div className={adminPanelGridClass}>
+        {(['pt', 'en'] as const).map((lang) => (
+          <AdminEditorCard key={lang} title={lang === 'pt' ? 'CTA (PT)' : 'CTA (EN)'} badgeText="Idioma">
+            <input type="text" value={data.cta?.labels?.[lang] ?? ''} onChange={(e) => onFieldChange(['cta', 'labels', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['cta', 'labels', lang]))} />
+          </AdminEditorCard>
+        ))}
+      </div>
+    </div>
+  );
+}

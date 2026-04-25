@@ -1,110 +1,78 @@
-import type { CmsLanguage } from '../../../../../types/cms';
-import type { CmsLandingByLanguage } from '../../../types';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
-  adminDangerButtonClass,
   adminFieldLabelClass,
-  adminMetaLabelClass,
-  adminPrimaryGhostButtonClass,
-  adminSectionGroupClass,
-  adminSectionItemClass,
-  adminSectionTitleClass,
+  adminPanelGridClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
+import { Button } from '../../../../../components/ui/Button';
+import { Plus, Trash2 } from 'lucide-react';
+
+type I18nField = { pt?: string; en?: string };
 
 type YoutubeEditorProps = {
-  cmsData: CmsLandingByLanguage;
-  isFieldDirty: (language: CmsLanguage, path: Array<string | number>) => boolean;
-  onSectionFieldChange: (
-    language: CmsLanguage,
-    path: Array<string | number>,
-    value: unknown
-  ) => void;
-  onAddArrayItem: (language: CmsLanguage, path: Array<string | number>) => void;
-  onRemoveArrayItem: (
-    language: CmsLanguage,
-    path: Array<string | number>,
-    index: number
-  ) => void;
+  data: { items?: Array<{ id?: string; title?: I18nField }> };
+  sectionKey: string;
+  isFieldDirty: (path: Array<string | number>) => boolean;
+  onFieldChange: (path: Array<string | number>, value: unknown) => void;
+  onAddArrayItem: (path: Array<string | number>) => void;
+  onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
 export function YoutubeEditor({
-  cmsData,
+  data,
   isFieldDirty,
-  onSectionFieldChange,
+  onFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
 }: YoutubeEditorProps) {
-  const aboutMediaData = cmsData.pt.aboutMedia;
+  const items = Array.isArray(data?.items) ? data.items : [];
 
   return (
-    <AdminEditorCard
-      title="YouTube Videos"
-      description="ID global por vídeo e títulos localizados por idioma."
-      badgeText="Global"
-    >
-      <div className={adminSectionGroupClass}>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className={adminSectionTitleClass}>YouTube Videos</p>
-          <button
-            type="button"
-            onClick={() => onAddArrayItem('pt', ['youtubeVideos'])}
-            className={adminPrimaryGhostButtonClass}
-          >
-            + Adicionar vídeo
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {aboutMediaData.youtubeVideos.map((video, videoIndex) => (
-            <div key={`global-youtube-video-${videoIndex}`} className={adminSectionItemClass}>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className={adminMetaLabelClass}>Vídeo {videoIndex + 1}</p>
-                <button
-                  type="button"
-                  onClick={() => onRemoveArrayItem('pt', ['youtubeVideos'], videoIndex)}
-                  className={adminDangerButtonClass}
-                >
-                  Remover
-                </button>
-              </div>
-
+    <div className="space-y-6">
+      {items.map((video, index) => (
+        <div key={index} className={`${adminPanelGridClass} relative border border-gray-200 rounded-lg p-4`}>
+          <div className="col-span-full flex justify-between items-center mb-2">
+            <span className="text-sm font-semibold text-gray-700">Vídeo {index + 1}</span>
+            <button
+              type="button"
+              onClick={() => onRemoveArrayItem(['items'], index)}
+              className="text-red-500 hover:text-red-700 transition-colors"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+          {/* Video ID — global */}
+          <div className="col-span-full">
+            <label className="block">
+              <span className={adminFieldLabelClass}>YouTube Video ID</span>
+              <input
+                type="text"
+                placeholder="ex: rwniUxBd5OI"
+                value={video.id ?? ''}
+                onChange={(e) => onFieldChange(['items', index, 'id'], e.target.value)}
+                className={getAdminInputClass(isFieldDirty(['items', index, 'id']))}
+              />
+            </label>
+          </div>
+          {/* Title — i18n */}
+          {(['pt', 'en'] as const).map((lang) => (
+            <AdminEditorCard key={lang} title={lang === 'pt' ? 'Título (PT)' : 'Title (EN)'} badgeText="Idioma">
               <label className="block">
-                <span className={adminFieldLabelClass}>YouTube ID</span>
+                <span className={adminFieldLabelClass}>Título</span>
                 <input
                   type="text"
-                  value={video.id}
-                  onChange={(e) => onSectionFieldChange('pt', ['youtubeVideos', videoIndex, 'id'], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty('pt', ['youtubeVideos', videoIndex, 'id']))}
-                  placeholder="rwniUxBd5OI"
+                  value={video.title?.[lang] ?? ''}
+                  onChange={(e) => onFieldChange(['items', index, 'title', lang], e.target.value)}
+                  className={getAdminInputClass(isFieldDirty(['items', index, 'title', lang]))}
                 />
               </label>
-
-              <label className="block">
-                <span className={adminFieldLabelClass}>Título PT</span>
-                <input
-                  type="text"
-                  value={video.titles?.pt ?? video.title ?? ''}
-                  onChange={(e) => onSectionFieldChange('pt', ['youtubeVideos', videoIndex, 'titles', 'pt'], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty('pt', ['youtubeVideos', videoIndex, 'titles', 'pt']))}
-                  placeholder="Vídeo institucional"
-                />
-              </label>
-
-              <label className="block">
-                <span className={adminFieldLabelClass}>Título EN</span>
-                <input
-                  type="text"
-                  value={video.titles?.en ?? video.title ?? ''}
-                  onChange={(e) => onSectionFieldChange('pt', ['youtubeVideos', videoIndex, 'titles', 'en'], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty('pt', ['youtubeVideos', videoIndex, 'titles', 'en']))}
-                  placeholder="Institutional video"
-                />
-              </label>
-            </div>
+            </AdminEditorCard>
           ))}
         </div>
-      </div>
-    </AdminEditorCard>
+      ))}
+      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['items'])} className="flex items-center gap-2 text-sm">
+        <Plus className="h-4 w-4" /> Adicionar vídeo
+      </Button>
+    </div>
   );
 }

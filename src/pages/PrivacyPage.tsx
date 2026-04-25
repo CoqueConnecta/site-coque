@@ -1,36 +1,25 @@
+import { useEffect, useState } from 'react';
 import { Block } from '../components/ui/Block';
 import { MarkdownContent } from '../components/ui/MarkdownContent';
 import { Typography } from '../components/ui/Typography';
 import { useOutletContext } from 'react-router-dom';
 import type { PublicLayoutContextValue } from './PublicLayout';
-
-function getSectionMarkdown(section: PublicLayoutContextValue['content']['privacy']['sections'][number]) {
-  if (section.bodyMd?.trim()) {
-    return section.bodyMd;
-  }
-
-  const paragraphBlock = (section.paragraphs ?? [])
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean)
-    .join('\n\n');
-
-  const bulletBlock = (section.bullets ?? [])
-    .map((bullet) => bullet.trim())
-    .filter(Boolean)
-    .map((bullet) => `- ${bullet}`)
-    .join('\n');
-
-  return [paragraphBlock, bulletBlock].filter(Boolean).join('\n\n');
-}
+import type { ResolvedPrivacyData } from '../types/cms';
+import { getCmsPrivacyData } from '../services/cmsService';
 
 export default function PrivacyPage() {
-  const { content } = useOutletContext<PublicLayoutContextValue>();
-  const privacy = content.privacy;
+  const { language } = useOutletContext<PublicLayoutContextValue>();
+  const [privacy, setPrivacy] = useState<ResolvedPrivacyData | null>(null);
+
+  useEffect(() => {
+    getCmsPrivacyData(language).then(setPrivacy);
+  }, [language]);
+
+  if (!privacy) return null;
 
   return (
     <main className="min-h-screen bg-[#fafafa] pb-24 pt-34">
       <Block className="max-w-4xl">
-        {/* Cabeçalho da Política */}
         <div className="mb-12 border-b border-gray-200 pb-8">
           <Typography variant="h1" className="mb-4 text-[#411409]">
             {privacy.title}
@@ -52,8 +41,7 @@ export default function PrivacyPage() {
               <Typography variant="h2" className="text-2xl font-bold text-[#f58634]">
                 {section.title}
               </Typography>
-
-              <MarkdownContent content={getSectionMarkdown(section)} />
+              <MarkdownContent content={section.bodyMd ?? ''} />
             </section>
           ))}
         </div>

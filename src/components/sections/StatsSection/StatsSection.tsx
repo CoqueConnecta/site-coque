@@ -1,9 +1,9 @@
 import { cn } from '../../../lib/cn';
-import type { StatsData } from '../../../data/mockData';
+import type { ResolvedStatsData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 
 export interface StatsSectionProps extends React.HTMLAttributes<HTMLElement> {
-  data: StatsData;
+  data: ResolvedStatsData;
 }
 
 export const StatsSection = ({ data, className, ...props }: StatsSectionProps) => {

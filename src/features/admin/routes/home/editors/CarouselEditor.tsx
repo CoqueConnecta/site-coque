@@ -1,116 +1,65 @@
 import type { ReactNode } from 'react';
-import type { CmsLanguage } from '../../../../../types/cms';
-import type { CmsLandingByLanguage } from '../../../types';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
-  adminDangerButtonClass,
   adminFieldLabelClass,
-  adminMetaLabelClass,
-  adminPrimaryGhostButtonClass,
-  adminSectionGroupClass,
-  adminSectionItemClass,
-  adminSectionTitleClass,
+  adminPanelGridClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
+import { Button } from '../../../../../components/ui/Button';
+import { Plus, Trash2 } from 'lucide-react';
 
 type CarouselEditorProps = {
-  cmsData: CmsLandingByLanguage;
-  isFieldDirty: (language: CmsLanguage, path: Array<string | number>) => boolean;
-  onSectionFieldChange: (
-    language: CmsLanguage,
-    path: Array<string | number>,
-    value: unknown
-  ) => void;
-  onAddArrayItem: (language: CmsLanguage, path: Array<string | number>) => void;
-  onRemoveArrayItem: (
-    language: CmsLanguage,
-    path: Array<string | number>,
-    index: number
-  ) => void;
-  renderImageField: (
-    language: CmsLanguage,
-    value: string,
-    path: Array<string | number>,
-    label: string,
-    placeholder?: string
-  ) => ReactNode;
+  data: { images?: Array<{ src?: string; alt?: string }> };
+  sectionKey: string;
+  isFieldDirty: (path: Array<string | number>) => boolean;
+  onFieldChange: (path: Array<string | number>, value: unknown) => void;
+  onAddArrayItem: (path: Array<string | number>) => void;
+  onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
 };
 
 export function CarouselEditor({
-  cmsData,
+  data,
   isFieldDirty,
-  onSectionFieldChange,
+  onFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
   renderImageField,
 }: CarouselEditorProps) {
-  const aboutMediaData = cmsData.pt.aboutMedia;
+  const images = Array.isArray(data?.images) ? data.images : [];
 
   return (
-    <AdminEditorCard
-      title="Carrossel"
-      description="Mídia global compartilhada entre PT e EN."
-      badgeText="Global"
-    >
-      <div className={adminSectionGroupClass}>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className={adminSectionTitleClass}>Ticker Images</p>
-          <button
-            type="button"
-            onClick={() => onAddArrayItem('pt', ['tickerImages'])}
-            className={adminPrimaryGhostButtonClass}
-          >
-            + Adicionar imagem
-          </button>
+    <div className="space-y-6">
+      <p className="text-xs text-gray-500">
+        Alt text em português — não é exibido para o usuário, serve apenas para acessibilidade.
+      </p>
+      {images.map((image, index) => (
+        <div key={index} className={`${adminPanelGridClass} border border-gray-200 rounded-lg p-4`}>
+          <div className="col-span-full flex justify-between items-center mb-2">
+            <span className="text-sm font-semibold text-gray-700">Imagem {index + 1}</span>
+            <button type="button" onClick={() => onRemoveArrayItem(['images'], index)} className="text-red-500 hover:text-red-700">
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="col-span-full">
+            {renderImageField(image.src ?? '', ['images', index, 'src'], 'Imagem')}
+          </div>
+          <div className="col-span-full">
+            <label className="block">
+              <span className={adminFieldLabelClass}>Alt Text (PT)</span>
+              <input
+                type="text"
+                value={image.alt ?? ''}
+                onChange={(e) => onFieldChange(['images', index, 'alt'], e.target.value)}
+                className={getAdminInputClass(isFieldDirty(['images', index, 'alt']))}
+              />
+            </label>
+          </div>
         </div>
-
-        <div className="space-y-4">
-          {aboutMediaData.tickerImages.map((image, imageIndex) => (
-            <div key={`global-ticker-image-${imageIndex}`} className={adminSectionItemClass}>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className={adminMetaLabelClass}>Imagem {imageIndex + 1}</p>
-                <button
-                  type="button"
-                  onClick={() => onRemoveArrayItem('pt', ['tickerImages'], imageIndex)}
-                  className={adminDangerButtonClass}
-                >
-                  Remover
-                </button>
-              </div>
-
-              {renderImageField(
-                'pt',
-                image.src ?? '',
-                ['tickerImages', imageIndex, 'src'],
-                'Imagem (src)',
-                '/mulheres-costurando.jpg'
-              )}
-
-              <label className="block">
-                <span className={adminFieldLabelClass}>Alt</span>
-                <input
-                  type="text"
-                  value={image.alt ?? ''}
-                  onChange={(e) => onSectionFieldChange('pt', ['tickerImages', imageIndex, 'alt'], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty('pt', ['tickerImages', imageIndex, 'alt']))}
-                  placeholder="Atividades da Coque Connecta"
-                />
-              </label>
-
-              <label className="block">
-                <span className={adminFieldLabelClass}>Título</span>
-                <input
-                  type="text"
-                  value={image.title ?? ''}
-                  onChange={(e) => onSectionFieldChange('pt', ['tickerImages', imageIndex, 'title'], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty('pt', ['tickerImages', imageIndex, 'title']))}
-                  placeholder="Programa educacional"
-                />
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
-    </AdminEditorCard>
+      ))}
+      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['images'])} className="flex items-center gap-2 text-sm">
+        <Plus className="h-4 w-4" /> Adicionar imagem
+      </Button>
+    </div>
   );
 }

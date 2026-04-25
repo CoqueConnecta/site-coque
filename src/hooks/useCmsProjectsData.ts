@@ -1,79 +1,34 @@
 import { useEffect, useState } from 'react';
+import type { CmsLanguage, ResolvedProject } from '../types/cms';
 import { getCmsProjectsData } from '../services/cmsService';
-import type { CmsProjectsData, CmsLanguage } from '../types/cms';
 
-const inMemoryCache: Partial<Record<CmsLanguage, CmsProjectsData>> = {};
-
-function getStorageKey(language: CmsLanguage) {
-  return `cms-v2-projects-${language}`;
-}
-
-function getCachedFromStorage(language: CmsLanguage): CmsProjectsData | null {
-  try {
-    const raw = window.sessionStorage.getItem(getStorageKey(language));
-    if (!raw) {
-      return null;
-    }
-    return JSON.parse(raw) as CmsProjectsData;
-  } catch {
-    return null;
-  }
-}
-
-function setCache(language: CmsLanguage, data: CmsProjectsData) {
-  inMemoryCache[language] = data;
-  try {
-    window.sessionStorage.setItem(getStorageKey(language), JSON.stringify(data));
-  } catch {
-    // Ignora erros de armazenamento local
-  }
-}
+const inMemoryCache: Partial<Record<CmsLanguage, ResolvedProject[]>> = {};
 
 export function useCmsProjectsData(language: CmsLanguage) {
-  const [data, setData] = useState<CmsProjectsData>(() => {
-    return inMemoryCache[language] ?? { projects: [] };
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<ResolvedProject[]>(inMemoryCache[language] ?? []);
+  const [isLoading, setIsLoading] = useState(!inMemoryCache[language]);
 
   useEffect(() => {
     let isMounted = true;
 
-    const cached = inMemoryCache[language] ?? getCachedFromStorage(language);
-    if (cached && cached.projects.length > 0) {
-      setData(cached);
+    if (inMemoryCache[language]) {
+      setData(inMemoryCache[language]!);
       setIsLoading(false);
+      return;
     }
 
-    const loadData = async () => {
-      if (!cached || cached.projects.length === 0) {
-        setIsLoading(true);
-      }
-      
-      const result = await getCmsProjectsData(language);
+    setIsLoading(true);
 
-      if (!isMounted) {
-        return;
-      }
-
-      setCache(language, result);
-      setData(result);
+    getCmsProjectsData(language).then((projects) => {
+      if (!isMounted) return;
+      inMemoryCache[language] = projects;
+      setData(projects);
       setIsLoading(false);
+    }).catch(() => {
+      if (isMounted) setIsLoading(false);
+    });
 
-      const alternateLanguage: CmsLanguage = language === 'pt' ? 'en' : 'pt';
-      if (!inMemoryCache[alternateLanguage]) {
-        getCmsProjectsData(alternateLanguage)
-          .then((alternateData) => setCache(alternateLanguage, alternateData))
-          .catch(() => {
-            // Silently ignore prefetch failure
-          });
-      }
-    };
-
-    loadData();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [language]);
 
   return { data, isLoading };

@@ -1,10 +1,10 @@
 import { cn } from '../../../lib/cn';
-import type { GalleryData } from '../../../data/mockData';
+import type { ResolvedGalleryData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { GalleryCard } from './GalleryCard';
 
 export interface GallerySectionProps extends React.HTMLAttributes<HTMLElement> {
-  data: GalleryData;
+  data: ResolvedGalleryData;
 }
 
 const CARD_BG_LIGHT = '#f9b778';

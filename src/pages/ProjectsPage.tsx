@@ -18,7 +18,7 @@ export default function ProjectsPage() {
   const { data, isLoading } = useCmsProjectsData(language);
   const [visibleCount, setVisibleCount] = useState(INITIAL_ITEMS);
 
-  const projects = data.projects;
+  const projects = data;
   const visibleProjects = projects.slice(0, visibleCount);
   const hasMore = visibleCount < projects.length;
 

@@ -1,297 +1,118 @@
 import type { ReactNode } from 'react';
-import type { CmsLanguage } from '../../../../../types/cms';
-import type { CmsLandingByLanguage } from '../../../types';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
-  adminCheckboxClass,
-  adminDangerButtonClass,
   adminFieldLabelClass,
-  adminMetaLabelClass,
   adminPanelGridClass,
-  adminPrimaryGhostButtonClass,
-  adminSectionGroupClass,
-  adminSectionItemClass,
-  adminSectionTitleClass,
   getAdminInputClass,
-  getAdminSelectClass,
   getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
+import { Button } from '../../../../../components/ui/Button';
+import { Plus, Trash2 } from 'lucide-react';
 
-type GalleryEditorProps = {
-  cmsData: CmsLandingByLanguage;
-  isFieldDirty: (language: CmsLanguage, path: Array<string | number>) => boolean;
-  onSectionFieldChange: (
-    language: CmsLanguage,
-    path: Array<string | number>,
-    value: unknown
-  ) => void;
-  onAddArrayItem: (language: CmsLanguage, path: Array<string | number>) => void;
-  onRemoveArrayItem: (
-    language: CmsLanguage,
-    path: Array<string | number>,
-    index: number
-  ) => void;
-  onToggleGalleryBlockquote: (
-    language: CmsLanguage,
-    cardIndex: number,
-    enabled: boolean
-  ) => void;
-  renderImageField: (
-    language: CmsLanguage,
-    value: string,
-    path: Array<string | number>,
-    label: string,
-    placeholder?: string
-  ) => ReactNode;
+type I18nField = { pt?: string; en?: string };
+
+type GalleryCard = {
+  id?: string;
+  image?: string;
+  variant?: 'light' | 'dark';
+  title?: I18nField;
+  description?: I18nField;
+  tags?: Array<{ pt?: string; en?: string }>;
 };
 
-function GalleryLanguagePanel({
-  language,
-  cmsData,
-  isFieldDirty,
-  onSectionFieldChange,
-  onAddArrayItem,
-  onRemoveArrayItem,
-  onToggleGalleryBlockquote,
-  renderImageField,
-}: {
-  language: CmsLanguage;
-  cmsData: CmsLandingByLanguage;
-  isFieldDirty: GalleryEditorProps['isFieldDirty'];
-  onSectionFieldChange: GalleryEditorProps['onSectionFieldChange'];
-  onAddArrayItem: GalleryEditorProps['onAddArrayItem'];
-  onRemoveArrayItem: GalleryEditorProps['onRemoveArrayItem'];
-  onToggleGalleryBlockquote: GalleryEditorProps['onToggleGalleryBlockquote'];
-  renderImageField: GalleryEditorProps['renderImageField'];
-}) {
-  const galleryData = cmsData[language].gallery;
+type GalleryEditorProps = {
+  data: { headline?: I18nField; subtitle?: I18nField; cards?: GalleryCard[] };
+  sectionKey: string;
+  isFieldDirty: (path: Array<string | number>) => boolean;
+  onFieldChange: (path: Array<string | number>, value: unknown) => void;
+  onAddArrayItem: (path: Array<string | number>) => void;
+  onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
+};
+
+export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField }: GalleryEditorProps) {
+  const cards = Array.isArray(data?.cards) ? data.cards : [];
 
   return (
-    <div className="space-y-5">
-      <label className="block">
-        <span className={adminFieldLabelClass}>Título da seção</span>
-        <input
-          type="text"
-          value={galleryData.headline}
-          onChange={(e) => onSectionFieldChange(language, ['headline'], e.target.value)}
-          className={getAdminInputClass(isFieldDirty(language, ['headline']))}
-        />
-      </label>
+    <div className="space-y-8">
+      {/* Section header — i18n */}
+      <div className={adminPanelGridClass}>
+        {(['pt', 'en'] as const).map((lang) => (
+          <AdminEditorCard key={lang} title={lang === 'pt' ? 'Cabeçalho (PT)' : 'Header (EN)'} badgeText="Idioma">
+            <label className="block">
+              <span className={adminFieldLabelClass}>Headline</span>
+              <input type="text" value={data.headline?.[lang] ?? ''} onChange={(e) => onFieldChange(['headline', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['headline', lang]))} />
+            </label>
+            <label className="block">
+              <span className={adminFieldLabelClass}>Subtítulo</span>
+              <textarea value={data.subtitle?.[lang] ?? ''} onChange={(e) => onFieldChange(['subtitle', lang], e.target.value)} className={getAdminTextareaClass(isFieldDirty(['subtitle', lang]))} rows={3} />
+            </label>
+          </AdminEditorCard>
+        ))}
+      </div>
 
-      <label className="block">
-        <span className={adminFieldLabelClass}>Subtítulo da seção</span>
-        <textarea
-          value={galleryData.subtitle}
-          onChange={(e) => onSectionFieldChange(language, ['subtitle'], e.target.value)}
-          className={getAdminTextareaClass(isFieldDirty(language, ['subtitle']))}
-        />
-      </label>
-
-      <div className={adminSectionGroupClass}>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className={adminSectionTitleClass}>Cards de ajuda</p>
-          <button
-            type="button"
-            onClick={() => onAddArrayItem(language, ['cards'])}
-            className={adminPrimaryGhostButtonClass}
-          >
-            + Adicionar card
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {galleryData.cards.map((card, cardIndex) => (
-            <div key={`${language}-gallery-card-${cardIndex}`} className={adminSectionItemClass}>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className={adminMetaLabelClass}>Card {cardIndex + 1}</p>
-                <button
-                  type="button"
-                  onClick={() => onRemoveArrayItem(language, ['cards'], cardIndex)}
-                  className={adminDangerButtonClass}
-                >
-                  Remover
+      {/* Cards */}
+      {cards.map((card, cardIndex) => (
+        <div key={cardIndex} className="border border-gray-200 rounded-lg p-4 space-y-4">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold text-gray-700">Card {cardIndex + 1}</span>
+            <button type="button" onClick={() => onRemoveArrayItem(['cards'], cardIndex)} className="text-red-500 hover:text-red-700">
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+          {/* Global fields */}
+          <div className="grid grid-cols-2 gap-4">
+            <label className="block">
+              <span className={adminFieldLabelClass}>ID</span>
+              <input type="text" value={card.id ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'id'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'id']))} />
+            </label>
+            <label className="block">
+              <span className={adminFieldLabelClass}>Variante</span>
+              <select value={card.variant ?? 'light'} onChange={(e) => onFieldChange(['cards', cardIndex, 'variant'], e.target.value)} className={getAdminInputClass(false)}>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
+          </div>
+          {renderImageField(card.image ?? '', ['cards', cardIndex, 'image'], 'Imagem do card')}
+          {/* i18n fields */}
+          <div className={adminPanelGridClass}>
+            {(['pt', 'en'] as const).map((lang) => (
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'PT' : 'EN'} badgeText="Idioma">
+                <label className="block">
+                  <span className={adminFieldLabelClass}>Título</span>
+                  <input type="text" value={card.title?.[lang] ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'title', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'title', lang]))} />
+                </label>
+                <label className="block">
+                  <span className={adminFieldLabelClass}>Descrição</span>
+                  <textarea value={card.description?.[lang] ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'description', lang], e.target.value)} className={getAdminTextareaClass(isFieldDirty(['cards', cardIndex, 'description', lang]))} rows={4} />
+                </label>
+              </AdminEditorCard>
+            ))}
+          </div>
+          {/* Tags */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className={adminFieldLabelClass}>Tags</span>
+              <button type="button" onClick={() => onAddArrayItem(['cards', cardIndex, 'tags'])} className="text-blue-500 hover:text-blue-700 text-xs flex items-center gap-1">
+                <Plus className="h-3 w-3" /> Tag
+              </button>
+            </div>
+            {(card.tags ?? []).map((tag, tagIndex) => (
+              <div key={tagIndex} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
+                <input type="text" placeholder="PT" value={tag.pt ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'tags', tagIndex, 'pt'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'tags', tagIndex, 'pt']))} />
+                <input type="text" placeholder="EN" value={tag.en ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'tags', tagIndex, 'en'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'tags', tagIndex, 'en']))} />
+                <button type="button" onClick={() => onRemoveArrayItem(['cards', cardIndex, 'tags'], tagIndex)} className="text-red-500 hover:text-red-700">
+                  <Trash2 className="h-3 w-3" />
                 </button>
               </div>
-
-              <label className="block">
-                <span className={adminFieldLabelClass}>ID interno</span>
-                <input
-                  type="text"
-                  value={card.id}
-                  onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'id'], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty(language, ['cards', cardIndex, 'id']))}
-                  placeholder="doacoes"
-                />
-              </label>
-
-              <label className="block">
-                <span className={adminFieldLabelClass}>Título</span>
-                <input
-                  type="text"
-                  value={card.title}
-                  onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'title'], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty(language, ['cards', cardIndex, 'title']))}
-                />
-              </label>
-
-              <label className="block">
-                <span className={adminFieldLabelClass}>Descrição</span>
-                <textarea
-                  value={card.description}
-                  onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'description'], e.target.value)}
-                  className={getAdminTextareaClass(isFieldDirty(language, ['cards', cardIndex, 'description']))}
-                />
-              </label>
-
-              {renderImageField(
-                language,
-                card.image ?? '',
-                ['cards', cardIndex, 'image'],
-                'Imagem do card',
-                '/pessoa-segurando-caixa.jpg'
-              )}
-
-              <div className={adminSectionGroupClass}>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className={adminSectionTitleClass}>Tags do card</p>
-                  <button
-                    type="button"
-                    onClick={() => onAddArrayItem(language, ['cards', cardIndex, 'tags'])}
-                    className={adminPrimaryGhostButtonClass}
-                  >
-                    + Tag
-                  </button>
-                </div>
-                <div className="space-y-2">
-                  {card.tags.map((tag, tagIndex) => (
-                    <div key={`${language}-gallery-card-${cardIndex}-tag-${tagIndex}`} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={tag}
-                        onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'tags', tagIndex], e.target.value)}
-                        className={getAdminInputClass(isFieldDirty(language, ['cards', cardIndex, 'tags', tagIndex]))}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => onRemoveArrayItem(language, ['cards', cardIndex, 'tags'], tagIndex)}
-                        className={adminDangerButtonClass}
-                      >
-                        Remover
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className={adminSectionGroupClass}>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className={adminSectionTitleClass}>Depoimento (blockquote)</p>
-                  <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(card.blockquote)}
-                      onChange={(e) => onToggleGalleryBlockquote(language, cardIndex, e.target.checked)}
-                      className={adminCheckboxClass}
-                    />
-                    Ativo
-                  </label>
-                </div>
-
-                {card.blockquote ? (
-                  <>
-                    <label className="block">
-                      <span className={adminFieldLabelClass}>Texto do depoimento</span>
-                      <textarea
-                        value={card.blockquote.text}
-                        onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'blockquote', 'text'], e.target.value)}
-                        className={getAdminTextareaClass(isFieldDirty(language, ['cards', cardIndex, 'blockquote', 'text']))}
-                      />
-                    </label>
-
-                    <label className="block">
-                      <span className={adminFieldLabelClass}>Nome do autor</span>
-                      <input
-                        type="text"
-                        value={card.blockquote.authorName}
-                        onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'blockquote', 'authorName'], e.target.value)}
-                        className={getAdminInputClass(isFieldDirty(language, ['cards', cardIndex, 'blockquote', 'authorName']))}
-                      />
-                    </label>
-
-                    {renderImageField(
-                      language,
-                      card.blockquote.authorAvatar ?? '',
-                      ['cards', cardIndex, 'blockquote', 'authorAvatar'],
-                      'Avatar do autor',
-                      '/avatar.jpg'
-                    )}
-                  </>
-                ) : null}
-              </div>
-
-              <label className="block">
-                <span className={adminFieldLabelClass}>Variação visual</span>
-                <select
-                  value={card.variant}
-                  onChange={(e) => onSectionFieldChange(language, ['cards', cardIndex, 'variant'], e.target.value)}
-                  className={getAdminSelectClass(isFieldDirty(language, ['cards', cardIndex, 'variant']))}
-                >
-                  <option value="light">Claro (light)</option>
-                  <option value="dark">Escuro (dark)</option>
-                </select>
-              </label>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-export function GalleryEditor({
-  cmsData,
-  isFieldDirty,
-  onSectionFieldChange,
-  onAddArrayItem,
-  onRemoveArrayItem,
-  onToggleGalleryBlockquote,
-  renderImageField,
-}: GalleryEditorProps) {
-  return (
-    <div className={adminPanelGridClass}>
-      <AdminEditorCard
-        title="Português (PT)"
-        description="Galeria com cards, tags e depoimentos."
-        badgeText="Idioma"
-      >
-        <GalleryLanguagePanel
-          language="pt"
-          cmsData={cmsData}
-          isFieldDirty={isFieldDirty}
-          onSectionFieldChange={onSectionFieldChange}
-          onAddArrayItem={onAddArrayItem}
-          onRemoveArrayItem={onRemoveArrayItem}
-          onToggleGalleryBlockquote={onToggleGalleryBlockquote}
-          renderImageField={renderImageField}
-        />
-      </AdminEditorCard>
-
-      <AdminEditorCard
-        title="Inglês (EN)"
-        description="Gallery with cards, tags, and blockquotes."
-        badgeText="Idioma"
-      >
-        <GalleryLanguagePanel
-          language="en"
-          cmsData={cmsData}
-          isFieldDirty={isFieldDirty}
-          onSectionFieldChange={onSectionFieldChange}
-          onAddArrayItem={onAddArrayItem}
-          onRemoveArrayItem={onRemoveArrayItem}
-          onToggleGalleryBlockquote={onToggleGalleryBlockquote}
-          renderImageField={renderImageField}
-        />
-      </AdminEditorCard>
+      ))}
+      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['cards'])} className="flex items-center gap-2 text-sm">
+        <Plus className="h-4 w-4" /> Adicionar card
+      </Button>
     </div>
   );
 }

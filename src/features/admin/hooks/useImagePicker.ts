@@ -30,7 +30,7 @@ export function useImagePicker() {
   }, [mediaAssets, mediaSearch, selectedMediaCategory]);
 
   const openImagePicker = (
-    sectionKey: keyof import('../../../types/cms').CmsLandingData,
+    sectionKey: string,
     language: CmsLanguage,
     path: Array<string | number>,
     label: string,

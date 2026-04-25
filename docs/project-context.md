@@ -20,7 +20,7 @@ Objetivo:
 O projeto é o site institucional da ONG Coque Connecta, com:
 
 - área pública em React + Vite;
-- conteúdo gerenciado via Firebase Realtime Database em `cms/v2`;
+- conteúdo gerenciado via Firebase Realtime Database em `cms/v3`;
 - painel `/admin` protegido por autenticação Firebase;
 - páginas públicas: Home, Nossos Projetos, Privacidade e Transparência.
 
@@ -83,64 +83,58 @@ Newsletter e Footer ficam fora de `Site.tsx` e são compartilhados no layout pú
 
 ## Fonte de dados e fallback
 
-Fonte de verdade atual de conteúdo:
+Fonte de verdade atual de conteúdo (`cms/v3`):
 
-- `cms/v2/landing/pt`
-- `cms/v2/landing/en`
-- `cms/v2/landing/global` para campos compartilhados
-- `cms/v2/projects/pt`
-- `cms/v2/projects/en`
-- `cms/v2/projects/global` para campos compartilhados de projetos
+**Nós compartilhados** (usados em todas as páginas):
+- `cms/v3/shared/nav` — links de navegação e CTA
+- `cms/v3/shared/footer` — endereço, redes sociais, links rápidos
+- `cms/v3/shared/newsletter` — textos da seção de newsletter
 
-exemplo JSON:
+**Conteúdo por página**:
+- `cms/v3/pages/home/hero`
+- `cms/v3/pages/home/about`
+- `cms/v3/pages/home/stats`
+- `cms/v3/pages/home/gallery`
+- `cms/v3/pages/home/carousel`
+- `cms/v3/pages/home/youtubeVideos`
+- `cms/v3/pages/projects/items` — array único com campos globais e i18n inline
+- `cms/v3/pages/privacy`
+- `cms/v3/pages/transparency`
+
+Convenção v3 de i18n por campo:
 
 ```JSON
 {
-  "global": {
-    "projects": [
-      {
-        "id": "projeto-01",
-        "image": "/placeholder-image.jpg",
-        "location": "Coque, Recife"
-      }
-    ]
-  },
-  "pt": {
-    "projects": [
-      {
-        "id": "projeto-01",
-        "title": "Alfabetização de Adultos",
-        "bodyMd": "Descrição do projeto em **Markdown**..."
-      }
-    ]
-  },
-  "en": {
-    "projects": [
-      {
-        "id": "projeto-01",
-        "title": "Literacy Program",
-        "bodyMd": "Description of the project in **Markdown**..."
-      }
-    ]
-  }
+  "items": [
+    {
+      "id": "projeto-01",
+      "image": "/placeholder-image.jpg",
+      "location": "Coque, Recife",
+      "title": { "pt": "Alfabetização de Adultos", "en": "Literacy Program" },
+      "bodyMd": { "pt": "Descrição em **Markdown**...", "en": "Description in **Markdown**..." },
+      "actionLabel": { "pt": "Saiba mais", "en": "Learn more" }
+    }
+  ]
 }
 ```
 
 Fluxo atual:
 
-1. o front tenta carregar conteúdo remoto via `src/services/cmsService.ts`;
-2. o hook `src/hooks/useCmsLandingData.ts` usa cache em memória + `sessionStorage`;
-3. se houver erro ou conteúdo incompleto, o projeto cai para `src/data/cmsFallback.ts`.
+1. o front carrega conteúdo via `src/services/cmsService.ts` (funções `getCmsSharedData`, `getCmsHomeData`, `getCmsProjectsData`, etc.);
+2. o helper `pickLang` / `resolveI18n` extrai o valor correto por idioma em tempo de execução;
+3. os hooks `src/hooks/useCmsLandingData.ts`, `useCmsProjectsData.ts` e `useCmsSharedData.ts` usam cache em memória + `sessionStorage`;
+4. se houver erro ou conteúdo incompleto, o projeto cai para `src/data/cmsFallback.ts`.
 
 Decisões vigentes:
 
-- `locales/*` foi descontinuado (removido do RTDB e sem consumo no front);
-- `aboutMedia` já opera com suporte a `global`;
+- Migração v2 → v3 concluída; o nó `cms/v2` pode ser removido do RTDB quando conveniente.
+- Paradigma de split por idioma (`landing/pt`, `landing/en`) foi substituído por i18n inline por campo (`{ pt: "...", en: "..." }`).
+- `carousel` e `youtubeVideos` são nós separados (antes estavam juntos em `aboutMedia`).
 - Firebase permanece no caminho crítico da renderização pública.
 
 ## Admin / CMS
 
-O admin atual foi reorganizado por rota pública real, não mais por seção solta.
+O admin atual foi reorganizado por rota pública real, não mais por seção solta. Opera inteiramente sobre `cms/v3`.
 
 Rotas do admin:
 
@@ -148,16 +142,17 @@ Rotas do admin:
 - Nossos Projetos
 - Privacy
 - Transparency
+- Configurações Globais (nav, footer, newsletter)
 
 Base técnica do admin:
 
 - `src/pages/AdminPage.tsx` — orquestra a rota ativa delegando para o componente de rota correto
 - `src/features/admin/config/adminRoutes.ts` — declaração de rotas e seções do painel
-- `src/features/admin/config/rtdbRouting.ts` — mapa declarativo de estratégias de persistência por `sectionKey`
-- `src/features/admin/hooks/useAdminRoute.tsx` — motor de salvamento; constrói payload e chama Firebase `update`
-- `src/features/admin/hooks/useAdminData.ts` — carrega e mescla dados de múltiplas coleções RTDB
+- `src/features/admin/config/rtdbRouting.ts` — mapa declarativo de estratégias de persistência por `sectionKey`; todos os `basePath` apontam para `cms/v3/...`
+- `src/features/admin/hooks/useAdminRoute.tsx` — motor de salvamento; payload sempre escreve no path do campo diretamente (sem distinção "global" vs "local")
+- `src/features/admin/hooks/useAdminData.ts` — carrega `cms/v3/shared` e `cms/v3/pages` em `Promise.all`
 - `src/features/admin/hooks/useDirtyFields.ts` — rastreamento de campos alterados
-- `src/features/admin/routes/` — organização por rota pública (`home/`, `projects/`, `privacy/`, `transparency/`)
+- `src/features/admin/routes/` — organização por rota pública (`home/`, `projects/`, `privacy/`, `transparency/`, `settings/`)
 - `src/features/admin/shared/` — componentes de formulário reutilizáveis (`ImageField`, `AdminEditorCard`, etc.)
 - `src/features/admin/layout/` — casca do painel (`AdminLayout`, `AdminPageHeader`)
 
@@ -166,15 +161,14 @@ Comportamento atual do admin:
 - navegação principal por página pública;
 - desktop com sidebar fixa;
 - mobile com overlay/drawer;
-- PT/EN lado a lado no desktop;
-- PT/EN em abas no mobile;
+- campos PT/EN lado a lado no desktop, em abas no mobile;
 - salvar e descartar por rota inteira;
-- dirty tracking por campo, com persistência parcial no RTDB.
-- na Home, `Carrossel` e `YouTube Videos` são seções separadas no painel (sem aba interna "Mídia").
-- na rota de Privacidade, cada seção aceita conteúdo rico em Markdown no campo `bodyMd`, com renderização segura no público e compatibilidade legada com `paragraphs`/`bullets`.
-- na rota de Transparência, o conteúdo também migrou para `sections` com `bodyMd` (mesma convenção da Privacidade), com compatibilidade de leitura para payload legado `body[]`.
-
-Seções globais continuam tratadas como casos especiais onde aplicável.
+- dirty tracking por campo, com persistência parcial no RTDB;
+- na Home, `Carrossel` e `YouTube Videos` são seções separadas no painel;
+- na rota de Privacidade e Transparência, cada seção aceita Markdown no campo `bodyMd`;
+- rota "Configurações Globais" agrupa `NavEditor`, `FooterEditor` e `NewsletterEditor`;
+- estratégia de persistência v3: `standard-i18n-field` — não há mais diferença entre `standard-local` e `standard-global`;
+- `projects` usa estratégia `single-array` (um único nó, sem split por idioma).
 
 ## Performance já adotada
 
@@ -269,20 +263,21 @@ Regra prática de atualização:
 
 ## Pendências e atenção atual
 
-- A base atual já opera com CMS v2 e idioma persistido no front público.
+- A base atual opera com **CMS v3** (migração v2 → v3 concluída em abril/2026).
+- O nó `cms/v2` pode ser removido do RTDB quando conveniente; não há mais dependência ativa dele no front.
 - Novas decisões devem evitar reintroduzir dependência de contexto histórico espalhado em múltiplos markdowns.
 - Scripts de migração via terminal foram removidos da superfície ativa do projeto; o fluxo preferencial para migrações continua sendo a UI autenticada do admin.
 - Backlog detalhado em `docs/backlog.md`.
 
-## Lições Aprendidas: Extensão do Admin e Integrações (CMS v2)
+## Lições Aprendidas: Extensão do Admin e Integrações (CMS v3)
 
-Durante a integração da funcionalidade "Nossos Projetos" (que exigia gravar e ler de uma coleção RTDB separada `cms/v2/projects`, em oposição ao padrão `cms/v2/landing`), consolidadaram-se cinco padrões arquiteturais críticos que devem ser seguidos em futuras evoluções:
+Durante a evolução do CMS (inicialmente em v2, consolidadas e aplicadas na migração para v3), solidificaram-se cinco padrões arquiteturais críticos que devem ser seguidos em futuras evoluções:
 
 ### 1. Adicionando seções apontando para novas coleções RTDB
 Não limite o hook de dados a um único endpoint. Quando uma nova seção exigir uma nova árvore no Firebase:
-- **Fetch Concorrente:** Atualize `useAdminData.ts` para disparar `Promise.all` em ambas as coleções (`landing` e a nova).
-- **Merge no Estado:** Incorpore os dados da nova coleção nas árvores unificadas `pt` e `en` na memória do formulário (`cmsData`). O formulário do React não precisa saber que a origem dos dados são duas coleções diferentes.
-- **Save Particionado via Dicionário Declarativo:** O arquivo `useAdminRoute.tsx` não contém lógicas acopladas (`ifs` manuais). O roteamento é estritamente definido no arquivo de configuração `rtdbRouting.ts`. Para adicionar um novo módulo que salve em uma coleção distinta, basta adicionar a `sectionKey` e sua respectiva estratégia de persistência (como `split-array` ou `standard-local`) no mapa `RTDB_MAPPINGS`. O hook montará o payload com o caminho RTDB correto de forma autônoma.
+- **Fetch Concorrente:** Atualize `useAdminData.ts` para disparar `Promise.all` em todas as coleções necessárias (`shared`, `pages`, e qualquer nova).
+- **Merge no Estado:** Incorpore os dados da nova coleção na memória do formulário (`cmsData`). O formulário do React não precisa saber que a origem dos dados são coleções diferentes.
+- **Save Particionado via Dicionário Declarativo:** O arquivo `useAdminRoute.tsx` não contém lógicas acopladas (`ifs` manuais). O roteamento é estritamente definido no arquivo de configuração `rtdbRouting.ts`. Para adicionar um novo módulo que salve em uma coleção distinta, basta adicionar a `sectionKey` e sua respectiva estratégia de persistência (como `single-array` ou `standard-i18n-field`) no mapa `RTDB_MAPPINGS`. O hook montará o payload com o caminho RTDB correto de forma autônoma.
 
 ### 2. Escalando o ImagePicker para novas seções
 A biblioteca de imagens local usa um modal global (`ImageLibraryModal`). Para que ela funcione nativamente com novos componentes e seções recém-criadas, o gerenciador de estado (`useImagePicker.ts`) deve obrigatoriamente armazenar a `sectionKey` no momento da abertura do modal. 

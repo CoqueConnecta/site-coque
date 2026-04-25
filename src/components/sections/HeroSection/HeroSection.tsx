@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { cn } from '../../../lib/cn';
-import type { HeroData } from '../../../data/mockData';
+import type { ResolvedHeroData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 
 const LazyHeroCanvas = lazy(async () => {
@@ -9,7 +9,7 @@ const LazyHeroCanvas = lazy(async () => {
 });
 
 export interface HeroSectionProps extends React.HTMLAttributes<HTMLElement> {
-  data: HeroData;
+  data: ResolvedHeroData;
 }
 
 export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => {

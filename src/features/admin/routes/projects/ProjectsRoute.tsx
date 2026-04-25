@@ -1,46 +1,20 @@
-import type { ReactNode } from 'react';
-import type { CmsLandingByLanguage } from '../../types';
-import type { CmsLanguage, CmsLandingData } from '../../../../types/cms';
 import { SectionCard } from '../../components/shared/SectionCard';
 import { ProjectsEditor } from './editors/ProjectsEditor';
+import type { AdminRouteProps } from '../types';
 
-type ProjectsRouteProps = {
-  cmsData: CmsLandingByLanguage;
-  mobileLanguage: CmsLanguage;
-  isFieldDirty: (language: CmsLanguage, path: Array<string | number>, section?: keyof CmsLandingData) => boolean;
-  onSectionFieldChange: (section: keyof CmsLandingData, language: CmsLanguage, path: Array<string | number>, value: unknown) => void;
-  onAddArrayItem: (section: keyof CmsLandingData, language: CmsLanguage, path: Array<string | number>) => void;
-  onRemoveArrayItem: (section: keyof CmsLandingData, language: CmsLanguage, path: Array<string | number>, index: number) => void;
-  renderImageField: (section: keyof CmsLandingData, language: CmsLanguage, value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
-  getSectionDirtyCount: (section: keyof CmsLandingData) => number;
-};
-
-export function ProjectsRoute({
-  cmsData,
-  mobileLanguage,
-  isFieldDirty,
-  onSectionFieldChange,
-  onAddArrayItem,
-  onRemoveArrayItem,
-  renderImageField,
-  getSectionDirtyCount,
-}: ProjectsRouteProps) {
+export function ProjectsRoute({ cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField, sectionDirtyCount }: AdminRouteProps) {
+  const sk = 'pages.projects';
   return (
-    <SectionCard
-      title="Projetos"
-      dirtyCount={getSectionDirtyCount('projects')}
-      defaultOpen
-    >
-      <div className={mobileLanguage === 'pt' ? 'max-lg:[&>div>div:nth-child(2)]:hidden' : 'max-lg:[&>div>div:nth-child(1)]:hidden'}>
-        <ProjectsEditor 
-          cmsData={cmsData} 
-          isFieldDirty={(l, p) => isFieldDirty(l, p, 'projects')} 
-          onSectionFieldChange={(l, p, v) => onSectionFieldChange('projects', l, p, v)} 
-          onAddArrayItem={(l, p) => onAddArrayItem('projects', l, p)} 
-          onRemoveArrayItem={(l, p, i) => onRemoveArrayItem('projects', l, p, i)} 
-          renderImageField={(l, v, p, lbl, ph) => renderImageField('projects', l, v, p, lbl, ph)} 
-        />
-      </div>
+    <SectionCard title="Projetos" dirtyCount={sectionDirtyCount(sk)} defaultOpen>
+      <ProjectsEditor
+        data={cmsData.pages.projects as any}
+        sectionKey={sk}
+        isFieldDirty={(path) => isFieldDirty(path, sk)}
+        onFieldChange={(path, value) => onFieldChange(sk, path, value)}
+        onAddArrayItem={(path) => onAddArrayItem(sk, path)}
+        onRemoveArrayItem={(path, index) => onRemoveArrayItem(sk, path, index)}
+        renderImageField={(value, path, label, placeholder) => renderImageField(sk, value, path, label, placeholder)}
+      />
     </SectionCard>
   );
 }

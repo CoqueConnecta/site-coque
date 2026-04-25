@@ -1,49 +1,54 @@
 import { useMemo, useState } from 'react';
-import type { CmsLandingByLanguage } from '../types';
-import type { CmsLandingData, CmsLanguage } from '../../../types/cms';
+import type { CmsAdminState } from '../types';
+import type { CmsLanguage } from '../../../types/cms';
 import { deepEqual } from '../utils/cmsNormalize';
 import { getValueAtPath } from '../utils/editorPath';
 
 export function useDirtyFields(
-  originalCmsData: CmsLandingByLanguage | null,
-  activeSection: keyof CmsLandingData | '',
-  activeAboutMediaMode: 'carousel' | 'youtubeVideos',
+  originalCmsData: CmsAdminState | null,
+  activeSectionPath: string,
 ) {
   const [dirtyFields, setDirtyFields] = useState<Record<string, true>>({});
 
+  /**
+   * Builds a unique key for a dirty field.
+   * format: "<sectionPath>.<field...>" e.g. "pages.home.hero.headline.pt"
+   */
   const buildDirtyFieldKey = (
-    language: CmsLanguage,
-    section: keyof CmsLandingData,
+    sectionPath: string,
     path: Array<string | number>,
-  ) => [language, section, ...path.map(String)].join('.');
+  ) => [sectionPath, ...path.map(String)].join('.');
 
   const markDirtyField = (
-    language: CmsLanguage,
-    section: keyof CmsLandingData,
+    sectionPath: string,
     path: Array<string | number>,
     nextValue: unknown,
+    originalOverride?: unknown,
   ) => {
-    if (!originalCmsData) {
-      return;
+    if (!originalCmsData && originalOverride === undefined) return;
+
+    let originalValue: unknown;
+    if (originalOverride !== undefined) {
+      originalValue = originalOverride;
+    } else {
+      // Navigate into originalCmsData using sectionPath segments
+      const segments = sectionPath.split('.');
+      let node: unknown = originalCmsData;
+      for (const seg of segments) {
+        node = (node as Record<string, unknown>)?.[seg];
+      }
+      originalValue = path.length > 0 ? getValueAtPath(node, path) : node;
     }
 
-    const originalSection = originalCmsData[language][section];
-    const originalValue = path.length > 0 ? getValueAtPath(originalSection, path) : originalSection;
-    const fieldKey = buildDirtyFieldKey(language, section, path);
+    const fieldKey = buildDirtyFieldKey(sectionPath, path);
     const nextIsDirty = !deepEqual(originalValue, nextValue);
 
     setDirtyFields((prev) => {
       if (nextIsDirty) {
-        if (prev[fieldKey]) {
-          return prev;
-        }
+        if (prev[fieldKey]) return prev;
         return { ...prev, [fieldKey]: true };
       }
-
-      if (!prev[fieldKey]) {
-        return prev;
-      }
-
+      if (!prev[fieldKey]) return prev;
       const next = { ...prev };
       delete next[fieldKey];
       return next;
@@ -51,66 +56,24 @@ export function useDirtyFields(
   };
 
   const isFieldDirty = (
-    language: CmsLanguage,
     path: Array<string | number>,
-    sectionOverride?: keyof CmsLandingData,
+    sectionPathOverride?: string,
   ) => {
-    const section = sectionOverride ?? activeSection;
-    if (!section) {
-      return false;
-    }
-    return Boolean(dirtyFields[buildDirtyFieldKey(language, section, path)]);
+    const sp = sectionPathOverride ?? activeSectionPath;
+    if (!sp) return false;
+    return Boolean(dirtyFields[buildDirtyFieldKey(sp, path)]);
   };
 
   const activeSectionDirtyCount = useMemo(() => {
-    if (!activeSection) {
-      return 0;
-    }
-
-    if (activeSection === 'aboutMedia') {
-      const aboutMediaPrefix = activeAboutMediaMode === 'carousel'
-        ? 'aboutMedia.tickerImages'
-        : 'aboutMedia.youtubeVideos';
-      const ptPrefix = `pt.${aboutMediaPrefix}`;
-      const enPrefix = `en.${aboutMediaPrefix}`;
-      return Object.keys(dirtyFields).filter(
-        (k) => k === ptPrefix || k.startsWith(`${ptPrefix}.`) || k === enPrefix || k.startsWith(`${enPrefix}.`),
-      ).length;
-    }
-
-    const ptPrefix = `pt.${activeSection}`;
-    const enPrefix = `en.${activeSection}`;
+    if (!activeSectionPath) return 0;
     return Object.keys(dirtyFields).filter(
-      (k) => k === ptPrefix || k.startsWith(`${ptPrefix}.`) || k === enPrefix || k.startsWith(`${enPrefix}.`),
+      (k) => k === activeSectionPath || k.startsWith(`${activeSectionPath}.`),
     ).length;
-  }, [activeSection, activeAboutMediaMode, dirtyFields]);
+  }, [activeSectionPath, dirtyFields]);
 
-  const sectionDirtyCountMap = useMemo(() => {
-    const counts: Partial<Record<keyof CmsLandingData, number>> = {};
-    Object.keys(dirtyFields).forEach((fieldKey) => {
-      const [, sectionPart] = fieldKey.split('.');
-      const section = sectionPart as keyof CmsLandingData;
-      counts[section] = (counts[section] ?? 0) + 1;
-    });
-    return counts;
-  }, [dirtyFields]);
-
-  const sectionNavDirtyCount = (item: {
-    section: keyof CmsLandingData;
-    aboutMediaMode?: 'carousel' | 'youtubeVideos';
-  }) => {
-    if (item.section !== 'aboutMedia' || !item.aboutMediaMode) {
-      return sectionDirtyCountMap[item.section] ?? 0;
-    }
-
-    const aboutMediaPrefix = item.aboutMediaMode === 'carousel'
-      ? 'aboutMedia.tickerImages'
-      : 'aboutMedia.youtubeVideos';
-    const ptPrefix = `pt.${aboutMediaPrefix}`;
-    const enPrefix = `en.${aboutMediaPrefix}`;
-
+  const sectionDirtyCount = (sectionPath: string) => {
     return Object.keys(dirtyFields).filter(
-      (k) => k === ptPrefix || k.startsWith(`${ptPrefix}.`) || k === enPrefix || k.startsWith(`${enPrefix}.`),
+      (k) => k === sectionPath || k.startsWith(`${sectionPath}.`),
     ).length;
   };
 
@@ -120,6 +83,6 @@ export function useDirtyFields(
     markDirtyField,
     isFieldDirty,
     activeSectionDirtyCount,
-    sectionNavDirtyCount,
+    sectionDirtyCount,
   };
 }

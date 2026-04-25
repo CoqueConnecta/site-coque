@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { ref, push, serverTimestamp } from 'firebase/database';
 import toast from 'react-hot-toast';
 import { database } from '../../../../firebase'; // Confirme se o caminho está correto para o seu firebase.ts
-import type { NewsletterData } from '../../../data/mockData';
+import type { ResolvedNewsletterData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 
 export interface NewsletterSectionProps extends React.HTMLAttributes<HTMLElement> {
-  data: NewsletterData;
+  data: ResolvedNewsletterData;
 }
 
 export const NewsletterSection = ({ data, className, ...props }: NewsletterSectionProps) => {

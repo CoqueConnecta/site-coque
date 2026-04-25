@@ -1,15 +1,14 @@
 import { cn } from '../../../lib/cn';
 import { Typography } from '../../ui/Typography';
 import { InfiniteImageTicker } from '../../composites/InfiniteImageTicker';
-import type { AboutData } from '../../../data/mockData';
 import { Block } from '../../ui/Block';
 import { YouTubeFeed } from '../../ui/YouTubeFeed';
-import type { CmsTickerImage, CmsYoutubeVideo } from '../../../types/cms';
+import type { ResolvedAboutData, CmsCarouselImage, ResolvedYoutubeVideo } from '../../../types/cms';
 
 export interface AboutSectionProps extends React.HTMLAttributes<HTMLElement> {
-  data: AboutData;
-  tickerImages?: CmsTickerImage[];
-  youtubeVideos?: CmsYoutubeVideo[];
+  data: ResolvedAboutData;
+  tickerImages?: CmsCarouselImage[];
+  youtubeVideos?: ResolvedYoutubeVideo[];
 }
 
 const aboutTickerImages = [
