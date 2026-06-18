@@ -27,3 +27,8 @@ dist-ssr
 storybook-static
 framer-coque
 arquivos_exemplo
+
+# Firebase
+.firebase/
+firebase-debug.log
+ui-debug.log

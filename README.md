@@ -70,3 +70,15 @@ O script:
 3. Rode `npm run deploy`.
 
 O comando faz build local e publica o conteúdo de `dist`.
+
+### Regras do Firebase (Realtime Database)
+
+As regras de segurança estão versionadas em [`database.rules.json`](./database.rules.json).
+
+Após editar o arquivo, publique com:
+
+```bash
+firebase deploy --only database --account gildorama@gmail.com
+```
+
+> O projeto pertence à conta `coqueconnecta@gmail.com`, mas `gildorama@gmail.com` foi adicionado como Editor. Use sempre a flag `--account` para evitar conflito com outros projetos.
