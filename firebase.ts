@@ -3,18 +3,16 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCgaQTy2jYKbfu9aoQl-d--EMO-FRhnQj8",
-  authDomain: "site-coque.firebaseapp.com",
-  databaseURL: "https://site-coque-default-rtdb.firebaseio.com",
-  projectId: "site-coque",
-  storageBucket: "site-coque.firebasestorage.app",
-  messagingSenderId: "754360342619",
-  appId: "1:754360342619:web:586d5f8bb290e8fe3f077e"
+  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL:       import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
