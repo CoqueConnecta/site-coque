@@ -85,16 +85,16 @@ export const NewsletterSection = ({ data, className, ...props }: NewsletterSecti
           {/* Títulos - Mantidos iguais aos seus */}
           <div style={{ width: '100%', maxWidth: '1031px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', textAlign: 'center', padding: '0 20px' }}>
             <div>
-              <h3 style={{ fontFamily: '"DM Sans", sans-serif', fontWeight: 500, fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: '-0.6px', lineHeight: '90%', color: '#fff', margin: 0 }}>
+              <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: '-0.6px', lineHeight: '90%', color: '#fff', margin: 0 }}>
                 {data.headline}
               </h3>
               {data.headlineAccent && (
-                <h3 style={{ fontFamily: '"DM Sans", sans-serif', fontWeight: 500, fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: '-0.6px', lineHeight: '90%', color: '#fff', margin: 0 }}>
+                <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: '-0.6px', lineHeight: '90%', color: '#fff', margin: 0 }}>
                   {data.headlineAccent}
                 </h3>
               )}
             </div>
-            <p style={{ fontFamily: '"Manrope", sans-serif', fontWeight: 400, fontSize: 'clamp(16px, 2vw, 22px)', letterSpacing: '-0.3px', lineHeight: '150%', color: '#fff', maxWidth: '980px', margin: 0 }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: 'clamp(16px, 2vw, 22px)', letterSpacing: '-0.3px', lineHeight: '150%', color: '#fff', maxWidth: '980px', margin: 0 }}>
               {data.description}
             </p>
           </div>
@@ -176,8 +176,8 @@ export const NewsletterSection = ({ data, className, ...props }: NewsletterSecti
             ) : (
               // Estado de Sucesso (Mantido do seu original)
               <div style={{ textAlign: 'center', color: '#fff', padding: '0 20px', minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <p style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '24px', fontWeight: 600, margin: 0 }}>✓ Inscrição confirmada!</p>
-                <p style={{ fontFamily: '"Manrope", sans-serif', fontSize: '18px', marginTop: '12px', opacity: 0.9 }}>Obrigado por se juntar à nossa comunidade.</p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '24px', fontWeight: 600, margin: 0 }}>✓ Inscrição confirmada!</p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', marginTop: '12px', opacity: 0.9 }}>Obrigado por se juntar à nossa comunidade.</p>
               </div>
             )}
           </div>
