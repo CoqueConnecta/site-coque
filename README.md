@@ -5,7 +5,7 @@ Repositório do site institucional da ONG Coque Connecta.
 ## Links
 
 - Produção: [https://coqueconnecta.ong.br/](https://coqueconnecta.ong.br/)
-- Staging: [https://site-coque-staging.onrender.com/](https://site-coque-staging.onrender.com/)
+- Staging: preview automático da branch `staging` via Vercel
 
 ## Documentação principal
 
@@ -31,7 +31,6 @@ Se você precisa entender o estado real do projeto antes de editar, comece por `
 - `npm run build` -> build de produção
 - `npm run lint` -> lint
 - `npm run preview` -> preview do build
-- `npm run deploy:staging -- <branch>` -> merge local em `staging` e push opcional para o Render
 - `npm run storybook` -> ambiente Storybook
 - `npm run build-storybook` -> build do Storybook
 
@@ -46,30 +45,25 @@ npm run dev
 
 ## Deploy
 
+O projeto é deployado pela **Vercel** (conta `coqueconnecta@gmail.com`).
+
 ### Staging
 
-O projeto está conectado ao Render através da branch `staging`. Novos commits nessa branch disparam deploy automático.
+A branch `staging` gera um preview automático na Vercel a cada push.
 
-Fluxo recomendado:
+Fluxo recomendado para atualizar staging:
 
 ```bash
-npm run deploy:staging -- novo-site-coque
+git switch staging
+git pull --ff-only origin staging
+git merge --no-ff <branch>
+git push origin staging
+# → Vercel gera a preview URL automaticamente
 ```
-
-O script:
-
-- valida se a working tree está limpa;
-- atualiza `staging` com `origin/staging`;
-- faz merge da branch informada em `staging`;
-- pede confirmação antes do push.
 
 ### Produção
 
-1. Garanta que a branch de trabalho esteja no estado correto.
-2. Confirme que não há alterações locais indevidas.
-3. Rode `npm run deploy`.
-
-O comando faz build local e publica o conteúdo de `dist`.
+Push na branch `main` dispara deploy automático em produção (`coqueconnecta.ong.br`).
 
 ### Regras do Firebase (Realtime Database)
 

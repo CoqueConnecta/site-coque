@@ -28,6 +28,15 @@ firebase deploy --only database,storage --account gildorama@gmail.com
 
 Nunca edite as regras diretamente pelo console do Firebase — edite os arquivos (`database.rules.json`, `storage.rules`) e faça deploy via CLI para manter o versionamento.
 
+## Deploy (Vercel)
+
+O projeto está na Vercel sob a conta `coqueconnecta@gmail.com`.
+
+- **Produção**: push na branch `main` → deploy automático em `coqueconnecta.ong.br`
+- **Staging**: push na branch `staging` → preview automático (URL gerada pela Vercel)
+
+Não há scripts de deploy locais — tudo é gerenciado por git push.
+
 ## Skills Firebase instaladas
 
 - `firebase-basics` — setup, CLI e fluxos gerais
