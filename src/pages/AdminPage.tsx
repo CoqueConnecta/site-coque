@@ -77,6 +77,9 @@ export default function AdminPage() {
     setShouldApplyMetadata,
     filteredMediaAssets,
     categories,
+    isUploading,
+    uploadProgress,
+    handleUpload,
     openImagePicker,
     closeImagePicker,
   } = useImagePicker();
@@ -272,6 +275,9 @@ export default function AdminPage() {
         onSelectCategory={(id) => setSelectedMediaCategory(id as 'all')}
         filteredAssets={filteredMediaAssets}
         onSelectAsset={applyAssetToField}
+        isUploading={isUploading}
+        uploadProgress={uploadProgress}
+        onUpload={handleUpload}
       />
     </AdminLayout>
   );

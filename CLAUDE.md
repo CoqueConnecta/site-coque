@@ -11,15 +11,22 @@ Este projeto usa **duas contas Google**:
 
 Sempre use a flag `--account gildorama@gmail.com` em todos os comandos `firebase` neste projeto.
 
-## Deploy das regras do Realtime Database
+## Deploy das regras do Firebase
 
-Após editar [`database.rules.json`](./database.rules.json):
+Após editar regras, use o comando correspondente:
 
 ```bash
+# Realtime Database
 firebase deploy --only database --account gildorama@gmail.com
+
+# Firebase Storage
+firebase deploy --only storage --account gildorama@gmail.com
+
+# Ambos de uma vez
+firebase deploy --only database,storage --account gildorama@gmail.com
 ```
 
-Nunca edite as regras diretamente pelo console do Firebase — edite o arquivo e faça deploy via CLI para manter o versionamento.
+Nunca edite as regras diretamente pelo console do Firebase — edite os arquivos (`database.rules.json`, `storage.rules`) e faça deploy via CLI para manter o versionamento.
 
 ## Skills Firebase instaladas
 

@@ -1,27 +1,45 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ref, onValue } from 'firebase/database';
+import { database } from '../../../../firebase';
+import { uploadImageToStorage } from '../../../services/storageService';
 import { localImageCategories, localImageLibrary } from '../../../data/localImageLibrary';
 import type { CmsLanguage } from '../../../types/cms';
 import type { MediaAsset, PickerState } from '../types';
 
 export function useImagePicker() {
-  const mediaAssets: MediaAsset[] = localImageLibrary;
+  const [rtdbAssets, setRtdbAssets] = useState<MediaAsset[]>([]);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const [pickerState, setPickerState] = useState<PickerState>(null);
   const [mediaSearch, setMediaSearch] = useState('');
-  const [selectedMediaCategory, setSelectedMediaCategory] = useState<'all' | MediaAsset['category']>('all');
+  const [selectedMediaCategory, setSelectedMediaCategory] = useState<string>('all');
   const [shouldApplyMetadata, setShouldApplyMetadata] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  useEffect(() => {
+    const mediaRef = ref(database, 'media/library');
+    return onValue(mediaRef, (snap) => {
+      const data = snap.val() ?? {};
+      const assets: MediaAsset[] = Object.entries(data).map(([id, val]) => ({
+        id,
+        ...(val as Omit<MediaAsset, 'id'>),
+      }));
+      setRtdbAssets(assets);
+    });
+  }, []);
+
+  const mediaAssets: MediaAsset[] = useMemo(
+    () => [...localImageLibrary, ...rtdbAssets],
+    [rtdbAssets],
+  );
 
   const filteredMediaAssets = useMemo(() => {
     const query = mediaSearch.trim().toLowerCase();
     return mediaAssets.filter((asset) => {
       const matchesCategory =
         selectedMediaCategory === 'all' || asset.category === selectedMediaCategory;
-      if (!matchesCategory) {
-        return false;
-      }
-      if (!query) {
-        return true;
-      }
+      if (!matchesCategory) return false;
+      if (!query) return true;
       return [asset.name, asset.title ?? '', asset.alt ?? '', asset.category ?? '']
         .join(' ')
         .toLowerCase()
@@ -47,8 +65,20 @@ export function useImagePicker() {
     setSelectedMediaCategory('all');
   };
 
+  const handleUpload = async (file: File, category: string) => {
+    setIsUploading(true);
+    setUploadProgress(0);
+    try {
+      await uploadImageToStorage(file, category, setUploadProgress);
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
   return {
     mediaAssets,
+    rtdbAssetsCount: rtdbAssets.length,
     isMediaModalOpen,
     pickerState,
     mediaSearch,
@@ -59,6 +89,9 @@ export function useImagePicker() {
     setShouldApplyMetadata,
     filteredMediaAssets,
     categories: localImageCategories,
+    isUploading,
+    uploadProgress,
+    handleUpload,
     openImagePicker,
     closeImagePicker,
   };

@@ -1,3 +1,5 @@
+import { useRef, useState } from 'react';
+
 type MediaAsset = {
   id: string;
   url: string;
@@ -26,6 +28,9 @@ type ImageLibraryModalProps = {
   onSelectCategory: (categoryId: string) => void;
   filteredAssets: MediaAsset[];
   onSelectAsset: (asset: MediaAsset) => void;
+  isUploading: boolean;
+  uploadProgress: number;
+  onUpload: (file: File, category: string) => void;
 };
 
 export function ImageLibraryModal({
@@ -42,10 +47,24 @@ export function ImageLibraryModal({
   onSelectCategory,
   filteredAssets,
   onSelectAsset,
+  isUploading,
+  uploadProgress,
+  onUpload,
 }: ImageLibraryModalProps) {
-  if (!isOpen) {
-    return null;
-  }
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadCategory, setUploadCategory] = useState('gallery');
+
+  if (!isOpen) return null;
+
+  const uploadCategories = categories.filter((c) => c.id !== 'all');
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onUpload(file, uploadCategory);
+      e.target.value = '';
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -68,12 +87,51 @@ export function ImageLibraryModal({
 
         <div className="grid max-h-[78vh] grid-cols-1 gap-6 overflow-y-auto p-6 lg:grid-cols-[360px_1fr]">
           <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <h4 className="text-sm font-bold uppercase tracking-wide text-gray-600">Biblioteca local do projeto</h4>
+            <h4 className="text-sm font-bold uppercase tracking-wide text-gray-600">Enviar nova imagem</h4>
 
-            <div className="rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-700 space-y-2">
-              <p>As imagens desta biblioteca vêm da pasta <span className="font-semibold">public</span> do projeto.</p>
-              <p>Para adicionar novos arquivos, alguém da equipe precisa incluir a imagem no repositório e atualizar o catálogo local.</p>
-              <p>O CMS salva apenas o caminho da imagem escolhida.</p>
+            <div className="space-y-3 rounded-md border border-gray-200 bg-white p-3">
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Categoria</span>
+                <select
+                  value={uploadCategory}
+                  onChange={(e) => setUploadCategory(e.target.value)}
+                  disabled={isUploading}
+                  className="h-9 w-full rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                >
+                  {uploadCategories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.label}</option>
+                  ))}
+                </select>
+              </label>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+
+              <button
+                type="button"
+                disabled={isUploading}
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+              >
+                {isUploading ? 'Enviando...' : 'Selecionar arquivo'}
+              </button>
+
+              {isUploading && (
+                <div className="space-y-1">
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-blue-500 transition-all duration-200"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                  <p className="text-center text-xs text-gray-500">{uploadProgress}%</p>
+                </div>
+              )}
             </div>
 
             <label className="flex items-start gap-2 rounded-md border border-gray-200 bg-white p-3">
@@ -90,7 +148,7 @@ export function ImageLibraryModal({
 
             <div className="rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-700">
               <p className="font-medium text-gray-800">Itens disponíveis</p>
-              <p>{mediaAssetsCount} arquivos cadastrados no catálogo local.</p>
+              <p>{mediaAssetsCount} imagens na biblioteca.</p>
             </div>
           </div>
 
@@ -108,7 +166,6 @@ export function ImageLibraryModal({
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => {
                 const isActive = selectedCategory === category.id;
-
                 return (
                   <button
                     key={category.id}

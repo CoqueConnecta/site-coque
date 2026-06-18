@@ -41,7 +41,7 @@ export function ImageField({
             onClick={onOpenLibrary}
             className={`h-11 whitespace-nowrap sm:h-auto ${adminPrimaryGhostButtonClass}`}
           >
-            Biblioteca local
+            Biblioteca de imagens
           </button>
         </div>
       </label>
