@@ -1,11 +1,10 @@
 import type { ReactNode } from 'react';
 import {
   adminFieldLabelClass,
-  adminPanelGridClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
-import { Trash2 } from 'lucide-react';
+import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 
 type CarouselEditorProps = {
   data: { images?: Array<{ src?: string; alt?: string }> };
@@ -36,32 +35,23 @@ export function CarouselEditor({
         <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhuma imagem adicionada ainda.</p>
       )}
       {images.map((image, index) => (
-        <div key={index} className={`${adminPanelGridClass} border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] rounded-xl p-4`}>
-          <div className="col-span-full flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Imagem {index + 1}</span>
-            <button
-              type="button"
-              onClick={() => onRemoveArrayItem(['images'], index)}
-              className="text-rose-500 hover:text-rose-700 transition-colors"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="col-span-full">
-            {renderImageField(image.src ?? '', ['images', index, 'src'], 'Imagem', undefined, true)}
-          </div>
-          <div className="col-span-full">
-            <label className="block">
-              <span className={adminFieldLabelClass}>Alt Text (PT)</span>
-              <input
-                type="text"
-                value={image.alt ?? ''}
-                onChange={(e) => onFieldChange(['images', index, 'alt'], e.target.value)}
-                className={getAdminInputClass(isFieldDirty(['images', index, 'alt']))}
-              />
-            </label>
-          </div>
-        </div>
+        <CollapsibleItem
+          key={index}
+          label={`Imagem ${index + 1}`}
+          summary={image.alt || ''}
+          onRemove={() => onRemoveArrayItem(['images'], index)}
+        >
+          {renderImageField(image.src ?? '', ['images', index, 'src'], 'Imagem', undefined, true)}
+          <label className="block">
+            <span className={adminFieldLabelClass}>Alt Text (PT)</span>
+            <input
+              type="text"
+              value={image.alt ?? ''}
+              onChange={(e) => onFieldChange(['images', index, 'alt'], e.target.value)}
+              className={getAdminInputClass(isFieldDirty(['images', index, 'alt']))}
+            />
+          </label>
+        </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['images'])}>Adicionar imagem</AdminAddButton>
     </div>

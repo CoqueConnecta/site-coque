@@ -1,13 +1,12 @@
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminPanelGridClass,
-  adminSectionItemClass,
   adminSectionTitleClass,
   getAdminInputClass,
   getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
-import { Trash2 } from 'lucide-react';
+import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 
 type I18nField = { pt?: string; en?: string };
 type DocSection = { title?: I18nField; bodyMd?: I18nField };
@@ -51,14 +50,15 @@ export function PrivacyEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
       <I18nTextField label="Intro" pathPt={['intro','pt']} pathEn={['intro','en']} valuePt={data.intro?.pt ?? ''} valueEn={data.intro?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} multiline />
       <h4 className={adminSectionTitleClass}>Seções</h4>
       {sections.map((section, index) => (
-        <div key={index} className={adminSectionItemClass}>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Seção {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['sections'], index)} className="text-rose-500 hover:text-rose-700 transition-colors"><Trash2 className="h-4 w-4" /></button>
-          </div>
+        <CollapsibleItem
+          key={index}
+          label={`Seção ${index + 1}`}
+          summary={section.title?.pt || ''}
+          onRemove={() => onRemoveArrayItem(['sections'], index)}
+        >
           <I18nTextField label="Título" pathPt={['sections',index,'title','pt']} pathEn={['sections',index,'title','en']} valuePt={section.title?.pt ?? ''} valueEn={section.title?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
           <I18nTextField label="Conteúdo (Markdown)" pathPt={['sections',index,'bodyMd','pt']} pathEn={['sections',index,'bodyMd','en']} valuePt={section.bodyMd?.pt ?? ''} valueEn={section.bodyMd?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} multiline />
-        </div>
+        </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['sections'])}>Adicionar seção</AdminAddButton>
     </div>

@@ -7,6 +7,7 @@ import {
   getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
@@ -56,13 +57,12 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
         <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhum card adicionado ainda.</p>
       )}
       {cards.map((card, cardIndex) => (
-        <div key={cardIndex} className="border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] rounded-xl p-4 space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Card {cardIndex + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['cards'], cardIndex)} className="text-rose-500 hover:text-rose-700 transition-colors">
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
+        <CollapsibleItem
+          key={cardIndex}
+          label={`Card ${cardIndex + 1}`}
+          summary={card.title?.pt || card.id || ''}
+          onRemove={() => onRemoveArrayItem(['cards'], cardIndex)}
+        >
           {/* Global fields */}
           <div className="grid grid-cols-2 gap-4">
             <label className="block">
@@ -109,7 +109,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
               </div>
             ))}
           </div>
-        </div>
+        </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['cards'])}>Adicionar card</AdminAddButton>
     </div>

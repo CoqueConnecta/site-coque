@@ -3,11 +3,10 @@ import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,
-  adminSectionItemClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
-import { Trash2 } from 'lucide-react';
+import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { extractYouTubeId } from '../../../utils/youtube';
 
 type I18nField = { pt?: string; en?: string };
@@ -48,17 +47,11 @@ function VideoItem({ video, index, isFieldDirty, onFieldChange, onRemoveArrayIte
   };
 
   return (
-    <div className={adminSectionItemClass}>
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-semibold text-[var(--admin-text-2)]">Vídeo {index + 1}</span>
-        <button
-          type="button"
-          onClick={() => onRemoveArrayItem(['items'], index)}
-          className="text-rose-500 hover:text-rose-700 transition-colors"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
-      </div>
+    <CollapsibleItem
+      label={`Vídeo ${index + 1}`}
+      summary={video.title?.pt || video.id || ''}
+      onRemove={() => onRemoveArrayItem(['items'], index)}
+    >
 
       <label className="block">
         <span className={adminFieldLabelClass}>Link ou ID do vídeo</span>
@@ -101,7 +94,7 @@ function VideoItem({ video, index, isFieldDirty, onFieldChange, onRemoveArrayIte
           </AdminEditorCard>
         ))}
       </div>
-    </div>
+    </CollapsibleItem>
   );
 }
 

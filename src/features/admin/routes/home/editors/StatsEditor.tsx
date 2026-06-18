@@ -2,11 +2,10 @@ import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,
-  adminSectionItemClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
-import { Trash2 } from 'lucide-react';
+import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -28,13 +27,12 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
         <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhuma estatística adicionada ainda.</p>
       )}
       {items.map((item, index) => (
-        <div key={index} className={adminSectionItemClass}>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Estatística {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['items'], index)} className="text-rose-500 hover:text-rose-700 transition-colors">
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
+        <CollapsibleItem
+          key={index}
+          label={`Estatística ${index + 1}`}
+          summary={item.value || ''}
+          onRemove={() => onRemoveArrayItem(['items'], index)}
+        >
           <label className="block">
             <span className={adminFieldLabelClass}>Valor (global)</span>
             <input
@@ -60,7 +58,7 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
               </AdminEditorCard>
             ))}
           </div>
-        </div>
+        </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar estatística</AdminAddButton>
     </div>

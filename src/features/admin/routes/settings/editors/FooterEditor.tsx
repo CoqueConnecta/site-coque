@@ -2,10 +2,12 @@ import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,
+  adminSectionItemClass,
+  adminSectionTitleClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
-import { Button } from '../../../../../components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -51,24 +53,24 @@ export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem
       </div>
 
       {/* Social links */}
-      <h4 className="text-sm font-semibold text-gray-700">Redes Sociais</h4>
+      <h4 className={adminSectionTitleClass}>Redes Sociais</h4>
       {socialLinks.map((link, index) => (
         <div key={index} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 items-end">
           <label className="block"><span className={adminFieldLabelClass}>Plataforma</span><input type="text" value={link.platform ?? ''} onChange={(e) => onFieldChange(['socialLinks', index, 'platform'], e.target.value)} className={getAdminInputClass(isFieldDirty(['socialLinks', index, 'platform']))} /></label>
           <label className="block"><span className={adminFieldLabelClass}>URL</span><input type="text" value={link.url ?? ''} onChange={(e) => onFieldChange(['socialLinks', index, 'url'], e.target.value)} className={getAdminInputClass(isFieldDirty(['socialLinks', index, 'url']))} /></label>
           <label className="block"><span className={adminFieldLabelClass}>Ícone</span><input type="text" value={link.icon ?? ''} onChange={(e) => onFieldChange(['socialLinks', index, 'icon'], e.target.value)} className={getAdminInputClass(isFieldDirty(['socialLinks', index, 'icon']))} /></label>
-          <button type="button" onClick={() => onRemoveArrayItem(['socialLinks'], index)} className="text-red-500 hover:text-red-700 mb-1"><Trash2 className="h-4 w-4" /></button>
+          <button type="button" onClick={() => onRemoveArrayItem(['socialLinks'], index)} className="text-rose-500 hover:text-rose-700 transition-colors mb-1"><Trash2 className="h-4 w-4" /></button>
         </div>
       ))}
-      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['socialLinks'])} className="flex items-center gap-2 text-sm"><Plus className="h-4 w-4" /> Rede social</Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['socialLinks'])}>Rede social</AdminAddButton>
 
       {/* Quick links */}
-      <h4 className="text-sm font-semibold text-gray-700 mt-6">Links Rápidos</h4>
+      <h4 className={adminSectionTitleClass}>Links Rápidos</h4>
       {quickLinks.map((link, index) => (
-        <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
+        <div key={index} className={adminSectionItemClass}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold">Link {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['quickLinks'], index)} className="text-red-500 hover:text-red-700"><Trash2 className="h-4 w-4" /></button>
+            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Link {index + 1}</span>
+            <button type="button" onClick={() => onRemoveArrayItem(['quickLinks'], index)} className="text-rose-500 hover:text-rose-700 transition-colors"><Trash2 className="h-4 w-4" /></button>
           </div>
           <label className="block"><span className={adminFieldLabelClass}>href</span><input type="text" value={link.href ?? ''} onChange={(e) => onFieldChange(['quickLinks', index, 'href'], e.target.value)} className={getAdminInputClass(isFieldDirty(['quickLinks', index, 'href']))} /></label>
           <div className={adminPanelGridClass}>
@@ -80,7 +82,7 @@ export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem
           </div>
         </div>
       ))}
-      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['quickLinks'])} className="flex items-center gap-2 text-sm"><Plus className="h-4 w-4" /> Link rápido</Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['quickLinks'])}>Link rápido</AdminAddButton>
     </div>
   );
 }

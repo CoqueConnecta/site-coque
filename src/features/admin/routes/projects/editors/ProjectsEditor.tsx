@@ -5,14 +5,9 @@ import {
   adminPanelGridClass,
   getAdminInputClass,
   getAdminTextareaClass,
-  adminDangerButtonClass,
-  adminPrimaryGhostButtonClass,
-  adminSectionGroupClass,
-  adminSectionItemClass,
-  adminSectionTitleClass,
 } from '../../../components/shared/adminEditorStyles';
-import { Button } from '../../../../../components/ui/Button';
-import { Plus } from 'lucide-react';
+import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -40,25 +35,19 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
   const items = Array.isArray(data?.items) ? data.items : [];
 
   return (
-    <div className={adminSectionGroupClass}>
+    <div className="space-y-4">
+      {items.length === 0 && (
+        <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhum projeto adicionado ainda.</p>
+      )}
       {items.map((project, index) => (
-        <div key={project.id ?? index} className={adminSectionItemClass}>
-          <div className="flex justify-between items-start gap-4">
-            <h4 className={adminSectionTitleClass}>
-              Projeto {index + 1}
-              {project.title?.pt && <span className="ml-2 font-normal text-gray-500">— {project.title.pt}</span>}
-            </h4>
-            <button
-              type="button"
-              onClick={() => onRemoveArrayItem(['items'], index)}
-              className={adminDangerButtonClass}
-            >
-              Remover
-            </button>
-          </div>
-
+        <CollapsibleItem
+          key={project.id ?? index}
+          label={`Projeto ${index + 1}`}
+          summary={project.title?.pt || ''}
+          onRemove={() => onRemoveArrayItem(['items'], index)}
+        >
           {/* Global fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="block">
               <span className={adminFieldLabelClass}>ID</span>
               <input type="text" value={project.id ?? ''} onChange={(e) => onFieldChange(['items', index, 'id'], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'id']))} />
@@ -73,12 +62,10 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
             </label>
           </div>
 
-          <div className="mt-3">
-            {renderImageField(project.image ?? '', ['items', index, 'image'], 'Imagem do projeto', '/placeholder-image.png')}
-          </div>
+          {renderImageField(project.image ?? '', ['items', index, 'image'], 'Imagem do projeto', '/placeholder-image.png')}
 
           {/* i18n fields */}
-          <div className={`${adminPanelGridClass} mt-4`}>
+          <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
               <AdminEditorCard key={lang} title={lang === 'pt' ? 'Português (PT)' : 'Inglês (EN)'}>
                 <label className="block">
@@ -96,16 +83,9 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
               </AdminEditorCard>
             ))}
           </div>
-        </div>
+        </CollapsibleItem>
       ))}
-      <Button
-        type="button"
-        variant="ghost"
-        onClick={() => onAddArrayItem(['items'])}
-        className={adminPrimaryGhostButtonClass}
-      >
-        <Plus className="h-4 w-4 mr-2" /> Adicionar projeto
-      </Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar projeto</AdminAddButton>
     </div>
   );
 }
