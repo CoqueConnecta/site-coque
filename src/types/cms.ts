@@ -57,6 +57,7 @@ export interface CmsHeroData {
   headline: I18nField;
   subheadline: I18nField;
   ctaText: I18nField;
+  ctaHref?: I18nField;
 }
 
 export interface CmsValueItem {
@@ -174,7 +175,7 @@ export interface ResolvedNewsletterData {
   headlineAccent: string;
   headline: string; description: string; buttonText: string; placeholderEmail: string;
 }
-export interface ResolvedHeroData    { backgroundImage: string; headline: string; subheadline: string; ctaText: string }
+export interface ResolvedHeroData    { backgroundImage: string; headline: string; subheadline: string; ctaText: string; ctaHref?: string }
 export interface ResolvedAboutData   {
   headline: string; subheadline: string; description: string; subdescription: string;
   mission: { title: string; description: string };

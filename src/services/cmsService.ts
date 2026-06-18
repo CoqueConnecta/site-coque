@@ -109,6 +109,7 @@ export async function getCmsHeroData(language: CmsLanguage): Promise<ResolvedHer
     headline:        pickLang(data.headline, language),
     subheadline:     pickLang(data.subheadline, language),
     ctaText:         pickLang(data.ctaText, language),
+    ctaHref:         data.ctaHref ? pickLang(data.ctaHref, language) : undefined,
   };
 }
 
