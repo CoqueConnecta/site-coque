@@ -21,8 +21,10 @@ function MigrationCard() {
   const [progress, setProgress] = useState({ done: 0, total: 0 });
 
   useEffect(() => {
-    get(ref(database, 'media/library')).then((snap) => {
-      setIsMigrated(snap.exists());
+    // Consider migrated only when cms/v3 URLs are already Firebase Storage URLs
+    get(ref(database, 'cms/v3/pages/home/carousel/images/0/src')).then((snap) => {
+      const url = snap.val();
+      setIsMigrated(typeof url === 'string' && url.startsWith('https://'));
     });
   }, []);
 
