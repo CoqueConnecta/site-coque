@@ -32,3 +32,8 @@ arquivos_exemplo
 .firebase/
 firebase-debug.log
 ui-debug.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local

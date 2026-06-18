@@ -34,6 +34,18 @@ Se você precisa entender o estado real do projeto antes de editar, comece por `
 - `npm run storybook` -> ambiente Storybook
 - `npm run build-storybook` -> build do Storybook
 
+## Configuração local
+
+Copie o arquivo de exemplo e preencha com as credenciais do projeto Firebase:
+
+```bash
+cp .env.example .env.local
+```
+
+As credenciais estão em: **Firebase Console → Project Settings → General → Your apps → SDK setup and configuration**
+
+> `.env.local` está no `.gitignore` e nunca deve ser commitado.
+
 ## Execução local
 
 Com Node.js 22 instalado:
