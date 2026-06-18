@@ -237,7 +237,6 @@ export function DynamicSectionEditor({
       <AdminEditorCard
         title="Português (PT)"
         description="Edite os campos abaixo em formato de formulário."
-        badgeText="Idioma"
       >
         {renderField('pt', ptValue, [], formatLabel(sectionName))}
       </AdminEditorCard>
@@ -245,7 +244,6 @@ export function DynamicSectionEditor({
       <AdminEditorCard
         title="Inglês (EN)"
         description="Edite os campos abaixo em formato de formulário."
-        badgeText="Idioma"
       >
         {renderField('en', enValue, [], formatLabel(sectionName))}
       </AdminEditorCard>

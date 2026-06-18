@@ -24,6 +24,9 @@ export function YoutubeEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
 
   return (
     <div className="space-y-4">
+      {items.length === 0 && (
+        <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhum vídeo adicionado ainda.</p>
+      )}
       {items.map((video, index) => (
         <div key={index} className={adminSectionItemClass}>
           <div className="flex justify-between items-center">
@@ -48,7 +51,7 @@ export function YoutubeEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           </label>
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
-              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Título (PT)' : 'Title (EN)'} badgeText="Idioma">
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Título (PT)' : 'Title (EN)'}>
                 <label className="block">
                   <span className={adminFieldLabelClass}>Título</span>
                   <input

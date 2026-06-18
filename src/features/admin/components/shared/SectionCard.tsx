@@ -11,7 +11,7 @@ type SectionCardProps = {
 export function SectionCard({
   title,
   dirtyCount,
-  defaultOpen = true,
+  defaultOpen = false,
   children,
 }: SectionCardProps) {
   const [open, setOpen] = useState(defaultOpen);

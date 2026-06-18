@@ -80,7 +80,7 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
           {/* i18n fields */}
           <div className={`${adminPanelGridClass} mt-4`}>
             {(['pt', 'en'] as const).map((lang) => (
-              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Português (PT)' : 'Inglês (EN)'} badgeText="Idioma">
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Português (PT)' : 'Inglês (EN)'}>
                 <label className="block">
                   <span className={adminFieldLabelClass}>Título</span>
                   <input type="text" value={project.title?.[lang] ?? ''} onChange={(e) => onFieldChange(['items', index, 'title', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'title', lang]))} />

@@ -9,6 +9,7 @@ type ImageFieldProps = {
   value: string;
   placeholder?: string;
   isDirty?: boolean;
+  readOnly?: boolean;
   onChange: (value: string) => void;
   onOpenLibrary: () => void;
 };
@@ -18,6 +19,7 @@ export function ImageField({
   value,
   placeholder,
   isDirty = false,
+  readOnly = false,
   onChange,
   onOpenLibrary,
 }: ImageFieldProps) {
@@ -32,8 +34,9 @@ export function ImageField({
           <input
             type="text"
             value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className={getAdminInputClass(isDirty)}
+            onChange={readOnly ? undefined : (e) => onChange(e.target.value)}
+            readOnly={readOnly}
+            className={`${getAdminInputClass(isDirty)}${readOnly ? ' cursor-not-allowed opacity-60 select-none' : ''}`}
             placeholder={placeholder}
           />
           <button

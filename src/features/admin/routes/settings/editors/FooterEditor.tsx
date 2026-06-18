@@ -44,7 +44,7 @@ export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem
       {/* Copyrights i18n */}
       <div className={adminPanelGridClass}>
         {(['pt', 'en'] as const).map((lang) => (
-          <AdminEditorCard key={lang} title={lang === 'pt' ? 'Copyright (PT)' : 'Copyright (EN)'} badgeText="Idioma">
+          <AdminEditorCard key={lang} title={lang === 'pt' ? 'Copyright (PT)' : 'Copyright (EN)'}>
             <input type="text" value={data.copyrights?.[lang] ?? ''} onChange={(e) => onFieldChange(['copyrights', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['copyrights', lang]))} />
           </AdminEditorCard>
         ))}
@@ -73,7 +73,7 @@ export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem
           <label className="block"><span className={adminFieldLabelClass}>href</span><input type="text" value={link.href ?? ''} onChange={(e) => onFieldChange(['quickLinks', index, 'href'], e.target.value)} className={getAdminInputClass(isFieldDirty(['quickLinks', index, 'href']))} /></label>
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
-              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'} badgeText="Idioma">
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'}>
                 <input type="text" value={link.labels?.[lang] ?? ''} onChange={(e) => onFieldChange(['quickLinks', index, 'labels', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['quickLinks', index, 'labels', lang]))} />
               </AdminEditorCard>
             ))}

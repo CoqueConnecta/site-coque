@@ -49,7 +49,7 @@ export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, o
           </div>
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
-              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'} badgeText="Idioma">
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'}>
                 <label className="block">
                   <span className={adminFieldLabelClass}>Texto</span>
                   <input type="text" value={link.labels?.[lang] ?? ''} onChange={(e) => onFieldChange(['links', index, 'labels', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['links', index, 'labels', lang]))} />
@@ -68,7 +68,7 @@ export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, o
       </label>
       <div className={adminPanelGridClass}>
         {(['pt', 'en'] as const).map((lang) => (
-          <AdminEditorCard key={lang} title={lang === 'pt' ? 'CTA (PT)' : 'CTA (EN)'} badgeText="Idioma">
+          <AdminEditorCard key={lang} title={lang === 'pt' ? 'CTA (PT)' : 'CTA (EN)'}>
             <input type="text" value={data.cta?.labels?.[lang] ?? ''} onChange={(e) => onFieldChange(['cta', 'labels', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['cta', 'labels', lang]))} />
           </AdminEditorCard>
         ))}

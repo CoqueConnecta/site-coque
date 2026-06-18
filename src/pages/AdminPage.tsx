@@ -162,12 +162,14 @@ export default function AdminPage() {
     path: Array<string | number>,
     label: string,
     placeholder?: string,
+    readOnly?: boolean,
   ) => (
     <ImageField
       label={label}
       value={value}
       isDirty={isFieldDirty(path, sectionKey)}
       placeholder={placeholder}
+      readOnly={readOnly}
       onChange={(nextValue) => handleFieldChange(sectionKey, path, nextValue)}
       onOpenLibrary={() => openImagePicker(sectionKey, 'pt', path, label)}
     />

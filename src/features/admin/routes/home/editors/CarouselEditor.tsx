@@ -14,7 +14,7 @@ type CarouselEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
-  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
+  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
 
 export function CarouselEditor({
@@ -32,6 +32,9 @@ export function CarouselEditor({
       <p className="text-xs text-[var(--admin-text-3)]">
         Alt text em português — não é exibido para o usuário, serve apenas para acessibilidade.
       </p>
+      {images.length === 0 && (
+        <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhuma imagem adicionada ainda.</p>
+      )}
       {images.map((image, index) => (
         <div key={index} className={`${adminPanelGridClass} border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] rounded-xl p-4`}>
           <div className="col-span-full flex justify-between items-center mb-2">
@@ -45,7 +48,7 @@ export function CarouselEditor({
             </button>
           </div>
           <div className="col-span-full">
-            {renderImageField(image.src ?? '', ['images', index, 'src'], 'Imagem')}
+            {renderImageField(image.src ?? '', ['images', index, 'src'], 'Imagem', undefined, true)}
           </div>
           <div className="col-span-full">
             <label className="block">

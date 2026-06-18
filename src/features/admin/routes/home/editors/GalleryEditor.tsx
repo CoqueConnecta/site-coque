@@ -27,7 +27,7 @@ type GalleryEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
-  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
+  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
 
 export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField }: GalleryEditorProps) {
@@ -38,7 +38,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
       {/* Section header — i18n */}
       <div className={adminPanelGridClass}>
         {(['pt', 'en'] as const).map((lang) => (
-          <AdminEditorCard key={lang} title={lang === 'pt' ? 'Cabeçalho (PT)' : 'Header (EN)'} badgeText="Idioma">
+          <AdminEditorCard key={lang} title={lang === 'pt' ? 'Cabeçalho (PT)' : 'Header (EN)'}>
             <label className="block">
               <span className={adminFieldLabelClass}>Headline</span>
               <input type="text" value={data.headline?.[lang] ?? ''} onChange={(e) => onFieldChange(['headline', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['headline', lang]))} />
@@ -52,6 +52,9 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
       </div>
 
       {/* Cards */}
+      {cards.length === 0 && (
+        <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhum card adicionado ainda.</p>
+      )}
       {cards.map((card, cardIndex) => (
         <div key={cardIndex} className="border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] rounded-xl p-4 space-y-4">
           <div className="flex justify-between items-center">
@@ -78,7 +81,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           {/* i18n fields */}
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
-              <AdminEditorCard key={lang} title={lang === 'pt' ? 'PT' : 'EN'} badgeText="Idioma">
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'PT' : 'EN'}>
                 <label className="block">
                   <span className={adminFieldLabelClass}>Título</span>
                   <input type="text" value={card.title?.[lang] ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'title', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'title', lang]))} />

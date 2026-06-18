@@ -31,7 +31,7 @@ function I18nTextField({ label, pathPt, pathEn, valuePt, valueEn, isFieldDirty, 
   return (
     <div className={adminPanelGridClass}>
       {([['pt', pathPt, valuePt], ['en', pathEn, valueEn]] as const).map(([lang, path, val]) => (
-        <AdminEditorCard key={lang} title={`${label} (${lang.toUpperCase()})`} badgeText="Idioma">
+        <AdminEditorCard key={lang} title={`${label} (${lang.toUpperCase()})`}>
           {multiline
             ? <textarea value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className={getAdminTextareaClass(isFieldDirty(path as Array<string|number>))} rows={4} />
             : <input type="text" value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className={getAdminInputClass(isFieldDirty(path as Array<string|number>))} />

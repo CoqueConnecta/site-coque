@@ -35,7 +35,7 @@ export function HomeRoute({
               sectionKey={key}
               isFieldDirty={(path) => isFieldDirty(path, key)}
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
-              renderImageField={(value, path, lbl, ph) => renderImageField(key, value, path, lbl, ph)}
+              renderImageField={(value, path, lbl, ph, ro) => renderImageField(key, value, path, lbl, ph, ro)}
             />
           )}
           {key === 'pages.home.about' && (
@@ -56,7 +56,7 @@ export function HomeRoute({
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
               onAddArrayItem={(path) => onAddArrayItem(key, path)}
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
-              renderImageField={(value, path, lbl, ph) => renderImageField(key, value, path, lbl, ph)}
+              renderImageField={(value, path, lbl, ph, ro) => renderImageField(key, value, path, lbl, ph, ro)}
             />
           )}
           {key === 'pages.home.youtubeVideos' && (
@@ -77,7 +77,7 @@ export function HomeRoute({
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
               onAddArrayItem={(path) => onAddArrayItem(key, path)}
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
-              renderImageField={(value, path, lbl, ph) => renderImageField(key, value, path, lbl, ph)}
+              renderImageField={(value, path, lbl, ph, ro) => renderImageField(key, value, path, lbl, ph, ro)}
             />
           )}
           {key === 'pages.home.stats' && (

@@ -24,6 +24,9 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
 
   return (
     <div className="space-y-4">
+      {items.length === 0 && (
+        <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhuma estatística adicionada ainda.</p>
+      )}
       {items.map((item, index) => (
         <div key={index} className={adminSectionItemClass}>
           <div className="flex justify-between items-center">
@@ -44,7 +47,7 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
           </label>
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
-              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'} badgeText="Idioma">
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'}>
                 <label className="block">
                   <span className={adminFieldLabelClass}>Rótulo</span>
                   <input
