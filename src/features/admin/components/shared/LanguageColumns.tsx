@@ -8,6 +8,17 @@ type LanguageColumnsProps = {
   children: [React.ReactNode, React.ReactNode]; // [ptPanel, enPanel]
 };
 
+function LangBadge({ code, label }: { code: string; label: string }) {
+  return (
+    <div className="flex items-center gap-2 mb-3">
+      <span className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold bg-[var(--admin-active-bg)] text-[var(--admin-active-text)]">
+        {code}
+      </span>
+      <span className="text-xs text-[var(--admin-text-4)]">{label}</span>
+    </div>
+  );
+}
+
 /**
  * On desktop: renders PT and EN side-by-side (2 columns).
  * On mobile: renders PT/EN tab switcher, showing one panel at a time.
@@ -24,9 +35,12 @@ export function LanguageColumns({
   if (isGlobal) {
     return (
       <div>
-        <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-3">
-          Global — aplica para PT e EN
-        </p>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold bg-[var(--admin-surface-2)] text-[var(--admin-text-3)]">
+            Global
+          </span>
+          <span className="text-xs text-[var(--admin-text-4)]">aplica para PT e EN</span>
+        </div>
         {ptPanel}
       </div>
     );
@@ -40,16 +54,16 @@ export function LanguageColumns({
         value={mobileLanguage}
         onValueChange={(v) => onMobileLanguageChange(v as CmsLanguage)}
       >
-        <Tabs.List className="grid w-full grid-cols-2 rounded-lg bg-gray-100 p-1">
+        <Tabs.List className="grid w-full grid-cols-2 rounded-lg bg-[var(--admin-surface-2)] p-1">
           <Tabs.Trigger
             value="pt"
-            className="rounded-md px-3 py-2 text-sm font-semibold text-gray-600 transition-all data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+            className="rounded-md px-3 py-2 text-sm font-semibold text-[var(--admin-text-3)] transition-all data-[state=active]:bg-[var(--admin-surface)] data-[state=active]:text-[var(--admin-text-1)] data-[state=active]:shadow-sm"
           >
             Português
           </Tabs.Trigger>
           <Tabs.Trigger
             value="en"
-            className="rounded-md px-3 py-2 text-sm font-semibold text-gray-600 transition-all data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+            className="rounded-md px-3 py-2 text-sm font-semibold text-[var(--admin-text-3)] transition-all data-[state=active]:bg-[var(--admin-surface)] data-[state=active]:text-[var(--admin-text-1)] data-[state=active]:shadow-sm"
           >
             English
           </Tabs.Trigger>
@@ -63,11 +77,11 @@ export function LanguageColumns({
       {/* Desktop: side-by-side */}
       <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6">
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-3">Português</p>
+          <LangBadge code="PT" label="Português" />
           {ptPanel}
         </div>
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-3">English</p>
+          <LangBadge code="EN" label="English" />
           {enPanel}
         </div>
       </div>

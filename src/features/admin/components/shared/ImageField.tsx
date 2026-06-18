@@ -1,3 +1,9 @@
+import {
+  adminFieldLabelClass,
+  adminPrimaryGhostButtonClass,
+  getAdminInputClass,
+} from './adminEditorStyles';
+
 type ImageFieldProps = {
   label: string;
   value: string;
@@ -6,12 +12,6 @@ type ImageFieldProps = {
   onChange: (value: string) => void;
   onOpenLibrary: () => void;
 };
-
-import {
-  adminFieldLabelClass,
-  adminPrimaryGhostButtonClass,
-  getAdminInputClass,
-} from './adminEditorStyles';
 
 export function ImageField({
   label,
@@ -25,7 +25,7 @@ export function ImageField({
   const canPreview = previewSource.startsWith('http') || previewSource.startsWith('/');
 
   return (
-    <div className={`space-y-3 rounded-2xl border bg-gray-50/80 p-4 ${isDirty ? 'border-amber-300' : 'border-gray-100'}`}>
+    <div className={`space-y-3 rounded-2xl border bg-[var(--admin-surface-2)] p-4 ${isDirty ? 'border-amber-300' : 'border-[var(--admin-border)]'}`}>
       <label className="block">
         <span className={adminFieldLabelClass}>{label}</span>
         <div className="flex flex-col gap-2 sm:flex-row">
@@ -47,7 +47,7 @@ export function ImageField({
       </label>
 
       {canPreview ? (
-        <div className="rounded-xl border border-gray-200 bg-white p-2 shadow-sm shadow-gray-100/70">
+        <div className="rounded-xl border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] p-2 shadow-sm">
           <img src={previewSource} alt="Prévia da imagem" className="max-h-40 w-full rounded object-cover" />
         </div>
       ) : null}

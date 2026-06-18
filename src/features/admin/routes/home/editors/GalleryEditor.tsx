@@ -53,10 +53,10 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
 
       {/* Cards */}
       {cards.map((card, cardIndex) => (
-        <div key={cardIndex} className="border border-gray-200 rounded-lg p-4 space-y-4">
+        <div key={cardIndex} className="border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] rounded-xl p-4 space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold text-gray-700">Card {cardIndex + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['cards'], cardIndex)} className="text-red-500 hover:text-red-700">
+            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Card {cardIndex + 1}</span>
+            <button type="button" onClick={() => onRemoveArrayItem(['cards'], cardIndex)} className="text-rose-500 hover:text-rose-700 transition-colors">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
@@ -94,7 +94,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className={adminFieldLabelClass}>Tags</span>
-              <button type="button" onClick={() => onAddArrayItem(['cards', cardIndex, 'tags'])} className="text-blue-500 hover:text-blue-700 text-xs flex items-center gap-1">
+              <button type="button" onClick={() => onAddArrayItem(['cards', cardIndex, 'tags'])} className="text-[var(--admin-accent)] hover:opacity-80 text-xs flex items-center gap-1 transition-opacity">
                 <Plus className="h-3 w-3" /> Tag
               </button>
             </div>
@@ -102,7 +102,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
               <div key={tagIndex} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
                 <input type="text" placeholder="PT" value={tag.pt ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'tags', tagIndex, 'pt'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'tags', tagIndex, 'pt']))} />
                 <input type="text" placeholder="EN" value={tag.en ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'tags', tagIndex, 'en'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'tags', tagIndex, 'en']))} />
-                <button type="button" onClick={() => onRemoveArrayItem(['cards', cardIndex, 'tags'], tagIndex)} className="text-red-500 hover:text-red-700">
+                <button type="button" onClick={() => onRemoveArrayItem(['cards', cardIndex, 'tags'], tagIndex)} className="text-rose-500 hover:text-rose-700 transition-colors">
                   <Trash2 className="h-3 w-3" />
                 </button>
               </div>

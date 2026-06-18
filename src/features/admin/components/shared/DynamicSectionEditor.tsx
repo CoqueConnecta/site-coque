@@ -131,7 +131,7 @@ export function DynamicSectionEditor({
           </div>
           <div className={adminSectionGroupClass}>
             {value.length === 0 ? (
-              <p className="text-sm text-gray-500">Nenhum item cadastrado.</p>
+              <p className="text-sm text-[var(--admin-text-3)]">Nenhum item cadastrado.</p>
             ) : null}
             {value.map((item, index) => (
               <div key={`${label}-${index}`} className={adminSectionItemClass}>
@@ -175,7 +175,7 @@ export function DynamicSectionEditor({
             onChange={(e) => onSectionFieldChange(language, path, e.target.checked)}
             className={adminCheckboxClass}
           />
-          <span className="text-sm font-medium text-gray-700">{label}</span>
+          <span className="text-sm font-medium text-[var(--admin-text-2)]">{label}</span>
         </label>
       );
     }

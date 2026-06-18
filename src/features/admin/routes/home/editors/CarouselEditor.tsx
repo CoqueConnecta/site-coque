@@ -29,14 +29,18 @@ export function CarouselEditor({
 
   return (
     <div className="space-y-6">
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-[var(--admin-text-3)]">
         Alt text em português — não é exibido para o usuário, serve apenas para acessibilidade.
       </p>
       {images.map((image, index) => (
-        <div key={index} className={`${adminPanelGridClass} border border-gray-200 rounded-lg p-4`}>
+        <div key={index} className={`${adminPanelGridClass} border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] rounded-xl p-4`}>
           <div className="col-span-full flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-700">Imagem {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['images'], index)} className="text-red-500 hover:text-red-700">
+            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Imagem {index + 1}</span>
+            <button
+              type="button"
+              onClick={() => onRemoveArrayItem(['images'], index)}
+              className="text-rose-500 hover:text-rose-700 transition-colors"
+            >
               <Trash2 className="h-4 w-4" />
             </button>
           </div>

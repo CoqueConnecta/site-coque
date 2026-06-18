@@ -24,3 +24,43 @@
 
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
+
+/* ─── Admin panel theme ──────────────────────────────────────── */
+:root {
+  --admin-bg:           #f5f6f8;
+  --admin-surface:      #ffffff;
+  --admin-surface-2:    #f0f1f5;
+  --admin-border:       #ebebf0;
+  --admin-border-sub:   #e2e4ea;
+  --admin-text-1:       #111827;
+  --admin-text-2:       #374151;
+  --admin-text-3:       #6b7280;
+  --admin-text-4:       #9ca3af;
+  --admin-input-bg:     #ffffff;
+  --admin-input-bd:     #e2e4ea;
+  --admin-focus:        #a5b4fc;
+  --admin-sidebar-bg:   #ffffff;
+  --admin-active-bg:    #eef2ff;
+  --admin-active-text:  #4338ca;
+  --admin-accent:       #6366f1;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --admin-bg:           #0d1117;
+  --admin-surface:      #161b27;
+  --admin-surface-2:    #1e2535;
+  --admin-border:       #222b3d;
+  --admin-border-sub:   #2a3450;
+  --admin-text-1:       #e6edf5;
+  --admin-text-2:       #a8b8cf;
+  --admin-text-3:       #7b91b0;
+  --admin-text-4:       #56708a;
+  --admin-input-bg:     #0d1117;
+  --admin-input-bd:     #2a3450;
+  --admin-focus:        #6366f1;
+  --admin-sidebar-bg:   #0d1117;
+  --admin-active-bg:    rgba(99, 102, 241, 0.12);
+  --admin-active-text:  #818cf8;
+  --admin-accent:       #818cf8;
+}
