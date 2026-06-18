@@ -35,8 +35,11 @@ Documentos historicos:
 - Deploy migrado do GitHub Pages (producao) + Render (staging) para Vercel.
 - `vercel.json` adicionado com rewrite catch-all para SPA routing (`/admin` sem 404).
 - Regras do Firebase versionadas: `database.rules.json` e `storage.rules`, deploy via Firebase CLI.
-- Branch `main` protegida no GitHub; branches obsoletas removidas; `staging` recriada a partir de `main`.
+- Branch `main` protegida no GitHub (requer PR aprovado); branches obsoletas removidas.
+- `staging` recriada a partir de `main`; `staging.coqueconnecta.ong.br` configurado na Vercel.
 - Script `deploy:staging` removido; workflow passa a ser inteiramente por PRs via GitHub.
+- Documentacao sincronizada com estado atual; `docs/backlog.md` e issue template de imagens atualizados.
+- Config Firebase migrada para variaveis de ambiente (`import.meta.env.VITE_*`); Vercel configurada com todas as envs.
 
 ## Pendencias imediatas
 
@@ -45,5 +48,5 @@ Documentos historicos:
 
 ## Proximo passo objetivo
 
-- Iniciar novas features via branches `feature/*` abertas a partir de `main`, com PR → staging → main.
+- Iniciar novas features via branches `feature/*` abertas a partir de `origin/staging`, com PR → staging → main.
 - Manter `docs/project-context.md` como fonte de verdade tecnica apos mudancas estruturais.

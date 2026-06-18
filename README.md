@@ -34,6 +34,18 @@ Se você precisa entender o estado real do projeto antes de editar, comece por `
 - `npm run storybook` -> ambiente Storybook
 - `npm run build-storybook` -> build do Storybook
 
+## Configuração local
+
+Copie o arquivo de exemplo e preencha com as credenciais do projeto Firebase:
+
+```bash
+cp .env.example .env.local
+```
+
+As credenciais estão em: **Firebase Console → Project Settings → General → Your apps → SDK setup and configuration**
+
+> `.env.local` está no `.gitignore` e nunca deve ser commitado.
+
 ## Execução local
 
 Com Node.js 22 instalado:
@@ -47,19 +59,34 @@ npm run dev
 
 - `main` → produção. **Protegida**: apenas via PR aprovado. Nunca commitar diretamente.
 - `staging` → homologação. Push gera preview automático na Vercel.
-- `feature/*` ou `fix/*` → branches de trabalho, criadas a partir de `main`.
+- `feature/*` ou `fix/*` → branches de trabalho, criadas a partir de `origin/staging`.
 
-Fluxo:
+Fluxo completo via CLI:
 
 ```bash
-# 1. Criar branch a partir de main
-git switch -c feature/nome-da-feature
+# 1. Criar branch a partir de origin/staging (evita divergência ao abrir PR)
+git fetch origin
+git switch -c feature/nome-da-feature origin/staging
 
 # 2. Trabalhar, commitar normalmente
-# 3. Abrir PR → staging no GitHub para validar no preview da Vercel
-# 4. Após validação, abrir PR → main
+
+# 3. Abrir PR → staging
+gh pr create --base staging --title "feat: descrição"
+
+# 4. Mergear em staging e deletar a branch (staging não tem proteção)
+gh pr merge --squash --delete-branch
+
+# 5. Validar em staging.coqueconnecta.ong.br
+
+# 6. Abrir PR → main (requer aprovação na UI do GitHub)
+gh pr create --base main --title "feat: descrição"
+
+# 7. Após aprovação, mergear em main
+gh pr merge --squash --delete-branch
 ```
 
+> `--squash` condensa os commits da branch em um único commit limpo no histórico.
+> `--delete-branch` remove a branch local e remota automaticamente após o merge.
 ## Deploy
 
 O projeto é deployado pela **Vercel** (conta `coqueconnecta@gmail.com`).
