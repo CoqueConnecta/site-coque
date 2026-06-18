@@ -1,24 +1,31 @@
-import Banner from '../components/Banner/Banner'
-import Contacts from '../components/Contacts/Contacts'
-import Header from '../components/Header/Header'
-import LanguageToggle from '../components/LanguageToggle/LanguageToggle'
-import MissionVisionValues from '../components/MissionVisionValues/MissionVisionValues'
-import Projects from '../components/Projects/Projects'
-import WantHelp from '../components/WantHelp/WantHelp'
+import { useOutletContext } from 'react-router-dom';
+import { HeroSection } from '../components/sections/HeroSection';
+import { AboutSection } from '../components/sections/AboutSection';
+import { GallerySection } from '../components/sections/GallerySection';
+import { StatsSection } from '../components/sections/StatsSection';
+import { useCmsLandingData } from '../hooks/useCmsLandingData';
+import type { PublicLayoutContextValue } from './PublicLayout';
 
 function Site() {
+  const { language } = useOutletContext<PublicLayoutContextValue>();
+  const { data } = useCmsLandingData(language);
 
   return (
     <>
-      <LanguageToggle/>
-      <Header/>
-      <Banner/>
-      <MissionVisionValues/>
-      <Projects/>
-      <WantHelp/>
-      <Contacts/>
+      <HeroSection data={data.hero} />
+
+      <main>
+        <AboutSection
+          data={data.about}
+          tickerImages={data.carousel.images}
+          youtubeVideos={data.youtubeVideos}
+          id="about"
+        />
+        <StatsSection data={data.stats} />
+        <GallerySection data={data.gallery} id="our-work" />
+      </main>
     </>
-  )
+  );
 }
 
-export default Site
+export default Site;

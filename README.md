@@ -1,35 +1,78 @@
 # Site Coque Connecta
 
-Este é o repositório da ONG Coque Connecta.
+Repositório do site institucional da ONG Coque Connecta.
 
-URL de produção: [https://coqueconnecta.ong.br/](https://coqueconnecta.ong.br/)
+## Links
 
-URL de staging: [https://site-coque-staging.onrender.com/](https://site-coque-staging.onrender.com/)
+- Produção: [https://coqueconnecta.ong.br/](https://coqueconnecta.ong.br/)
+- Staging: preview automático da branch `staging` via Vercel
 
-## Tecnologias
+## Documentação principal
+
+- Contexto técnico atual: `docs/project-context.md`
+- Log operacional curto: `refactor-context.md`
+- Documentos históricos: `docs/archive/`
+
+Se você precisa entender o estado real do projeto antes de editar, comece por `docs/project-context.md`.
+
+## Stack atual
 
 - React 19
-- Node 22 LTS Version
-- Github Pages
-- Render.com [Logar com a conta do github da CoqueConnecta]
+- TypeScript 5
+- Vite 6
+- Tailwind CSS 4
+- React Router 7
+- Firebase Auth + Realtime Database
+- Storybook 10
 
-## Libs
+## Comandos principais
 
-- i18next -> Internacionalização do projeto
+- `npm run dev` -> desenvolvimento local
+- `npm run build` -> build de produção
+- `npm run lint` -> lint
+- `npm run preview` -> preview do build
+- `npm run storybook` -> ambiente Storybook
+- `npm run build-storybook` -> build do Storybook
 
-## Como rodar o projeto localmente?
+## Execução local
 
-Com o node.js 22 instalado rode o comando: `npm run dev`
+Com Node.js 22 instalado:
 
-## Como deployar o projeto em staging?
+```bash
+npm install
+npm run dev
+```
 
-O projeto atualmente está conectado ao render.com através da branch `staging`.
-A qualquer commit na branch `staging`, a pipeline será acionada automaticamente e atualizará a url: [https://site-coque-staging.onrender.com/](https://site-coque-staging.onrender.com/).
+## Deploy
 
-## Como deployar o projeto em produção?
+O projeto é deployado pela **Vercel** (conta `coqueconnecta@gmail.com`).
 
-- Commit e push do trabalho na branch `main`
-- Certifique-se que a branch esteja clean `git status`
-- rode o comando: `npm run deploy`.
+### Staging
 
-Este comando irá buildar o projeto com o código atual salvo na sua máquina, por isso tenha certeza de estar com a branch tree limpa.
+A branch `staging` gera um preview automático na Vercel a cada push.
+
+Fluxo recomendado para atualizar staging:
+
+```bash
+git switch staging
+git pull --ff-only origin staging
+git merge --no-ff <branch>
+git push origin staging
+# → Vercel gera a preview URL automaticamente
+```
+
+### Produção
+
+Push na branch `main` dispara deploy automático em produção (`coqueconnecta.ong.br`).
+
+### Regras do Firebase (Realtime Database)
+
+As regras de segurança estão versionadas em [`database.rules.json`](./database.rules.json).
+
+Após editar o arquivo, publique com:
+
+```bash
+firebase deploy --only database --account gildorama@gmail.com
+```
+
+> O projeto pertence à conta `coqueconnecta@gmail.com`, mas `gildorama@gmail.com` foi adicionado como Editor. Use sempre a flag `--account` para evitar conflito com outros projetos.

@@ -1,0 +1,46 @@
+{
+  "rules": {
+    "cms": {
+      "v2": {
+        "landing": {
+          ".read": true,
+          ".write": "auth != null"
+        },
+        "projects": {
+          ".read": true,
+          ".write": "auth != null"
+        }
+      },
+      "v3": {
+        "pages": {
+          ".read": true,
+          ".write": "auth != null"
+        },
+        "shared": {
+          ".read": true,
+          ".write": "auth != null"
+        }
+      }
+    },
+    "media": {
+      "library": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "locales": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "admins": {
+      ".read": "auth != null",
+      ".write": false
+    },
+    "newsletter": {
+      "$subscriber_id": {
+        ".write": "!data.exists()",
+        ".read": "auth != null"
+      }
+    }
+  }
+}

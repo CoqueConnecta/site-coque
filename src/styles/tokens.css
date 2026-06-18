@@ -1,0 +1,26 @@
+:root {
+  --font-body: "DM Sans", "Lato", system-ui, sans-serif;
+  --font-support: "Lato", "DM Sans", system-ui, sans-serif;
+  --font-display: "Kirang Haerang", "DM Sans", system-ui, sans-serif;
+
+  --color-surface-page: #f0f0f0;
+  --color-surface-card: #f7b06f;
+  --color-surface-card-strong: #f48732;
+  --color-surface-accent: #f97316;
+  --color-text-primary: #101014;
+  --color-text-secondary: #3d3d47;
+  --color-text-on-dark: #ffffff;
+  --color-tag-bg: #411409;
+  --color-tag-text: #fff4e8;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  --space-section-desktop: 96px;
+  --space-section-mobile: 64px;
+
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.08);
+}

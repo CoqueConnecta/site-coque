@@ -1,69 +1,206 @@
 // src/pages/AdminPage.tsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { ref, get, set } from 'firebase/database';
-import { auth, database } from '../../firebase';
 import toast from 'react-hot-toast';
+import { auth } from '../../firebase';
+import { ImageField } from '../features/admin/components/shared/ImageField';
+import { ImageLibraryModal } from '../features/admin/components/layout/ImageLibraryModal';
+import { AdminLayout } from '../features/admin/components/layout/AdminLayout';
+import { AdminPageHeader } from '../features/admin/components/layout/AdminPageHeader';
+import { AdminDiscardModal } from '../features/admin/components/layout/AdminDiscardModal';
 
-// Tipos de dados (sem alterações)
-type TranslationContent = {
-  [key: string]: string | TranslationContent;
-};
-type LocaleData = {
-  translation: TranslationContent;
-};
-type FullTranslations = {
-  pt: LocaleData;
-  en: LocaleData;
-};
+import { HomeRoute } from '../features/admin/routes/home/HomeRoute';
+import { ProjectsRoute } from '../features/admin/routes/projects/ProjectsRoute';
+import { PrivacyRoute } from '../features/admin/routes/privacy/PrivacyRoute';
+import { TransparencyRoute } from '../features/admin/routes/transparency/TransparencyRoute';
+import { SettingsRoute } from '../features/admin/routes/settings/SettingsRoute';
+
+import { useAdminData } from '../features/admin/hooks/useAdminData';
+import { useDirtyFields } from '../features/admin/hooks/useDirtyFields';
+import { useImagePicker } from '../features/admin/hooks/useImagePicker';
+import { useAdminRoute } from '../features/admin/hooks/useAdminRoute';
+import {
+  buildEmptyFromTemplate,
+  getValueAtPath,
+  isRecord,
+  setValueAtPath,
+} from '../features/admin/utils/editorPath';
+import type { MediaAsset } from '../features/admin/types';
+import type { CmsAdminState } from '../features/admin/types';
 
 export default function AdminPage() {
-  // Hooks de estado (sem alterações)
   const navigate = useNavigate();
-  const [translations, setTranslations] = useState<FullTranslations | null>(null);
-  const [activeSection, setActiveSection] = useState<string>('');
+  const {
+    cmsData,
+    setCmsData,
+    originalCmsData,
+    setOriginalCmsData,
+  } = useAdminData();
 
-  // Lógica de busca e salvamento (sem alterações)
-  useEffect(() => {
-    const fetchData = async () => {
-      const localesRef = ref(database, 'locales');
-      try {
-        const snapshot = await get(localesRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          setTranslations(data);
-          if (data.pt?.translation) {
-            setActiveSection(Object.keys(data.pt.translation)[0]);
-          }
-        }
-      } catch (error) {
-        toast.error("Falha ao carregar os dados do painel.");
-        console.error("Erro ao buscar dados do Firebase:", error);
+  const [isDiscardConfirmOpen, setIsDiscardConfirmOpen] = useState(false);
+
+  const {
+    dirtyFields,
+    setDirtyFields,
+    markDirtyField,
+    isFieldDirty,
+    sectionDirtyCount,
+  } = useDirtyFields(originalCmsData, '');
+
+  const {
+    activeRouteId,
+    setActiveRouteId,
+    activeRoute,
+    activeSectionKey,
+    setActiveSectionKey,
+    routeDirtyCount,
+    handleSaveRoute,
+    handleDiscardRoute,
+  } = useAdminRoute(
+    cmsData,
+    originalCmsData,
+    setCmsData,
+    setOriginalCmsData,
+    dirtyFields,
+    setDirtyFields,
+  );
+
+  const {
+    isMediaModalOpen,
+    pickerState,
+    mediaSearch,
+    setMediaSearch,
+    selectedMediaCategory,
+    setSelectedMediaCategory,
+    shouldApplyMetadata,
+    setShouldApplyMetadata,
+    filteredMediaAssets,
+    categories,
+    isUploading,
+    uploadProgress,
+    handleUpload,
+    openImagePicker,
+    closeImagePicker,
+  } = useImagePicker();
+
+  /**
+   * Navigate into cmsData using a dotted sectionKey, then set value at path.
+   * e.g. sectionKey = "pages.home.hero", path = ["headline", "pt"]
+   */
+  const handleFieldChange = (
+    sectionKey: string,
+    path: Array<string | number>,
+    value: unknown,
+  ) => {
+    markDirtyField(sectionKey, path, value);
+    setCmsData((prev) => {
+      if (!prev) return prev;
+      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
+      const segments = sectionKey.split('.');
+      // Navigate to the section node
+      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
+      for (const seg of segments.slice(0, -1)) {
+        node = node[seg] as Record<string, unknown>;
       }
-    };
-    fetchData();
-  }, []);
-
-  const handleInputChange = (lang: 'pt' | 'en', path: string[], value: string) => {
-    if (!translations) return;
-    const newTranslations = JSON.parse(JSON.stringify(translations));
-    let current: any = newTranslations[lang].translation;
-    for (let i = 0; i < path.length - 1; i++) {
-      current = current[path[i]];
-    }
-    current[path[path.length - 1]] = value;
-    setTranslations(newTranslations);
+      const lastSeg = segments[segments.length - 1];
+      node[lastSeg] = setValueAtPath(node[lastSeg], path, value);
+      return next;
+    });
   };
 
-  const handleSave = () => {
-    if (!translations) return;
-    const savePromise = set(ref(database, 'locales'), translations);
-    toast.promise(savePromise, {
-      loading: 'Salvando...',
-      success: <b>Traduções salvas com sucesso!</b>,
-      error: <b>Erro ao salvar. Tente novamente.</b>,
+  const handleAddArrayItem = (sectionKey: string, path: Array<string | number>) => {
+    setCmsData((prev) => {
+      if (!prev) return prev;
+      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
+      const segments = sectionKey.split('.');
+      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
+      for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
+      const lastSeg = segments[segments.length - 1];
+      const sectionData = node[lastSeg];
+      const currentValue = getValueAtPath(sectionData, path);
+      if (!Array.isArray(currentValue)) return prev;
+      const templateSource = currentValue.length > 0 ? currentValue[0] : '';
+      const newItem = buildEmptyFromTemplate(templateSource);
+      const updatedArray = [...currentValue, newItem];
+      node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
+      markDirtyField(sectionKey, path, updatedArray);
+      return next;
     });
+  };
+
+  const handleRemoveArrayItem = (
+    sectionKey: string,
+    path: Array<string | number>,
+    index: number,
+  ) => {
+    setCmsData((prev) => {
+      if (!prev) return prev;
+      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
+      const segments = sectionKey.split('.');
+      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
+      for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
+      const lastSeg = segments[segments.length - 1];
+      const sectionData = node[lastSeg];
+      const currentValue = getValueAtPath(sectionData, path);
+      if (!Array.isArray(currentValue)) return prev;
+      const updatedArray = currentValue.filter((_, i) => i !== index);
+      node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
+      markDirtyField(sectionKey, path, updatedArray);
+      return next;
+    });
+  };
+
+  const getObjectAtPath = (source: unknown, path: Array<string | number>) => {
+    const value = getValueAtPath(source, path);
+    return isRecord(value) ? value : null;
+  };
+
+  const renderImageField = (
+    sectionKey: string,
+    value: string,
+    path: Array<string | number>,
+    label: string,
+    placeholder?: string,
+  ) => (
+    <ImageField
+      label={label}
+      value={value}
+      isDirty={isFieldDirty(path, sectionKey)}
+      placeholder={placeholder}
+      onChange={(nextValue) => handleFieldChange(sectionKey, path, nextValue)}
+      onOpenLibrary={() => openImagePicker(sectionKey, 'pt', path, label)}
+    />
+  );
+
+  const applyAssetToField = (asset: MediaAsset) => {
+    if (!pickerState || !cmsData) return;
+    const { sectionKey, path } = pickerState;
+    // Navigate to section
+    const segments = sectionKey.split('.');
+    let node: unknown = cmsData;
+    for (const seg of segments) node = (node as Record<string, unknown>)?.[seg];
+    handleFieldChange(sectionKey, path, asset.url);
+    if (!shouldApplyMetadata) { closeImagePicker(); return; }
+    const parentPath = path.slice(0, -1);
+    const parentObject = getObjectAtPath(node, parentPath);
+    if (!parentObject) { closeImagePicker(); return; }
+    if (Object.prototype.hasOwnProperty.call(parentObject, 'alt') && asset.alt)
+      handleFieldChange(sectionKey, [...parentPath, 'alt'], asset.alt);
+    if (Object.prototype.hasOwnProperty.call(parentObject, 'title') && asset.title)
+      handleFieldChange(sectionKey, [...parentPath, 'title'], asset.title);
+    closeImagePicker();
+  };
+
+  const handleRequestDiscard = () => {
+    const count = routeDirtyCount(activeRouteId);
+    if (count === 0) { toast('Nenhuma alteração pendente nesta página.'); return; }
+    setIsDiscardConfirmOpen(true);
+  };
+
+  const handleConfirmDiscard = () => {
+    handleDiscardRoute();
+    setIsDiscardConfirmOpen(false);
   };
 
   const handleLogout = async () => {
@@ -71,105 +208,77 @@ export default function AdminPage() {
     navigate('/login');
   };
 
-  // --- FUNÇÃO DE RENDERIZAÇÃO COM O POLIMENTO ESTÉTICO ---
-  const renderFormFields = (obj: TranslationContent, lang: 'pt' | 'en', path: string[] = []) => {
-    return Object.entries(obj).map(([key, value]) => {
-      const currentPath = [...path, key];
-      if (typeof value === 'string') {
-        const isTextarea = key.toLowerCase().includes('descricao');
-        return (
-          <div key={currentPath.join('-')} className="mb-5"> {/* Aumentamos a margem inferior */}
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"> {/* Rótulo menor, cinza e com espaçamento entre letras */}
-              {key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
-            </label>
-            {isTextarea ? (
-              <textarea
-                value={value}
-                onChange={(e) => handleInputChange(lang, currentPath, e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
-                rows={6}
-              />
-            ) : (
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => handleInputChange(lang, currentPath, e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
-              />
-            )}
-          </div>
-        );
-      }
-      // Renderização de sub-seções (se houver)
-      return (
-        <div key={currentPath.join('-')} className="border-t mt-8 pt-6">
-          <h4 className="text-lg font-semibold text-gray-700 mb-4">{key.toUpperCase()}</h4>
-          {renderFormFields(value, lang, currentPath)}
-        </div>
-      );
-    });
-  };
-
-  if (!translations) {
-    return <div className="flex justify-center items-center h-screen bg-gray-100 text-gray-600">Carregando painel...</div>;
+  if (!cmsData) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-50 text-gray-500 text-sm">
+        Carregando painel...
+      </div>
+    );
   }
 
-  // --- JSX PRINCIPAL COM O POLIMENTO ESTÉTICO ---
+  const totalRouteDirty = routeDirtyCount(activeRouteId);
+
+  const routeProps = {
+    cmsData,
+    activeSectionKey,
+    onActiveSectionChange: setActiveSectionKey,
+    isFieldDirty,
+    onFieldChange: handleFieldChange,
+    onAddArrayItem: handleAddArrayItem,
+    onRemoveArrayItem: handleRemoveArrayItem,
+    renderImageField,
+    sectionDirtyCount,
+  };
+
   return (
-    <div className="flex h-screen bg-gray-100 font-sans">
-      <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
-        <div className="p-5 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-gray-800">Seções</h1>
+    <AdminLayout
+      activeRouteId={activeRouteId}
+      onSelectRoute={setActiveRouteId}
+      routeDirtyCount={routeDirtyCount}
+      onLogout={handleLogout}
+    >
+      <div className="p-4 lg:p-8 space-y-6">
+        <AdminPageHeader
+          title={activeRoute.label}
+          description={activeRoute.description}
+          dirtyCount={totalRouteDirty}
+          onSave={handleSaveRoute}
+          onDiscard={handleRequestDiscard}
+        />
+
+        <div className="space-y-4">
+          {activeRouteId === 'home'         && <HomeRoute         {...routeProps} />}
+          {activeRouteId === 'projects'     && <ProjectsRoute     {...routeProps} />}
+          {activeRouteId === 'privacy'      && <PrivacyRoute      {...routeProps} />}
+          {activeRouteId === 'transparency' && <TransparencyRoute {...routeProps} />}
+          {activeRouteId === 'settings'     && <SettingsRoute     {...routeProps} />}
         </div>
-        <nav className="p-3">
-          <ul>
-            {Object.keys(translations.pt.translation).map((section) => (
-              <li key={section}>
-                <button
-                  onClick={() => setActiveSection(section)}
-                  className={`w-full text-left p-3 my-1 rounded-lg text-sm font-medium transition-all duration-150 ${
-                    activeSection === section
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
-                >
-                  {section.charAt(0).toUpperCase() + section.slice(1).replace(/_/g, ' ')}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
+      </div>
 
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Editando: <span className="text-blue-600">{activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/_/g, ' ')}</span>
-          </h2>
-          <div className="flex items-center">
-            <button onClick={handleSave} className="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-sm transition-all duration-150 transform hover:scale-105">
-              Salvar Alterações
-            </button>
-            <button onClick={handleLogout} className="ml-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 shadow-sm transition-all duration-150 transform hover:scale-105">
-              Sair
-            </button>
-          </div>
-        </header>
+      <AdminDiscardModal
+        isOpen={isDiscardConfirmOpen}
+        onCancel={() => setIsDiscardConfirmOpen(false)}
+        onConfirm={handleConfirmDiscard}
+      />
 
-        <div className="flex-1 p-8 overflow-y-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-              <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Português (PT)</h3>
-              {renderFormFields(translations.pt.translation[activeSection] as TranslationContent, 'pt', [activeSection])}
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-              <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-4 mb-6">Inglês (EN)</h3>
-              {renderFormFields(translations.en.translation[activeSection] as TranslationContent, 'en', [activeSection])}
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+      <ImageLibraryModal
+        isOpen={isMediaModalOpen}
+        pickerLabel={pickerState?.label}
+        onClose={closeImagePicker}
+        shouldApplyMetadata={shouldApplyMetadata}
+        onToggleShouldApplyMetadata={setShouldApplyMetadata}
+        mediaAssetsCount={filteredMediaAssets.length}
+        mediaSearch={mediaSearch}
+        onMediaSearchChange={setMediaSearch}
+        categories={categories}
+        selectedCategory={selectedMediaCategory ?? 'all'}
+        onSelectCategory={(id) => setSelectedMediaCategory(id as 'all')}
+        filteredAssets={filteredMediaAssets}
+        onSelectAsset={applyAssetToField}
+        isUploading={isUploading}
+        uploadProgress={uploadProgress}
+        onUpload={handleUpload}
+      />
+    </AdminLayout>
   );
 }
