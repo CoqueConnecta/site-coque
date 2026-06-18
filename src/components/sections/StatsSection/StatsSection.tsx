@@ -10,7 +10,7 @@ export interface StatsSectionProps extends React.HTMLAttributes<HTMLElement> {
 export const StatsSection = ({ data, className, ...props }: StatsSectionProps) => {
   return (
     <section
-      className={cn('w-full bg-[#101014]', className)}
+      className={cn('w-full bg-[#411409]', className)}
       {...props}
     >
       <Block className="py-16 sm:py-20">
@@ -18,7 +18,7 @@ export const StatsSection = ({ data, className, ...props }: StatsSectionProps) =
           {data.items.map((stat, index) => (
             <FadeIn key={index} delay={index * 100} className="flex flex-col items-center gap-3 text-center">
               <p
-                className="m-0 [font-family:var(--font-support)] text-[40px] font-light leading-[1] tracking-[-0.8px] text-[#f97316] sm:text-[56px] lg:text-[72px]"
+                className="m-0 [font-family:var(--font-support)] text-[40px] font-light leading-[1] tracking-[-0.8px] text-[#f9b778] sm:text-[56px] lg:text-[72px]"
               >
                 {stat.value}
               </p>

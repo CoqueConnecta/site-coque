@@ -9,7 +9,7 @@ export interface GallerySectionProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const CARD_BG_LIGHT = '#f9b778';
-const CARD_BG_DARK = '#101014';
+const CARD_BG_DARK = '#411409';
 const TAG_BG = '#411409';
 const TAG_TEXT = '#fef7ee';
 
@@ -61,7 +61,7 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
             const bodyColor = isDark ? '#fef7ee' : '#101014';
             const quoteColor = isDark ? '#fef7ee' : TAG_BG;
             const authorColor = isDark ? '#fef7ee' : '#101014';
-            const tagBg = isDark ? '#f97316' : TAG_BG;
+            const tagBg = isDark ? '#f9b778' : TAG_BG;
             const tagText = isDark ? '#411409' : TAG_TEXT;
 
             return (
