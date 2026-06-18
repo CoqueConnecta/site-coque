@@ -6,8 +6,8 @@ import {
   getAdminInputClass,
   getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
-import { Button } from '../../../../../components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -94,9 +94,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className={adminFieldLabelClass}>Tags</span>
-              <button type="button" onClick={() => onAddArrayItem(['cards', cardIndex, 'tags'])} className="text-[var(--admin-accent)] hover:opacity-80 text-xs flex items-center gap-1 transition-opacity">
-                <Plus className="h-3 w-3" /> Tag
-              </button>
+              <AdminAddButton size="xs" onClick={() => onAddArrayItem(['cards', cardIndex, 'tags'])}>Tag</AdminAddButton>
             </div>
             {(card.tags ?? []).map((tag, tagIndex) => (
               <div key={tagIndex} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
@@ -110,9 +108,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           </div>
         </div>
       ))}
-      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['cards'])} className="flex items-center gap-2 text-sm">
-        <Plus className="h-4 w-4" /> Adicionar card
-      </Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['cards'])}>Adicionar card</AdminAddButton>
     </div>
   );
 }

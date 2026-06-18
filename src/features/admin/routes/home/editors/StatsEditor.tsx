@@ -5,8 +5,8 @@ import {
   adminSectionItemClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
-import { Button } from '../../../../../components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -59,9 +59,7 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
           </div>
         </div>
       ))}
-      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['items'])} className="flex items-center gap-2 text-sm">
-        <Plus className="h-4 w-4" /> Adicionar estatística
-      </Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar estatística</AdminAddButton>
     </div>
   );
 }

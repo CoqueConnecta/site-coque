@@ -4,8 +4,8 @@ import {
   adminPanelGridClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
-import { Button } from '../../../../../components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { Trash2 } from 'lucide-react';
 
 type CarouselEditorProps = {
   data: { images?: Array<{ src?: string; alt?: string }> };
@@ -60,9 +60,7 @@ export function CarouselEditor({
           </div>
         </div>
       ))}
-      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['images'])} className="flex items-center gap-2 text-sm">
-        <Plus className="h-4 w-4" /> Adicionar imagem
-      </Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['images'])}>Adicionar imagem</AdminAddButton>
     </div>
   );
 }
