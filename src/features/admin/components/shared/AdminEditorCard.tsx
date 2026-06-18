@@ -8,17 +8,19 @@ type AdminEditorCardProps = {
 export function AdminEditorCard({
   title,
   description,
-  badgeText = 'Editor',
+  badgeText,
   children,
 }: AdminEditorCardProps) {
   return (
-    <div className="space-y-5 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm shadow-slate-200/50 sm:p-6 lg:p-7">
-      <div className="border-b border-gray-100 pb-4">
-        <span className="inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700">
-          {badgeText}
-        </span>
-        <h3 className="mt-3 text-lg font-bold tracking-tight text-gray-900 lg:text-xl">{title}</h3>
-        {description ? <p className="mt-1 text-sm text-gray-500">{description}</p> : null}
+    <div className="space-y-5 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 shadow-sm sm:p-6">
+      <div className="border-b border-[var(--admin-border)] pb-4">
+        {badgeText && (
+          <span className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold bg-[var(--admin-active-bg)] text-[var(--admin-active-text)] mb-2">
+            {badgeText}
+          </span>
+        )}
+        <h3 className="text-base font-semibold tracking-tight text-[var(--admin-text-1)]">{title}</h3>
+        {description ? <p className="mt-1 text-sm text-[var(--admin-text-3)]">{description}</p> : null}
       </div>
       {children}
     </div>

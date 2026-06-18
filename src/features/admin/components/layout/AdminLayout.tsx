@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, Layers } from 'lucide-react';
+import { Menu, Layers, Sun, Moon } from 'lucide-react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { auth } from '../../../../../firebase';
 import { ADMIN_ROUTES } from '../../config/adminRoutes';
 import type { AdminRouteId } from '../../config/adminRoutes';
 import { AdminUserMenu } from './AdminUserMenu';
+import { ThemeProvider, useTheme } from '../../context/ThemeContext';
 
 type AdminLayoutProps = {
   activeRouteId: AdminRouteId;
@@ -14,6 +15,25 @@ type AdminLayoutProps = {
   children: React.ReactNode;
   onLogout: () => void;
 };
+
+function ThemeToggle() {
+  const { theme, toggle } = useTheme();
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-[var(--admin-surface-2)] text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)] text-sm font-medium transition-all mb-1"
+    >
+      {theme === 'dark' ? (
+        <Sun className="w-4 h-4 flex-shrink-0" />
+      ) : (
+        <Moon className="w-4 h-4 flex-shrink-0" />
+      )}
+      <span>{theme === 'dark' ? 'Tema claro' : 'Tema escuro'}</span>
+    </button>
+  );
+}
 
 function NavContent({
   activeRouteId,
@@ -31,14 +51,14 @@ function NavContent({
   return (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="px-6 py-6 border-b border-gray-100">
+      <div className="px-6 py-6 border-b border-[var(--admin-border)]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200/50">
             <Layers className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900 tracking-tight">Coque Connecta</h1>
-            <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Admin CMS</p>
+            <h1 className="text-lg font-bold text-[var(--admin-text-1)] tracking-tight">Coque Connecta</h1>
+            <p className="text-[10px] text-[var(--admin-text-4)] font-medium tracking-widest">Admin CMS</p>
           </div>
         </div>
       </div>
@@ -59,15 +79,15 @@ function NavContent({
               }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
                 isActive
-                  ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)] shadow-sm'
+                  : 'text-[var(--admin-text-3)] hover:bg-[var(--admin-surface-2)] hover:text-[var(--admin-text-1)]'
               }`}
             >
-              <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-indigo-600' : 'text-gray-400'}`} />
+              <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[var(--admin-accent)]' : 'text-[var(--admin-text-4)]'}`} />
               <span className="flex-1">{route.label}</span>
               {dirty > 0 && (
                 <span className={`text-xs font-semibold rounded-full px-2 py-0.5 ${
-                  isActive ? 'bg-indigo-100 text-indigo-700' : 'bg-orange-100 text-orange-700'
+                  isActive ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)]' : 'bg-orange-100 text-orange-700'
                 }`}>
                   {dirty}
                 </span>
@@ -78,12 +98,13 @@ function NavContent({
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-gray-100">
+      <div className="px-4 py-4 border-t border-[var(--admin-border)]">
+        <ThemeToggle />
         <Link
           to="/"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-500 hover:text-gray-800 text-sm font-medium transition-all mb-2"
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-[var(--admin-surface-2)] text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)] text-sm font-medium transition-all mb-2"
         >
           <span className="text-base leading-none">🌐</span>
           Ver site público
@@ -94,13 +115,14 @@ function NavContent({
   );
 }
 
-export function AdminLayout({
+function AdminLayoutInner({
   activeRouteId,
   onSelectRoute,
   routeDirtyCount,
   children,
   onLogout,
 }: AdminLayoutProps) {
+  const { theme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<User | null>(auth.currentUser);
   const [isUserLoading, setIsUserLoading] = useState(true);
@@ -114,7 +136,6 @@ export function AdminLayout({
       }
 
       try {
-        // Refresh cached profile data (displayName/photoURL) after OAuth updates.
         await nextUser.reload();
       } catch {
         // Ignore reload errors and keep the current session info.
@@ -128,9 +149,12 @@ export function AdminLayout({
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50/50 [&_button]:cursor-pointer [&_button:disabled]:cursor-not-allowed">
+    <div
+      data-theme={theme}
+      className="min-h-screen bg-[var(--admin-bg)] [&_button]:cursor-pointer [&_button:disabled]:cursor-not-allowed"
+    >
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-white border-r border-gray-100 z-30">
+      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-[var(--admin-sidebar-bg)] border-r border-[var(--admin-border)] z-30">
         <NavContent
           activeRouteId={activeRouteId}
           onSelectRoute={onSelectRoute}
@@ -148,7 +172,7 @@ export function AdminLayout({
             className="fixed inset-0 bg-black/20 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
-          <aside className="fixed inset-y-0 left-0 w-64 bg-white z-50 shadow-xl">
+          <aside className="fixed inset-y-0 left-0 w-64 bg-[var(--admin-sidebar-bg)] z-50 shadow-xl border-r border-[var(--admin-border)]">
             <NavContent
               activeRouteId={activeRouteId}
               onSelectRoute={onSelectRoute}
@@ -165,22 +189,21 @@ export function AdminLayout({
       {/* Main */}
       <div className="lg:pl-64 flex flex-col min-h-screen">
         {/* Mobile sticky header */}
-        <header className="lg:hidden sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <header className="lg:hidden sticky top-0 z-30 bg-[var(--admin-sidebar-bg)]/90 backdrop-blur-md border-b border-[var(--admin-border)]">
           <div className="flex items-center justify-between px-4 py-3">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="p-2 -ml-1 rounded-xl hover:bg-gray-100 active:bg-gray-200 touch-manipulation"
+              className="p-2 -ml-1 rounded-xl hover:bg-[var(--admin-surface-2)] active:bg-[var(--admin-surface-2)] touch-manipulation"
             >
-              <Menu className="w-6 h-6 text-gray-700" />
+              <Menu className="w-6 h-6 text-[var(--admin-text-2)]" />
             </button>
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
                 <Layers className="w-4 h-4 text-white" />
               </div>
-              <span className="text-sm font-bold text-gray-900">Admin CMS</span>
+              <span className="text-sm font-bold text-[var(--admin-text-1)]">Admin CMS</span>
             </div>
-            {/* placeholder right side — save button injected via children */}
             <div className="w-8" />
           </div>
         </header>
@@ -191,5 +214,13 @@ export function AdminLayout({
         </main>
       </div>
     </div>
+  );
+}
+
+export function AdminLayout(props: AdminLayoutProps) {
+  return (
+    <ThemeProvider>
+      <AdminLayoutInner {...props} />
+    </ThemeProvider>
   );
 }

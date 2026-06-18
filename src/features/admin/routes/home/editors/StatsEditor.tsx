@@ -4,8 +4,8 @@ import {
   adminPanelGridClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
-import { Button } from '../../../../../components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -22,47 +22,45 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
   const items = Array.isArray(data?.items) ? data.items : [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {items.length === 0 && (
+        <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhuma estatística adicionada ainda.</p>
+      )}
       {items.map((item, index) => (
-        <div key={index} className={`${adminPanelGridClass} border border-gray-200 rounded-lg p-4`}>
-          <div className="col-span-full flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-700">Estatística {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['items'], index)} className="text-red-500 hover:text-red-700">
-              <Trash2 className="h-4 w-4" />
-            </button>
+        <CollapsibleItem
+          key={index}
+          label={`Estatística ${index + 1}`}
+          summary={item.label?.pt || ''}
+          onRemove={() => onRemoveArrayItem(['items'], index)}
+        >
+          <label className="block">
+            <span className={adminFieldLabelClass}>Valor (global)</span>
+            <input
+              type="text"
+              placeholder="ex: +2.000"
+              value={item.value ?? ''}
+              onChange={(e) => onFieldChange(['items', index, 'value'], e.target.value)}
+              className={getAdminInputClass(isFieldDirty(['items', index, 'value']))}
+            />
+          </label>
+          <div className={adminPanelGridClass}>
+            {(['pt', 'en'] as const).map((lang) => (
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'}>
+                <label className="block">
+                  <span className={adminFieldLabelClass}>Rótulo</span>
+                  <input
+                    type="text"
+                    value={item.label?.[lang] ?? ''}
+                    onChange={(e) => onFieldChange(['items', index, 'label', lang], e.target.value)}
+                    className={getAdminInputClass(isFieldDirty(['items', index, 'label', lang]))}
+                  />
+                </label>
+              </AdminEditorCard>
+            ))}
           </div>
-          {/* Value — global */}
-          <div className="col-span-full">
-            <label className="block">
-              <span className={adminFieldLabelClass}>Valor (global)</span>
-              <input
-                type="text"
-                placeholder="ex: +2.000"
-                value={item.value ?? ''}
-                onChange={(e) => onFieldChange(['items', index, 'value'], e.target.value)}
-                className={getAdminInputClass(isFieldDirty(['items', index, 'value']))}
-              />
-            </label>
-          </div>
-          {/* Label — i18n */}
-          {(['pt', 'en'] as const).map((lang) => (
-            <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'} badgeText="Idioma">
-              <label className="block">
-                <span className={adminFieldLabelClass}>Rótulo</span>
-                <input
-                  type="text"
-                  value={item.label?.[lang] ?? ''}
-                  onChange={(e) => onFieldChange(['items', index, 'label', lang], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty(['items', index, 'label', lang]))}
-                />
-              </label>
-            </AdminEditorCard>
-          ))}
-        </div>
+        </CollapsibleItem>
       ))}
-      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['items'])} className="flex items-center gap-2 text-sm">
-        <Plus className="h-4 w-4" /> Adicionar estatística
-      </Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar estatística</AdminAddButton>
     </div>
   );
 }
