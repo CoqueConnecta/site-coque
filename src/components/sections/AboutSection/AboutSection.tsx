@@ -37,14 +37,26 @@ export const AboutSection = ({
       <Block>
         <div className="space-y-12 md:space-y-16">
           <FadeIn>
-            <div className="max-w-[75ch]">
-              <Typography
-                variant="body"
-                tone="muted"
-                className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
-              >
-                {data.description}
-              </Typography>
+            <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12 lg:gap-16">
+              <div className="mx-auto flex-shrink-0 md:mx-0">
+                <img
+                  src="/coque-logo.svg"
+                  alt="Coque Connecta"
+                  className="w-32 sm:w-36 md:w-44 lg:w-52"
+                  width="208"
+                  height="208"
+                  loading="eager"
+                />
+              </div>
+              <div className="min-w-0">
+                <Typography
+                  variant="body"
+                  tone="muted"
+                  className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
+                >
+                  {data.description}
+                </Typography>
+              </div>
             </div>
           </FadeIn>
           <FadeIn delay={100}>
