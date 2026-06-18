@@ -4,9 +4,8 @@ import { HeaderBar } from '../components/composites/HeaderBar';
 import { MobileMenuOverlay } from '../components/composites/MobileMenuOverlay';
 import { NewsletterSection } from '../components/sections/NewsletterSection';
 import { FooterSection } from '../components/sections/FooterSection';
-import { Globe } from 'lucide-react';
-import { cn } from '../lib/cn';
 import { useCmsSharedData } from '../hooks/useCmsSharedData';
+import { LanguageBar } from '../components/composites/LanguageBar';
 import type { CmsLanguage } from '../types/cms';
 
 const LANGUAGE_STORAGE_KEY = 'site-coque-language';
@@ -79,30 +78,7 @@ export default function PublicLayout() {
         onLanguageChange={setLanguage}
       />
 
-      {/* Utility top bar */}
-      <div className="hidden h-8 w-full items-center justify-center gap-3 bg-[#2e3350] px-6 md:flex">
-        <Globe className="h-3.5 w-3.5 text-white/40" />
-        <span className="text-[11px] text-white/50">
-          {language === 'pt' ? 'Select the site language:' : 'Selecione o idioma do site:'}
-        </span>
-        <div className="flex items-center gap-2 text-[11px]">
-          <button
-            type="button"
-            onClick={() => setLanguage('pt')}
-            className={cn('transition hover:text-white', language === 'pt' ? 'font-semibold text-white' : 'text-white/60')}
-          >
-            🇧🇷 PT
-          </button>
-          <span className="text-white/30">|</span>
-          <button
-            type="button"
-            onClick={() => setLanguage('en')}
-            className={cn('transition hover:text-white', language === 'en' ? 'font-semibold text-white' : 'text-white/60')}
-          >
-            🇬🇧 EN
-          </button>
-        </div>
-      </div>
+      <LanguageBar language={language} onLanguageChange={setLanguage} />
 
       <HeaderBar
         navLinks={navLinks}
