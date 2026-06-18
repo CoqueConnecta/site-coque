@@ -47,18 +47,30 @@ Fluxo obrigatório:
 feature/nome-da-feature
     ↓  PR → staging    (validar no preview Vercel)
 staging
-    ↓  PR → main       (deploy em produção)
+    ↓  PR → main       (deploy em produção, requer aprovação)
 main
 ```
 
-Criando uma branch de trabalho:
+Comandos CLI completos:
 
 ```bash
-git switch -c feature/nome-da-feature   # sempre a partir de main atualizado
-# ... commits ...
-# abrir PR → staging no GitHub
+# Criar branch
+git switch -c feature/nome-da-feature
+
+# Abrir PR → staging
+gh pr create --base staging --title "feat: descrição"
+
+# Mergear em staging + deletar branch (sem proteção, roda imediatamente)
+gh pr merge --squash --delete-branch
+
+# Após validar em staging.coqueconnecta.ong.br, abrir PR → main
+gh pr create --base main --title "feat: descrição"
+
+# Após aprovação no GitHub, mergear em main
+gh pr merge --squash --delete-branch
 ```
 
+> `--delete-branch` remove a branch local e remota. `--squash` mantém histórico limpo.
 ## Skills Firebase instaladas
 
 - `firebase-basics` — setup, CLI e fluxos gerais

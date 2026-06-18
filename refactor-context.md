@@ -35,13 +35,15 @@ Documentos historicos:
 - Deploy migrado do GitHub Pages (producao) + Render (staging) para Vercel.
 - `vercel.json` adicionado com rewrite catch-all para SPA routing (`/admin` sem 404).
 - Regras do Firebase versionadas: `database.rules.json` e `storage.rules`, deploy via Firebase CLI.
-- Branch `main` protegida no GitHub; branches obsoletas removidas; `staging` recriada a partir de `main`.
+- Branch `main` protegida no GitHub (requer PR aprovado); branches obsoletas removidas.
+- `staging` recriada a partir de `main`; `staging.coqueconnecta.ong.br` configurado na Vercel.
 - Script `deploy:staging` removido; workflow passa a ser inteiramente por PRs via GitHub.
+- Documentacao sincronizada com estado atual; `docs/backlog.md` e issue template de imagens atualizados.
+- Config do Firebase movida para variaveis de ambiente (`VITE_FIREBASE_*`); `.env.example` adicionado.
 
 ## Pendencias imediatas
 
-- Configurar protecao de branch `main` no GitHub com a conta `coqueconnecta@gmail.com`:
-  Settings → Branches → Add rule → `main` → "Require a pull request before merging" (1 approval).
+(sem pendencias ativas)
 
 ## Proximo passo objetivo
 
