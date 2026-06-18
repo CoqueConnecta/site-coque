@@ -78,7 +78,7 @@ export default function PublicLayout() {
         onLanguageChange={setLanguage}
       />
 
-      <LanguageBar language={language} onLanguageChange={setLanguage} />
+      <LanguageBar language={language} onLanguageChange={setLanguage} isFixed />
 
       <HeaderBar
         navLinks={navLinks}

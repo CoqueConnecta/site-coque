@@ -5,14 +5,16 @@ import type { CmsLanguage } from '../../../types/cms';
 export interface LanguageBarProps {
   language: CmsLanguage;
   onLanguageChange: (lang: CmsLanguage) => void;
+  isFixed?: boolean;
   className?: string;
 }
 
-export function LanguageBar({ language, onLanguageChange, className }: LanguageBarProps) {
+export function LanguageBar({ language, onLanguageChange, isFixed = false, className }: LanguageBarProps) {
   return (
     <div
       className={cn(
         'hidden h-8 w-full items-center justify-center gap-3 bg-[#411409] px-6 md:flex',
+        isFixed && 'fixed top-0 z-50',
         className
       )}
     >
