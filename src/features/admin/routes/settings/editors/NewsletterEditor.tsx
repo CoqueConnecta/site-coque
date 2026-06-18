@@ -34,7 +34,7 @@ export function NewsletterEditor({ data, isFieldDirty, onFieldChange }: Newslett
       {(['headline', 'description', 'buttonText', 'placeholderEmail'] as const).map((field) => (
         <div key={field} className={adminPanelGridClass}>
           {(['pt', 'en'] as const).map((lang) => (
-            <AdminEditorCard key={lang} title={`${field} (${lang.toUpperCase()})`} badgeText="Idioma">
+            <AdminEditorCard key={lang} title={`${field} (${lang.toUpperCase()})`}>
               <label className="block">
                 <span className={adminFieldLabelClass}>{field}</span>
                 {field === 'description'

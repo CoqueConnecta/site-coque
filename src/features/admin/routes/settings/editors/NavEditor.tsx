@@ -2,10 +2,12 @@ import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,
+  adminSectionItemClass,
+  adminSectionTitleClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
-import { Button } from '../../../../../components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -26,12 +28,12 @@ export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, o
 
   return (
     <div className="space-y-6">
-      <h4 className="text-sm font-semibold text-gray-700">Links de Navegação</h4>
+      <h4 className={adminSectionTitleClass}>Links de Navegação</h4>
       {links.map((link, index) => (
-        <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
+        <div key={index} className={adminSectionItemClass}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold">Link {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['links'], index)} className="text-red-500 hover:text-red-700">
+            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Link {index + 1}</span>
+            <button type="button" onClick={() => onRemoveArrayItem(['links'], index)} className="text-rose-500 hover:text-rose-700 transition-colors">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
@@ -47,7 +49,7 @@ export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, o
           </div>
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
-              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'} badgeText="Idioma">
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'}>
                 <label className="block">
                   <span className={adminFieldLabelClass}>Texto</span>
                   <input type="text" value={link.labels?.[lang] ?? ''} onChange={(e) => onFieldChange(['links', index, 'labels', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['links', index, 'labels', lang]))} />
@@ -57,18 +59,16 @@ export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, o
           </div>
         </div>
       ))}
-      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['links'])} className="flex items-center gap-2 text-sm">
-        <Plus className="h-4 w-4" /> Adicionar link
-      </Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['links'])}>Adicionar link</AdminAddButton>
 
-      <h4 className="text-sm font-semibold text-gray-700 mt-6">Botão CTA</h4>
+      <h4 className={`${adminSectionTitleClass} mt-6`}>Botão CTA</h4>
       <label className="block">
         <span className={adminFieldLabelClass}>href do CTA</span>
         <input type="text" value={data.cta?.href ?? ''} onChange={(e) => onFieldChange(['cta', 'href'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cta', 'href']))} />
       </label>
       <div className={adminPanelGridClass}>
         {(['pt', 'en'] as const).map((lang) => (
-          <AdminEditorCard key={lang} title={lang === 'pt' ? 'CTA (PT)' : 'CTA (EN)'} badgeText="Idioma">
+          <AdminEditorCard key={lang} title={lang === 'pt' ? 'CTA (PT)' : 'CTA (EN)'}>
             <input type="text" value={data.cta?.labels?.[lang] ?? ''} onChange={(e) => onFieldChange(['cta', 'labels', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['cta', 'labels', lang]))} />
           </AdminEditorCard>
         ))}

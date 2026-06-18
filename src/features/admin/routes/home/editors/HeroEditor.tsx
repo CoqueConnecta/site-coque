@@ -17,7 +17,7 @@ type HeroEditorProps = {
   sectionKey: string;
   isFieldDirty: (path: Array<string | number>) => boolean;
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
-  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
+  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
 
 export function HeroEditor({ data, isFieldDirty, onFieldChange, renderImageField }: HeroEditorProps) {
@@ -29,7 +29,7 @@ export function HeroEditor({ data, isFieldDirty, onFieldChange, renderImageField
   return (
     <div className={adminPanelGridClass}>
       {langs.map(({ lang, label }) => (
-        <AdminEditorCard key={lang} title={label} badgeText="Idioma">
+        <AdminEditorCard key={lang} title={label}>
           <label className="block">
             <span className={adminFieldLabelClass}>Headline</span>
             <textarea

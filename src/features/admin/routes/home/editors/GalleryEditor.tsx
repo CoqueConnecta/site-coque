@@ -6,8 +6,9 @@ import {
   getAdminInputClass,
   getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
-import { Button } from '../../../../../components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
+import { Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -27,7 +28,7 @@ type GalleryEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
-  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
+  renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
 
 export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField }: GalleryEditorProps) {
@@ -38,7 +39,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
       {/* Section header — i18n */}
       <div className={adminPanelGridClass}>
         {(['pt', 'en'] as const).map((lang) => (
-          <AdminEditorCard key={lang} title={lang === 'pt' ? 'Cabeçalho (PT)' : 'Header (EN)'} badgeText="Idioma">
+          <AdminEditorCard key={lang} title={lang === 'pt' ? 'Cabeçalho (PT)' : 'Header (EN)'}>
             <label className="block">
               <span className={adminFieldLabelClass}>Headline</span>
               <input type="text" value={data.headline?.[lang] ?? ''} onChange={(e) => onFieldChange(['headline', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['headline', lang]))} />
@@ -52,14 +53,16 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
       </div>
 
       {/* Cards */}
+      {cards.length === 0 && (
+        <p className="text-sm text-[var(--admin-text-4)] py-2">Nenhum card adicionado ainda.</p>
+      )}
       {cards.map((card, cardIndex) => (
-        <div key={cardIndex} className="border border-gray-200 rounded-lg p-4 space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold text-gray-700">Card {cardIndex + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['cards'], cardIndex)} className="text-red-500 hover:text-red-700">
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
+        <CollapsibleItem
+          key={cardIndex}
+          label={`Card ${cardIndex + 1}`}
+          summary={card.title?.pt || card.id || ''}
+          onRemove={() => onRemoveArrayItem(['cards'], cardIndex)}
+        >
           {/* Global fields */}
           <div className="grid grid-cols-2 gap-4">
             <label className="block">
@@ -78,7 +81,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           {/* i18n fields */}
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
-              <AdminEditorCard key={lang} title={lang === 'pt' ? 'PT' : 'EN'} badgeText="Idioma">
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'PT' : 'EN'}>
                 <label className="block">
                   <span className={adminFieldLabelClass}>Título</span>
                   <input type="text" value={card.title?.[lang] ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'title', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'title', lang]))} />
@@ -94,25 +97,21 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className={adminFieldLabelClass}>Tags</span>
-              <button type="button" onClick={() => onAddArrayItem(['cards', cardIndex, 'tags'])} className="text-blue-500 hover:text-blue-700 text-xs flex items-center gap-1">
-                <Plus className="h-3 w-3" /> Tag
-              </button>
+              <AdminAddButton size="xs" onClick={() => onAddArrayItem(['cards', cardIndex, 'tags'])}>Tag</AdminAddButton>
             </div>
             {(card.tags ?? []).map((tag, tagIndex) => (
               <div key={tagIndex} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
                 <input type="text" placeholder="PT" value={tag.pt ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'tags', tagIndex, 'pt'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'tags', tagIndex, 'pt']))} />
                 <input type="text" placeholder="EN" value={tag.en ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'tags', tagIndex, 'en'], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'tags', tagIndex, 'en']))} />
-                <button type="button" onClick={() => onRemoveArrayItem(['cards', cardIndex, 'tags'], tagIndex)} className="text-red-500 hover:text-red-700">
+                <button type="button" onClick={() => onRemoveArrayItem(['cards', cardIndex, 'tags'], tagIndex)} className="text-rose-500 hover:text-rose-700 transition-colors">
                   <Trash2 className="h-3 w-3" />
                 </button>
               </div>
             ))}
           </div>
-        </div>
+        </CollapsibleItem>
       ))}
-      <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['cards'])} className="flex items-center gap-2 text-sm">
-        <Plus className="h-4 w-4" /> Adicionar card
-      </Button>
+      <AdminAddButton onClick={() => onAddArrayItem(['cards'])}>Adicionar card</AdminAddButton>
     </div>
   );
 }

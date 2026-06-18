@@ -10,6 +10,6 @@ export type AdminRouteProps = {
   onFieldChange: (sectionKey: string, path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (sectionKey: string, path: Array<string | number>) => void;
   onRemoveArrayItem: (sectionKey: string, path: Array<string | number>, index: number) => void;
-  renderImageField: (sectionKey: string, value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
+  renderImageField: (sectionKey: string, value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
   sectionDirtyCount: (sectionKey: string) => number;
 };
