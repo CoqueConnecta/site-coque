@@ -34,7 +34,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
       className={cn(
         'relative w-full overflow-hidden bg-[#ff6a1a]',
         'flex flex-col justify-center',
-        'min-h-[720px]',
+        'min-h-[680px]',
         className
       )}
       {...props}
