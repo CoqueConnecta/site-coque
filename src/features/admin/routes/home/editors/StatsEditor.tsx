@@ -30,7 +30,7 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
         <CollapsibleItem
           key={index}
           label={`Estatística ${index + 1}`}
-          summary={item.value || ''}
+          summary={item.label?.pt || ''}
           onRemove={() => onRemoveArrayItem(['items'], index)}
         >
           <label className="block">
