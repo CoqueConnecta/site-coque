@@ -10,10 +10,17 @@ interface FadeInProps {
 }
 
 export function FadeIn({ children, className, delay = 0, duration = 700 }: FadeInProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  const prefersReduced =
+    typeof window !== 'undefined'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false;
+
+  const [isVisible, setIsVisible] = useState(prefersReduced);
   const domRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (prefersReduced) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -36,7 +43,7 @@ export function FadeIn({ children, className, delay = 0, duration = 700 }: FadeI
         observer.unobserve(currentRef);
       }
     };
-  }, []);
+  }, [prefersReduced]);
 
   return (
     <div

@@ -3,6 +3,7 @@ import { Typography } from '../../ui/Typography';
 import { InfiniteImageTicker } from '../../composites/InfiniteImageTicker';
 import { Block } from '../../ui/Block';
 import { YouTubeFeed } from '../../ui/YouTubeFeed';
+import { FadeIn } from '../../ui/FadeIn';
 import type { ResolvedAboutData, CmsCarouselImage, ResolvedYoutubeVideo } from '../../../types/cms';
 
 export interface AboutSectionProps extends React.HTMLAttributes<HTMLElement> {
@@ -35,16 +36,20 @@ export const AboutSection = ({
     <section id="about" className={cn('w-full bg-white py-16 md:py-24', className)} {...props}>
       <Block>
         <div className="space-y-12 md:space-y-16">
-          <div className="max-w-5xl">
-            <Typography
-              variant="body"
-              tone="muted"
-              className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
-            >
-              {data.description}
-            </Typography>
-          </div>
-          <YouTubeFeed videos={youtubeVideos} />
+          <FadeIn>
+            <div className="max-w-[75ch]">
+              <Typography
+                variant="body"
+                tone="muted"
+                className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
+              >
+                {data.description}
+              </Typography>
+            </div>
+          </FadeIn>
+          <FadeIn delay={100}>
+            <YouTubeFeed videos={youtubeVideos} />
+          </FadeIn>
         </div>
       </Block>
 

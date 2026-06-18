@@ -1,7 +1,7 @@
 :root {
-  --font-body: "DM Sans", "Lato", system-ui, sans-serif;
-  --font-support: "Lato", "DM Sans", system-ui, sans-serif;
-  --font-display: "Kirang Haerang", "DM Sans", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+  --font-support: "Figtree", system-ui, sans-serif;
+  --font-display: "Kirang Haerang", "Figtree", system-ui, sans-serif;
 
   --color-surface-page: #f0f0f0;
   --color-surface-card: #f7b06f;
