@@ -36,8 +36,8 @@ export const NavMenu = forwardRef<HTMLElement, NavMenuProps>(
                   : 'text-white/90 hover:text-white'
                 : tone === 'brand'
                   ? activeLink === link.href
-                    ? 'text-[#f58634]'
-                    : 'text-[#f58634] hover:text-[#d86f2f]'
+                    ? 'text-[#411409]'
+                    : 'text-[#411409] hover:text-[#6b3015]'
                 : activeLink === link.href
                   ? 'text-[#f58634]'
                   : 'text-gray-900 hover:text-orange-600'
