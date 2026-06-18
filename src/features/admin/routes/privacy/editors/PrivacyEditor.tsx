@@ -1,6 +1,5 @@
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
-  adminFieldLabelClass,
   adminPanelGridClass,
   getAdminInputClass,
   getAdminTextareaClass,

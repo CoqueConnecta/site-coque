@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import type { CmsAdminState } from '../types';
-import type { CmsLanguage } from '../../../types/cms';
 import { deepEqual } from '../utils/cmsNormalize';
 import { getValueAtPath } from '../utils/editorPath';
 

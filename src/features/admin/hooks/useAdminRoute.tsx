@@ -6,7 +6,7 @@ import { ADMIN_ROUTES } from '../config/adminRoutes';
 import type { AdminRouteId } from '../config/adminRoutes';
 import { getRtdbPath } from '../config/rtdbRouting';
 import type { CmsAdminState } from '../types';
-import { getValueAtPath, setValueAtPath } from '../utils/editorPath';
+import { getValueAtPath } from '../utils/editorPath';
 
 /**
  * v3 save engine.

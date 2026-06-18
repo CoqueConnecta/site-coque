@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,

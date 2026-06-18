@@ -7,7 +7,7 @@ export interface HeroData {
   headline: string;
   subheadline: string;
   ctaText: string;
-  backgroundImage?: string;
+  backgroundImage: string;
 }
 
 export interface StatItem {
@@ -80,7 +80,7 @@ export interface HelpData {
 
 export interface NewsletterData {
   headline: string;
-  headlineAccent?: string;
+  headlineAccent: string;
   description: string;
   placeholderEmail: string;
   buttonText: string;

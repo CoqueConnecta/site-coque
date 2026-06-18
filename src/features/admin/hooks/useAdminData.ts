@@ -4,27 +4,6 @@ import toast from 'react-hot-toast';
 import { database } from '../../../../firebase';
 import type { CmsAdminState } from '../types';
 
-const EMPTY_STATE: CmsAdminState = {
-  shared: {
-    nav: {},
-    footer: {},
-    newsletter: {},
-  },
-  pages: {
-    home: {
-      hero: {},
-      about: {},
-      carousel: {},
-      youtubeVideos: {},
-      gallery: {},
-      stats: {},
-    },
-    projects: {},
-    privacy: {},
-    transparency: {},
-  },
-};
-
 type UseAdminDataReturn = {
   cmsData: CmsAdminState | null;
   setCmsData: Dispatch<SetStateAction<CmsAdminState | null>>;
