@@ -32,10 +32,32 @@ Nunca edite as regras diretamente pelo console do Firebase — edite os arquivos
 
 O projeto está na Vercel sob a conta `coqueconnecta@gmail.com`.
 
-- **Produção**: push na branch `main` → deploy automático em `coqueconnecta.ong.br`
+- **Produção**: PR aprovado mergeado na `main` → deploy automático em `coqueconnecta.ong.br`
 - **Staging**: push na branch `staging` → preview automático (URL gerada pela Vercel)
 
 Não há scripts de deploy locais — tudo é gerenciado por git push.
+
+## Workflow de branches
+
+A branch `main` é protegida: **nunca commitar diretamente**. Sempre usar feature branch + PR.
+
+Fluxo obrigatório:
+
+```
+feature/nome-da-feature
+    ↓  PR → staging    (validar no preview Vercel)
+staging
+    ↓  PR → main       (deploy em produção)
+main
+```
+
+Criando uma branch de trabalho:
+
+```bash
+git switch -c feature/nome-da-feature   # sempre a partir de main atualizado
+# ... commits ...
+# abrir PR → staging no GitHub
+```
 
 ## Skills Firebase instaladas
 
