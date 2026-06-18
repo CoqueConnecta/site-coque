@@ -9,7 +9,7 @@ export interface GallerySectionProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const CARD_BG_LIGHT = '#f9b778';
-const CARD_BG_DARK = '#f58634';
+const CARD_BG_DARK = '#101014';
 const TAG_BG = '#411409';
 const TAG_TEXT = '#fef7ee';
 
@@ -55,11 +55,14 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
         {/* Cards */}
         <div className="flex flex-col gap-8">
           {data.cards.map((card, index) => {
-            const bg = card.variant === 'dark' ? CARD_BG_DARK : CARD_BG_LIGHT;
-            const titleColor = card.variant === 'dark' ? '#411409' : '#101014';
-            const bodyColor = card.variant === 'dark' ? '#fff' : '#101014';
-            const quoteColor = card.variant === 'dark' ? '#fff' : TAG_BG;
-            const authorColor = card.variant === 'dark' ? '#fff' : '#101014';
+            const isDark = card.variant === 'dark';
+            const bg = isDark ? CARD_BG_DARK : CARD_BG_LIGHT;
+            const titleColor = isDark ? '#fef7ee' : '#101014';
+            const bodyColor = isDark ? '#fef7ee' : '#101014';
+            const quoteColor = isDark ? '#fef7ee' : TAG_BG;
+            const authorColor = isDark ? '#fef7ee' : '#101014';
+            const tagBg = isDark ? '#f97316' : TAG_BG;
+            const tagText = isDark ? '#411409' : TAG_TEXT;
 
             return (
               <FadeIn key={card.id} delay={Math.min(index * 80, 240)}>
@@ -70,8 +73,9 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
                   bodyColor={bodyColor}
                   quoteColor={quoteColor}
                   authorColor={authorColor}
-                  tagBg={TAG_BG}
-                  tagText={TAG_TEXT}
+                  tagBg={tagBg}
+                  tagText={tagText}
+                  imageRight={index % 2 !== 0}
                 />
               </FadeIn>
             );
