@@ -2,6 +2,7 @@ import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,
+  adminSectionItemClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
 import { Button } from '../../../../../components/ui/Button';
@@ -18,56 +19,48 @@ type YoutubeEditorProps = {
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
-export function YoutubeEditor({
-  data,
-  isFieldDirty,
-  onFieldChange,
-  onAddArrayItem,
-  onRemoveArrayItem,
-}: YoutubeEditorProps) {
+export function YoutubeEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: YoutubeEditorProps) {
   const items = Array.isArray(data?.items) ? data.items : [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {items.map((video, index) => (
-        <div key={index} className={`${adminPanelGridClass} relative border border-gray-200 rounded-lg p-4`}>
-          <div className="col-span-full flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-700">Vídeo {index + 1}</span>
+        <div key={index} className={adminSectionItemClass}>
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Vídeo {index + 1}</span>
             <button
               type="button"
               onClick={() => onRemoveArrayItem(['items'], index)}
-              className="text-red-500 hover:text-red-700 transition-colors"
+              className="text-rose-500 hover:text-rose-700 transition-colors"
             >
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
-          {/* Video ID — global */}
-          <div className="col-span-full">
-            <label className="block">
-              <span className={adminFieldLabelClass}>YouTube Video ID</span>
-              <input
-                type="text"
-                placeholder="ex: rwniUxBd5OI"
-                value={video.id ?? ''}
-                onChange={(e) => onFieldChange(['items', index, 'id'], e.target.value)}
-                className={getAdminInputClass(isFieldDirty(['items', index, 'id']))}
-              />
-            </label>
+          <label className="block">
+            <span className={adminFieldLabelClass}>YouTube Video ID</span>
+            <input
+              type="text"
+              placeholder="ex: rwniUxBd5OI"
+              value={video.id ?? ''}
+              onChange={(e) => onFieldChange(['items', index, 'id'], e.target.value)}
+              className={getAdminInputClass(isFieldDirty(['items', index, 'id']))}
+            />
+          </label>
+          <div className={adminPanelGridClass}>
+            {(['pt', 'en'] as const).map((lang) => (
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Título (PT)' : 'Title (EN)'} badgeText="Idioma">
+                <label className="block">
+                  <span className={adminFieldLabelClass}>Título</span>
+                  <input
+                    type="text"
+                    value={video.title?.[lang] ?? ''}
+                    onChange={(e) => onFieldChange(['items', index, 'title', lang], e.target.value)}
+                    className={getAdminInputClass(isFieldDirty(['items', index, 'title', lang]))}
+                  />
+                </label>
+              </AdminEditorCard>
+            ))}
           </div>
-          {/* Title — i18n */}
-          {(['pt', 'en'] as const).map((lang) => (
-            <AdminEditorCard key={lang} title={lang === 'pt' ? 'Título (PT)' : 'Title (EN)'} badgeText="Idioma">
-              <label className="block">
-                <span className={adminFieldLabelClass}>Título</span>
-                <input
-                  type="text"
-                  value={video.title?.[lang] ?? ''}
-                  onChange={(e) => onFieldChange(['items', index, 'title', lang], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty(['items', index, 'title', lang]))}
-                />
-              </label>
-            </AdminEditorCard>
-          ))}
         </div>
       ))}
       <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['items'])} className="flex items-center gap-2 text-sm">

@@ -43,6 +43,9 @@
   --admin-active-bg:    #eef2ff;
   --admin-active-text:  #4338ca;
   --admin-accent:       #6366f1;
+  --admin-danger-bg:       #fef2f2;
+  --admin-danger-text:     #be123c;
+  --admin-danger-bg-hover: #fee2e2;
 }
 
 [data-theme="dark"] {
@@ -63,4 +66,7 @@
   --admin-active-bg:    rgba(99, 102, 241, 0.12);
   --admin-active-text:  #818cf8;
   --admin-accent:       #818cf8;
+  --admin-danger-bg:       rgba(244, 63, 94, 0.10);
+  --admin-danger-text:     #fb7185;
+  --admin-danger-bg-hover: rgba(244, 63, 94, 0.18);
 }

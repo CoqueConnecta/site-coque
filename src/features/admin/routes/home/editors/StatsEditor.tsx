@@ -2,6 +2,7 @@ import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,
+  adminSectionItemClass,
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
 import { Button } from '../../../../../components/ui/Button';
@@ -22,42 +23,40 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
   const items = Array.isArray(data?.items) ? data.items : [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {items.map((item, index) => (
-        <div key={index} className={`${adminPanelGridClass} border border-gray-200 rounded-lg p-4`}>
-          <div className="col-span-full flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-700">Estatística {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['items'], index)} className="text-red-500 hover:text-red-700">
+        <div key={index} className={adminSectionItemClass}>
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold text-[var(--admin-text-2)]">Estatística {index + 1}</span>
+            <button type="button" onClick={() => onRemoveArrayItem(['items'], index)} className="text-rose-500 hover:text-rose-700 transition-colors">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
-          {/* Value — global */}
-          <div className="col-span-full">
-            <label className="block">
-              <span className={adminFieldLabelClass}>Valor (global)</span>
-              <input
-                type="text"
-                placeholder="ex: +2.000"
-                value={item.value ?? ''}
-                onChange={(e) => onFieldChange(['items', index, 'value'], e.target.value)}
-                className={getAdminInputClass(isFieldDirty(['items', index, 'value']))}
-              />
-            </label>
+          <label className="block">
+            <span className={adminFieldLabelClass}>Valor (global)</span>
+            <input
+              type="text"
+              placeholder="ex: +2.000"
+              value={item.value ?? ''}
+              onChange={(e) => onFieldChange(['items', index, 'value'], e.target.value)}
+              className={getAdminInputClass(isFieldDirty(['items', index, 'value']))}
+            />
+          </label>
+          <div className={adminPanelGridClass}>
+            {(['pt', 'en'] as const).map((lang) => (
+              <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'} badgeText="Idioma">
+                <label className="block">
+                  <span className={adminFieldLabelClass}>Rótulo</span>
+                  <input
+                    type="text"
+                    value={item.label?.[lang] ?? ''}
+                    onChange={(e) => onFieldChange(['items', index, 'label', lang], e.target.value)}
+                    className={getAdminInputClass(isFieldDirty(['items', index, 'label', lang]))}
+                  />
+                </label>
+              </AdminEditorCard>
+            ))}
           </div>
-          {/* Label — i18n */}
-          {(['pt', 'en'] as const).map((lang) => (
-            <AdminEditorCard key={lang} title={lang === 'pt' ? 'Rótulo (PT)' : 'Label (EN)'} badgeText="Idioma">
-              <label className="block">
-                <span className={adminFieldLabelClass}>Rótulo</span>
-                <input
-                  type="text"
-                  value={item.label?.[lang] ?? ''}
-                  onChange={(e) => onFieldChange(['items', index, 'label', lang], e.target.value)}
-                  className={getAdminInputClass(isFieldDirty(['items', index, 'label', lang]))}
-                />
-              </label>
-            </AdminEditorCard>
-          ))}
         </div>
       ))}
       <Button type="button" variant="ghost" onClick={() => onAddArrayItem(['items'])} className="flex items-center gap-2 text-sm">

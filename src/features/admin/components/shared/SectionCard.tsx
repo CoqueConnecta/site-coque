@@ -17,7 +17,7 @@ export function SectionCard({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-[var(--admin-surface)] rounded-2xl shadow-sm border border-[var(--admin-border)] overflow-hidden">
+    <div className="bg-[var(--admin-surface)] rounded-xl shadow-sm border border-[var(--admin-border)] overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

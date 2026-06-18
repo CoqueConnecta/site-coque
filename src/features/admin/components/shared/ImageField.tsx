@@ -47,8 +47,15 @@ export function ImageField({
       </label>
 
       {canPreview ? (
-        <div className="rounded-xl border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] p-2 shadow-sm">
-          <img src={previewSource} alt="Prévia da imagem" className="max-h-40 w-full rounded object-cover" />
+        <div className="mt-1 flex items-center gap-3">
+          <img
+            src={previewSource}
+            alt="Prévia"
+            className="h-16 w-24 flex-shrink-0 rounded-lg object-cover border border-[var(--admin-border-sub)]"
+          />
+          <p className="min-w-0 text-xs text-[var(--admin-text-3)] break-all line-clamp-3">
+            {previewSource}
+          </p>
         </div>
       ) : null}
     </div>
