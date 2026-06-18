@@ -43,27 +43,44 @@ npm install
 npm run dev
 ```
 
+## Workflow de branches
+
+- `main` → produção. **Protegida**: apenas via PR aprovado. Nunca commitar diretamente.
+- `staging` → homologação. Push gera preview automático na Vercel.
+- `feature/*` ou `fix/*` → branches de trabalho, criadas a partir de `main`.
+
+Fluxo completo via CLI:
+
+```bash
+# 1. Criar branch a partir de main
+git switch -c feature/nome-da-feature
+
+# 2. Trabalhar, commitar normalmente
+
+# 3. Abrir PR → staging
+gh pr create --base staging --title "feat: descrição"
+
+# 4. Mergear em staging e deletar a branch (staging não tem proteção)
+gh pr merge --squash --delete-branch
+
+# 5. Validar em staging.coqueconnecta.ong.br
+
+# 6. Abrir PR → main (requer aprovação na UI do GitHub)
+gh pr create --base main --title "feat: descrição"
+
+# 7. Após aprovação, mergear em main
+gh pr merge --squash --delete-branch
+```
+
+> `--squash` condensa os commits da branch em um único commit limpo no histórico.
+> `--delete-branch` remove a branch local e remota automaticamente após o merge.
+
 ## Deploy
 
 O projeto é deployado pela **Vercel** (conta `coqueconnecta@gmail.com`).
 
-### Staging
-
-A branch `staging` gera um preview automático na Vercel a cada push.
-
-Fluxo recomendado para atualizar staging:
-
-```bash
-git switch staging
-git pull --ff-only origin staging
-git merge --no-ff <branch>
-git push origin staging
-# → Vercel gera a preview URL automaticamente
-```
-
-### Produção
-
-Push na branch `main` dispara deploy automático em produção (`coqueconnecta.ong.br`).
+- **Staging**: push na branch `staging` → preview automático (URL gerada pela Vercel)
+- **Produção**: merge de PR aprovado na `main` → deploy automático em `coqueconnecta.ong.br`
 
 ### Regras do Firebase (Realtime Database)
 

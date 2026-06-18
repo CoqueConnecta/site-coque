@@ -14,6 +14,12 @@ Objetivo: reduzir falhas por excesso de contexto e manter continuidade entre ses
   - dimensoes
   - regras de layout essenciais
 
+## Regras de branches
+
+- Nunca commitar diretamente em `main` — a branch e protegida no GitHub.
+- Fluxo obrigatorio: criar branch `feature/*` a partir de `main`, abrir PR → `staging`, depois PR → `main`.
+- Sempre verificar em qual branch esta antes de commitar: `git branch`.
+
 ## Regras de continuidade
 
 - Antes de editar, ler `docs/project-context.md` e `refactor-context.md` e produzir um plano curto.

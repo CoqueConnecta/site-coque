@@ -223,13 +223,24 @@ docs/
 firebase.ts
 ```
 
+## Workflow de branches
+
+A branch `main` é protegida no GitHub: nunca commitar diretamente. Sempre usar feature branch + PR.
+
+```
+feature/nome
+    ↓  PR → staging    (validar no preview Vercel)
+staging
+    ↓  PR → main       (deploy automático em produção)
+main
+```
+
 ## Comandos principais
 
 - `npm run dev` -> desenvolvimento local
 - `npm run build` -> build de produção
 - `npm run lint` -> lint
 - `npm run preview` -> preview local do build
-- `npm run deploy:staging -- <branch>` -> merge assistido em `staging` com confirmação antes do push
 - `npm run storybook` -> Storybook em desenvolvimento
 - `npm run build-storybook` -> build do Storybook
 
@@ -263,8 +274,7 @@ Regra prática de atualização:
 
 ## Pendências e atenção atual
 
-- A base atual opera com **CMS v3** (migração v2 → v3 concluída em abril/2026).
-- O nó `cms/v2` pode ser removido do RTDB quando conveniente; não há mais dependência ativa dele no front.
+- O nó `cms/v2` pode ser removido do RTDB quando conveniente; não há dependência ativa dele no front.
 - Novas decisões devem evitar reintroduzir dependência de contexto histórico espalhado em múltiplos markdowns.
 - Scripts de migração via terminal foram removidos da superfície ativa do projeto; o fluxo preferencial para migrações continua sendo a UI autenticada do admin.
 - Backlog detalhado em `docs/backlog.md`.
