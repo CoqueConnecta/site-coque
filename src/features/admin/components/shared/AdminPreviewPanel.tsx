@@ -33,7 +33,7 @@ export function AdminPreviewPanel({ children, language, onLanguageChange }: Admi
           </div>
         )}
       </div>
-      <div className="overflow-hidden rounded-xl border border-[var(--admin-border)]">
+      <div className="overflow-hidden rounded-xl border border-[var(--admin-border)] bg-[color:var(--color-surface-page)]">
         {children}
       </div>
     </div>
