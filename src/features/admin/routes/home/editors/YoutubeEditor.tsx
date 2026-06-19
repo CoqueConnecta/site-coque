@@ -7,7 +7,10 @@ import {
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
 import { extractYouTubeId } from '../../../utils/youtube';
+import { VideosSection } from '../../../../../components/sections/VideosSection';
+import type { ResolvedYoutubeVideo } from '../../../../../types/cms';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -19,6 +22,12 @@ type YoutubeEditorProps = {
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
 };
+
+function resolvePreviewVideos(data: YoutubeEditorProps['data']): ResolvedYoutubeVideo[] {
+  return (data.items ?? [])
+    .filter((item): item is { id: string; title?: I18nField } => Boolean(item.id))
+    .map((item) => ({ id: item.id, title: item.title?.pt ?? '' }));
+}
 
 type VideoItemProps = {
   video: { id?: string; title?: I18nField };
@@ -117,6 +126,10 @@ export function YoutubeEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
         />
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar vídeo</AdminAddButton>
+
+      <AdminPreviewPanel>
+        <VideosSection videos={resolvePreviewVideos(data)} />
+      </AdminPreviewPanel>
     </div>
   );
 }

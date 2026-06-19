@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
@@ -6,6 +7,10 @@ import {
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
+import { StatsSection } from '../../../../../components/sections/StatsSection';
+import { pickLang } from '../../../../../services/cmsService';
+import type { CmsLanguage, ResolvedStatsData } from '../../../../../types/cms';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -18,7 +23,17 @@ type StatsEditorProps = {
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
+function resolvePreviewData(data: StatsEditorProps['data'], language: CmsLanguage): ResolvedStatsData {
+  return {
+    items: (data.items ?? []).map((item) => ({
+      value: item.value ?? '',
+      label: pickLang({ pt: item.label?.pt ?? '', en: item.label?.en ?? '' }, language),
+    })),
+  };
+}
+
 export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: StatsEditorProps) {
+  const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const items = Array.isArray(data?.items) ? data.items : [];
 
   return (
@@ -61,6 +76,10 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar estatística</AdminAddButton>
+
+      <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
+        <StatsSection data={resolvePreviewData(data, previewLang)} />
+      </AdminPreviewPanel>
     </div>
   );
 }
