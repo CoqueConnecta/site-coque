@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "vercel:test": "bash ./vercel-cmd.sh whoami"
+    "vercel:test": "bash ./vercel-cmd.sh whoami",
+    "vercel:list": "bash ./vercel-cmd.sh ls",
+    "vercel": "bash ./vercel-cmd.sh"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
