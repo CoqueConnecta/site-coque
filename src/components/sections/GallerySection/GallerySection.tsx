@@ -8,10 +8,10 @@ export interface GallerySectionProps extends React.HTMLAttributes<HTMLElement> {
   data: ResolvedGalleryData;
 }
 
-const CARD_BG_LIGHT = '#f9b778';
-const CARD_BG_DARK = '#411409';
-const TAG_BG = '#411409';
-const TAG_TEXT = '#fef7ee';
+const CARD_BG_LIGHT = 'var(--color-accent-peach)';
+const CARD_BG_DARK = 'var(--color-tag-bg)';
+const TAG_BG = 'var(--color-tag-bg)';
+const TAG_TEXT = 'var(--color-text-cream)';
 
 export const GallerySection = ({ data, className, ...props }: GallerySectionProps) => {
   return (
@@ -28,7 +28,7 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
               fontFamily: "'Figtree', sans-serif",
               fontSize: 'clamp(34px, 4.2vw, 50px)',
               fontWeight: 700,
-              color: '#101014',
+              color: 'var(--color-text-primary)',
               lineHeight: '1.1',
               margin: 0,
               letterSpacing: '-0.8px',
@@ -43,7 +43,7 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
               fontFamily: "'Figtree', sans-serif",
               fontSize: 'clamp(17px, 2vw, 20px)',
               lineHeight: '1.5',
-              color: '#3d3d47',
+              color: 'var(--color-text-secondary)',
               maxWidth: '60ch',
               margin: 0,
             }}
@@ -57,12 +57,12 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
           {data.cards.map((card, index) => {
             const isDark = card.variant === 'dark';
             const bg = isDark ? CARD_BG_DARK : CARD_BG_LIGHT;
-            const titleColor = isDark ? '#fef7ee' : '#101014';
-            const bodyColor = isDark ? '#fef7ee' : '#101014';
-            const quoteColor = isDark ? '#fef7ee' : TAG_BG;
-            const authorColor = isDark ? '#fef7ee' : '#101014';
-            const tagBg = isDark ? '#f9b778' : TAG_BG;
-            const tagText = isDark ? '#411409' : TAG_TEXT;
+            const titleColor = isDark ? 'var(--color-text-cream)' : 'var(--color-text-primary)';
+            const bodyColor = isDark ? 'var(--color-text-cream)' : 'var(--color-text-primary)';
+            const quoteColor = isDark ? 'var(--color-text-cream)' : TAG_BG;
+            const authorColor = isDark ? 'var(--color-text-cream)' : 'var(--color-text-primary)';
+            const tagBg = isDark ? 'var(--color-accent-peach)' : TAG_BG;
+            const tagText = isDark ? 'var(--color-tag-bg)' : TAG_TEXT;
 
             return (
               <FadeIn key={card.id} delay={Math.min(index * 80, 240)}>

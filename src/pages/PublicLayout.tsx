@@ -6,9 +6,8 @@ import { NewsletterSection } from '../components/sections/NewsletterSection';
 import { FooterSection } from '../components/sections/FooterSection';
 import { useCmsSharedData } from '../hooks/useCmsSharedData';
 import { LanguageBar } from '../components/composites/LanguageBar';
+import { STORAGE_KEYS } from '../lib/constants';
 import type { CmsLanguage } from '../types/cms';
-
-const LANGUAGE_STORAGE_KEY = 'site-coque-language';
 
 export interface PublicLayoutContextValue {
   language: CmsLanguage;
@@ -18,7 +17,7 @@ export interface PublicLayoutContextValue {
 export default function PublicLayout() {
   const location = useLocation();
   const [language, setLanguage] = useState<CmsLanguage>(() => {
-    const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    const saved = window.localStorage.getItem(STORAGE_KEYS.language);
     return saved === 'en' ? 'en' : 'pt';
   });
 
@@ -28,7 +27,7 @@ export default function PublicLayout() {
   const [activeLink, setActiveLink] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    window.localStorage.setItem(STORAGE_KEYS.language, language);
   }, [language]);
 
   useEffect(() => {

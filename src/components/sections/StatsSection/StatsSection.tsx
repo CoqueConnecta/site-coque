@@ -10,7 +10,7 @@ export interface StatsSectionProps extends React.HTMLAttributes<HTMLElement> {
 export const StatsSection = ({ data, className, ...props }: StatsSectionProps) => {
   return (
     <section
-      className={cn('w-full bg-[#411409]', className)}
+      className={cn('w-full bg-[color:var(--color-tag-bg)]', className)}
       {...props}
     >
       <Block className="py-16 sm:py-20">
@@ -18,12 +18,12 @@ export const StatsSection = ({ data, className, ...props }: StatsSectionProps) =
           {data.items.map((stat, index) => (
             <FadeIn key={index} delay={index * 100} className="flex flex-col items-center gap-3 text-center">
               <p
-                className="m-0 [font-family:var(--font-support)] text-[40px] font-light leading-[1] tracking-[-0.8px] text-[#f9b778] sm:text-[56px] lg:text-[72px]"
+                className="m-0 [font-family:var(--font-support)] text-[40px] font-light leading-[1] tracking-[-0.8px] text-[color:var(--color-accent-peach)] sm:text-[56px] lg:text-[72px]"
               >
                 {stat.value}
               </p>
               <h4
-                className="m-0 [font-family:var(--font-body)] text-[16px] font-normal leading-[1.5] text-[#fef7ee] sm:text-[18px] lg:text-[20px]"
+                className="m-0 [font-family:var(--font-body)] text-[16px] font-normal leading-[1.5] text-[color:var(--color-text-cream)] sm:text-[18px] lg:text-[20px]"
               >
                 {stat.label}
               </h4>

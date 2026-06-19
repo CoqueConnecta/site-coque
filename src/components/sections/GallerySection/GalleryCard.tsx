@@ -102,7 +102,7 @@ export const GalleryCard = ({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#dbdad9] bg-[#e6e6e6] sm:h-[50px] sm:w-[50px]">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[color:var(--color-border-subtle)] bg-[#e6e6e6] sm:h-[50px] sm:w-[50px]">
               {card.blockquote.authorAvatar ? (
                 <img
                   src={card.blockquote.authorAvatar}

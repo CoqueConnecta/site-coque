@@ -36,7 +36,7 @@ export default function ProjectsPage() {
     <main className="min-h-screen bg-[#fafafa] pb-24 pt-34">
       <Block>
         <div className="mb-12">
-          <Typography variant="h1" className="mb-4 text-[#411409]">
+          <Typography variant="h1" className="mb-4 text-[color:var(--color-tag-bg)]">
             {pageTitle}
           </Typography>
           <Typography variant="body" className="max-w-3xl text-lg text-gray-600">

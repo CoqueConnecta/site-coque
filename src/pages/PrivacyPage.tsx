@@ -21,7 +21,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-[#fafafa] pb-24 pt-34">
       <Block className="max-w-4xl">
         <div className="mb-12 border-b border-gray-200 pb-8">
-          <Typography variant="h1" className="mb-4 text-[#411409]">
+          <Typography variant="h1" className="mb-4 text-[color:var(--color-tag-bg)]">
             {privacy.title}
           </Typography>
           <Typography variant="body" className="text-lg text-gray-600">
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           </Typography>
         </div>
 
-        <div className="space-y-10 text-[#101014]">
+        <div className="space-y-10 text-[color:var(--color-text-primary)]">
           <section>
             <Typography variant="body" className="text-lg leading-relaxed">
               {privacy.intro}
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
 
           {privacy.sections.map((section, index) => (
             <section key={`${section.title}-${index}`} className="space-y-4">
-              <Typography variant="h2" className="text-2xl font-bold text-[#f58634]">
+              <Typography variant="h2" className="text-2xl font-bold text-[color:var(--color-surface-orange)]">
                 {section.title}
               </Typography>
               <MarkdownContent content={section.bodyMd ?? ''} />

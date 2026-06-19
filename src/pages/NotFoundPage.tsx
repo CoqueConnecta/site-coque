@@ -6,7 +6,7 @@ export default function NotFoundPage() {
     <main className="min-h-screen bg-[#fafafa] pb-24 pt-32">
       <Block className="max-w-4xl">
         <div className="mb-12 border-b border-gray-200 pb-8">
-          <Typography variant="h1" className="mb-4 text-[#411409]">
+          <Typography variant="h1" className="mb-4 text-[color:var(--color-tag-bg)]">
             Página não encontrada
           </Typography>
           <Typography variant="body" className="text-lg text-gray-600">
@@ -14,10 +14,10 @@ export default function NotFoundPage() {
           </Typography>
         </div>
 
-        <Typography variant="body" className="leading-relaxed text-[#101014]">
+        <Typography variant="body" className="leading-relaxed text-[color:var(--color-text-primary)]">
           Você pode voltar para a página inicial e navegar pelas seções principais.
           {' '}
-          <a href="/" className="text-[#f58634] underline hover:text-[#c73c00]">
+          <a href="/" className="text-[color:var(--color-surface-orange)] underline hover:text-[color:var(--color-link-hover)]">
             Ir para a home
           </a>
           .

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../../../lib/cn';
+import { ROUTE_HASHES } from '../../../lib/constants';
 import type { ResolvedHeroData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 
@@ -49,7 +50,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
       <Block className="relative z-10 py-12 pt-[140px]">
         <div className="max-w-3xl space-y-6">
           <h1
-            className="animate-hero-in whitespace-pre-line text-[#fef7ee] leading-tight [text-wrap:balance]"
+            className="animate-hero-in whitespace-pre-line text-[color:var(--color-text-cream)] leading-tight [text-wrap:balance]"
             style={{ textShadow: '0 1px 16px rgba(80,15,0,0.35)' }}
           >
             {data.headline.split('\n').map((line, i) => (
@@ -70,7 +71,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
 
           {data.subheadline && (
             <p
-              className="animate-hero-in max-w-xl text-[#fef7ee] text-base sm:text-lg leading-relaxed font-[var(--font-body)]"
+              className="animate-hero-in max-w-xl text-[color:var(--color-text-cream)] text-base sm:text-lg leading-relaxed font-[var(--font-body)]"
               style={{ animationDelay: '120ms' }}
             >
               {data.subheadline}
@@ -80,8 +81,8 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
           {data.ctaText && (
             <div className="animate-hero-in pt-2" style={{ animationDelay: '240ms' }}>
               <a
-                href={data.ctaHref ?? '#contact'}
-                className="inline-flex items-center justify-center rounded-[var(--radius-pill)] font-semibold tracking-tight transition-all bg-[#f9b778] text-[#411409] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
+                href={data.ctaHref ?? ROUTE_HASHES.contact}
+                className="inline-flex items-center justify-center rounded-[var(--radius-pill)] font-semibold tracking-tight transition-all bg-[color:var(--color-accent-peach)] text-[color:var(--color-tag-bg)] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
               >
                 {data.ctaText}
               </a>
@@ -91,7 +92,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
       </Block>
 
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2" aria-hidden="true">
-        <ChevronDown className="h-5 w-5 text-[#fef7ee]/60 animate-scroll-hint" />
+        <ChevronDown className="h-5 w-5 text-[color:var(--color-text-cream)]/60 animate-scroll-hint" />
       </div>
     </section>
   );

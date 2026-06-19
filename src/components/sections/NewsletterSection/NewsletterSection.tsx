@@ -7,13 +7,14 @@ import type { ResolvedNewsletterData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { Typography } from '../../ui/Typography';
 import { cn } from '../../../lib/cn';
+import { NEWSLETTER_SUCCESS_RESET_MS } from '../../../lib/constants';
 
 export interface NewsletterSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: ResolvedNewsletterData;
 }
 
 const fieldBase =
-  'h-[54px] w-full rounded-full border border-[#dbdad9] bg-[#fafafa] px-6 text-[16px] text-[#101014] placeholder:text-gray-500 [font-family:var(--font-body)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#792b15] focus-visible:ring-offset-1';
+  'h-[54px] w-full rounded-full border border-[color:var(--color-border-subtle)] bg-[#fafafa] px-6 text-[16px] text-[color:var(--color-text-primary)] placeholder:text-gray-500 [font-family:var(--font-body)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-brown)] focus-visible:ring-offset-1';
 
 export const NewsletterSection = ({ data, className, ...props }: NewsletterSectionProps) => {
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,7 @@ export const NewsletterSection = ({ data, className, ...props }: NewsletterSecti
 
   useEffect(() => {
     if (!isSubmitted) return;
-    const id = setTimeout(() => setIsSubmitted(false), 5000);
+    const id = setTimeout(() => setIsSubmitted(false), NEWSLETTER_SUCCESS_RESET_MS);
     return () => clearTimeout(id);
   }, [isSubmitted]);
 
@@ -68,7 +69,7 @@ export const NewsletterSection = ({ data, className, ...props }: NewsletterSecti
       {...props}
     >
       <Block>
-        <div className="w-full rounded-[var(--radius-xl)] bg-[#f58634] bg-[url('/background-coque-laranja.png')] bg-cover bg-center flex flex-col items-center gap-8 py-[48px] overflow-hidden">
+        <div className="w-full rounded-[var(--radius-xl)] bg-[color:var(--color-surface-orange)] bg-[url('/background-coque-laranja.png')] bg-cover bg-center flex flex-col items-center gap-8 py-[48px] overflow-hidden">
 
           {/* Headline + description */}
           <div className="w-full max-w-[1031px] flex flex-col items-center gap-6 text-center px-5">
@@ -154,7 +155,7 @@ export const NewsletterSection = ({ data, className, ...props }: NewsletterSecti
                     required
                     checked={formData.consent}
                     onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-                    className="mt-1 h-5 w-5 shrink-0 rounded border-gray-300 accent-[#792b15]"
+                    className="mt-1 h-5 w-5 shrink-0 rounded border-gray-300 accent-[color:var(--color-accent-brown)]"
                   />
                   <span className="text-sm leading-snug [font-family:var(--font-body)] sm:text-base">
                     Concordo em receber comunicações da Coque Connecta e afirmo que li e aceito a{' '}
@@ -168,7 +169,7 @@ export const NewsletterSection = ({ data, className, ...props }: NewsletterSecti
                 <button
                   type="submit"
                   disabled={loading || !formData.consent}
-                  className="mt-4 h-[54px] w-full sm:w-auto self-center rounded-full bg-[#f9b778] px-10 text-[18px] font-semibold tracking-tight text-[#792b15] [font-family:var(--font-body)] transition-transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#792b15] focus-visible:ring-offset-2"
+                  className="mt-4 h-[54px] w-full sm:w-auto self-center rounded-full bg-[color:var(--color-accent-peach)] px-10 text-[18px] font-semibold tracking-tight text-[color:var(--color-accent-brown)] [font-family:var(--font-body)] transition-transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-brown)] focus-visible:ring-offset-2"
                 >
                   {loading ? 'ENVIANDO...' : data.buttonText || 'RECEBER'}
                 </button>
