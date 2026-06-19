@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { ref, push, serverTimestamp } from 'firebase/database';
 import { CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { database } from '../../../../firebase';
+import { subscribeToNewsletter } from '../../../services/newsletterService';
 import type { ResolvedNewsletterData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { Typography } from '../../ui/Typography';
@@ -44,14 +43,11 @@ export const NewsletterSection = ({ data, className, ...props }: NewsletterSecti
     setLoading(true);
 
     try {
-      const newsletterRef = ref(database, 'newsletter');
-      await push(newsletterRef, {
+      await subscribeToNewsletter({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         type: formData.type,
-        lgpdConsent: true,
-        subscribedAt: serverTimestamp(),
       });
 
       setIsSubmitted(true);
