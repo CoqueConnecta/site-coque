@@ -1,5 +1,6 @@
-import { Block } from '../components/ui/Block';
 import { MarkdownContent } from '../components/ui/MarkdownContent';
+import { PageShell } from '../components/ui/PageShell';
+import { SectionHeader } from '../components/ui/SectionHeader';
 import { Typography } from '../components/ui/Typography';
 import { useOutletContext } from 'react-router-dom';
 import type { PublicLayoutContextValue } from './PublicLayout';
@@ -12,28 +13,19 @@ export default function TransparencyPage() {
   if (isLoading) return null;
 
   return (
-    <main className="min-h-screen bg-[#fafafa] pb-24 pt-32">
-      <Block className="max-w-4xl">
-        <div className="mb-12 border-b border-gray-200 pb-8">
-          <Typography variant="h1" className="mb-4 text-[color:var(--color-tag-bg)]">
-            {transparency.title}
-          </Typography>
-          <Typography variant="body" className="text-lg text-gray-600">
-            {transparency.intro}
-          </Typography>
-        </div>
+    <PageShell className="max-w-4xl">
+      <SectionHeader title={transparency.title} description={transparency.intro} divider />
 
-        <div className="space-y-10 text-[color:var(--color-text-primary)]">
-          {transparency.sections.map((section, index) => (
-            <section key={`${section.title}-${index}`} className="space-y-4">
-              <Typography variant="h2" className="text-2xl font-bold text-[color:var(--color-surface-orange)]">
-                {section.title}
-              </Typography>
-              <MarkdownContent content={section.bodyMd ?? ''} />
-            </section>
-          ))}
-        </div>
-      </Block>
-    </main>
+      <div className="space-y-10 text-[color:var(--color-text-primary)]">
+        {transparency.sections.map((section, index) => (
+          <section key={`${section.title}-${index}`} className="space-y-4">
+            <Typography variant="h2" className="text-2xl font-bold text-[color:var(--color-surface-orange)]">
+              {section.title}
+            </Typography>
+            <MarkdownContent content={section.bodyMd ?? ''} />
+          </section>
+        ))}
+      </div>
+    </PageShell>
   );
 }

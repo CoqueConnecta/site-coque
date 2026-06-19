@@ -2,6 +2,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { CloseIcon, CoqueConnectaWordmark, MenuIcon } from '../../icons';
 import { cn } from '../../../lib/cn';
 import { IconButton } from '../../ui/IconButton';
+import { Button } from '../../ui/Button';
 import { NavMenu, type NavLink } from '../NavMenu';
 
 export interface HeaderBarProps extends HTMLAttributes<HTMLElement> {
@@ -75,17 +76,15 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
             />
 
             {/* CTA Button */}
-            <a
+            <Button
               href={ctaHref}
-              target='_blank'
+              target="_blank"
               rel="noopener noreferrer"
-              className={cn(
-                'inline-flex h-[58px] items-center justify-center rounded-[50px] px-8 text-base font-semibold leading-none tracking-tight transition-all',
-                ctaBg
-              )}
+              variant="unstyled"
+              className={cn('h-[58px] rounded-[50px] px-8 text-base leading-none', ctaBg)}
             >
               {ctaText}
-            </a>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}

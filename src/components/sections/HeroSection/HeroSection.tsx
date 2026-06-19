@@ -4,6 +4,7 @@ import { cn } from '../../../lib/cn';
 import { ROUTE_HASHES } from '../../../lib/constants';
 import type { ResolvedHeroData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
+import { Button } from '../../ui/Button';
 
 const LazyHeroCanvas = lazy(async () => {
   const module = await import('./HeroCanvas');
@@ -80,12 +81,13 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
 
           {data.ctaText && (
             <div className="animate-hero-in pt-2" style={{ animationDelay: '240ms' }}>
-              <a
+              <Button
                 href={data.ctaHref ?? ROUTE_HASHES.contact}
-                className="inline-flex items-center justify-center rounded-[var(--radius-pill)] font-semibold tracking-tight transition-all bg-[color:var(--color-accent-peach)] text-[color:var(--color-tag-bg)] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
+                variant="unstyled"
+                className="bg-[color:var(--color-accent-peach)] text-[color:var(--color-tag-bg)] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
               >
                 {data.ctaText}
-              </a>
+              </Button>
             </div>
           )}
         </div>
