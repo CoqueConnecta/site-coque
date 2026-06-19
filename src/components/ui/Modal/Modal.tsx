@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { cn } from '../../../lib/cn';
 import { CloseIcon } from '../../icons';
 import { useScrollLock } from '../../../hooks/useScrollLock';
@@ -16,7 +17,9 @@ export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
 
   if (!isOpen) return null;
 
-  return (
+  // Portal direto para document.body: um ancestor animado por FadeIn (translate-y-*)
+  // cria um novo containing block para position:fixed, quebrando o overlay em tela cheia.
+  return createPortal(
     // Overlay (Fundo escuro). O z-[100] garante que fique acima de tudo.
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-6"
@@ -38,6 +41,7 @@ export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
