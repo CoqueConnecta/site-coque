@@ -60,20 +60,8 @@ export interface CmsHeroData {
   ctaHref?: I18nField;
 }
 
-export interface CmsValueItem {
-  id: string;
-  label: I18nField;
-  description: I18nField;
-}
-
 export interface CmsAboutData {
-  headline: I18nField;
-  subheadline: I18nField;
   description: I18nField;
-  subdescription: I18nField;
-  mission: { title: I18nField; description: I18nField };
-  vision:  { title: I18nField; description: I18nField };
-  values:  { title: I18nField; items: CmsValueItem[] };
 }
 
 export interface CmsCarouselImage {
@@ -177,10 +165,7 @@ export interface ResolvedNewsletterData {
 }
 export interface ResolvedHeroData    { backgroundImage: string; headline: string; subheadline: string; ctaText: string; ctaHref?: string }
 export interface ResolvedAboutData   {
-  headline: string; subheadline: string; description: string; subdescription: string;
-  mission: { title: string; description: string };
-  vision:  { title: string; description: string };
-  values:  { title: string; items: Array<{ id: string; label: string; description: string }> };
+  description: string;
 }
 export interface ResolvedGalleryCard { id: string; image?: string; variant: 'light'|'dark'; title: string; description: string; tags: string[] }
 export interface ResolvedGalleryData { headline: string; subtitle: string; cards: ResolvedGalleryCard[] }
