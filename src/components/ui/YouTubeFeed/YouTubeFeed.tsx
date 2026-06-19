@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Modal } from '../Modal';
 import { Typography } from '../../ui/Typography';
-import { Play } from 'lucide-react'; 
+import { Play } from 'lucide-react';
+import { useDelayedState } from '../../../hooks/useDelayedState';
 import type { ResolvedYoutubeVideo } from '../../../types/cms';
 
 const mockVideos: ResolvedYoutubeVideo[] = [
@@ -15,18 +16,18 @@ interface YouTubeFeedProps {
 
 export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentVideoId, setCurrentVideoId] = useState<string | null>(null);
+  const [currentVideoId, setCurrentVideoIdNow, setCurrentVideoIdDelayed] = useDelayedState<string | null>(null);
   const visibleVideos = videos && videos.length > 0 ? videos : mockVideos;
 
   const openVideo = (videoId: string) => {
-    setCurrentVideoId(videoId);
+    setCurrentVideoIdNow(videoId);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     // Pequeno delay para remover o ID e evitar que a tela preta pisque antes de sumir
-    setTimeout(() => setCurrentVideoId(null), 300);
+    setCurrentVideoIdDelayed(null, 300);
   };
 
   return (

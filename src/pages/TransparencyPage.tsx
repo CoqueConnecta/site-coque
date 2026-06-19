@@ -1,21 +1,15 @@
-import { useEffect, useState } from 'react';
 import { Block } from '../components/ui/Block';
 import { MarkdownContent } from '../components/ui/MarkdownContent';
 import { Typography } from '../components/ui/Typography';
 import { useOutletContext } from 'react-router-dom';
 import type { PublicLayoutContextValue } from './PublicLayout';
-import type { ResolvedTransparencyData } from '../types/cms';
-import { getCmsTransparencyData } from '../services/cmsService';
+import { useCmsTransparencyData } from '../hooks/useCmsTransparencyData';
 
 export default function TransparencyPage() {
   const { language } = useOutletContext<PublicLayoutContextValue>();
-  const [transparency, setTransparency] = useState<ResolvedTransparencyData | null>(null);
+  const { data: transparency, isLoading } = useCmsTransparencyData(language);
 
-  useEffect(() => {
-    getCmsTransparencyData(language).then(setTransparency);
-  }, [language]);
-
-  if (!transparency) return null;
+  if (isLoading) return null;
 
   return (
     <main className="min-h-screen bg-[#fafafa] pb-24 pt-32">

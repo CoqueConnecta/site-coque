@@ -1,21 +1,15 @@
-import { useEffect, useState } from 'react';
 import { Block } from '../components/ui/Block';
 import { MarkdownContent } from '../components/ui/MarkdownContent';
 import { Typography } from '../components/ui/Typography';
 import { useOutletContext } from 'react-router-dom';
 import type { PublicLayoutContextValue } from './PublicLayout';
-import type { ResolvedPrivacyData } from '../types/cms';
-import { getCmsPrivacyData } from '../services/cmsService';
+import { useCmsPrivacyData } from '../hooks/useCmsPrivacyData';
 
 export default function PrivacyPage() {
   const { language } = useOutletContext<PublicLayoutContextValue>();
-  const [privacy, setPrivacy] = useState<ResolvedPrivacyData | null>(null);
+  const { data: privacy, isLoading } = useCmsPrivacyData(language);
 
-  useEffect(() => {
-    getCmsPrivacyData(language).then(setPrivacy);
-  }, [language]);
-
-  if (!privacy) return null;
+  if (isLoading) return null;
 
   return (
     <main className="min-h-screen bg-[#fafafa] pb-24 pt-34">

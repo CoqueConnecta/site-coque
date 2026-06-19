@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
+import { useIntersectionVisibility } from '../../hooks/useIntersectionVisibility';
 
 interface FadeInProps {
   children: ReactNode;
@@ -10,44 +10,11 @@ interface FadeInProps {
 }
 
 export function FadeIn({ children, className, delay = 0, duration = 700 }: FadeInProps) {
-  const prefersReduced =
-    typeof window !== 'undefined'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      : false;
-
-  const [isVisible, setIsVisible] = useState(prefersReduced);
-  const domRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (prefersReduced) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-
-    const currentRef = domRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [prefersReduced]);
+  const { ref, isVisible } = useIntersectionVisibility<HTMLDivElement>();
 
   return (
     <div
-      ref={domRef}
+      ref={ref}
       className={cn(
         'transition-all ease-out',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',

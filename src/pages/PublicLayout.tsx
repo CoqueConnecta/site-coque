@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { HeaderBar } from '../components/composites/HeaderBar';
 import { MobileMenuOverlay } from '../components/composites/MobileMenuOverlay';
 import { NewsletterSection } from '../components/sections/NewsletterSection';
 import { FooterSection } from '../components/sections/FooterSection';
 import { useCmsSharedData } from '../hooks/useCmsSharedData';
+import { useScrollAnchor } from '../hooks/useScrollAnchor';
 import { LanguageBar } from '../components/composites/LanguageBar';
 import { STORAGE_KEYS } from '../lib/constants';
 import type { CmsLanguage } from '../types/cms';
@@ -15,7 +16,6 @@ export interface PublicLayoutContextValue {
 }
 
 export default function PublicLayout() {
-  const location = useLocation();
   const [language, setLanguage] = useState<CmsLanguage>(() => {
     const saved = window.localStorage.getItem(STORAGE_KEYS.language);
     return saved === 'en' ? 'en' : 'pt';
@@ -24,34 +24,11 @@ export default function PublicLayout() {
   const { data: shared } = useCmsSharedData(language);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState<string | undefined>(undefined);
+  const { activeLink, setActiveLink } = useScrollAnchor();
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEYS.language, language);
   }, [language]);
-
-  useEffect(() => {
-    if (location.pathname === '/' && location.hash) {
-      setActiveLink(`/${location.hash}`);
-      return;
-    }
-    if (location.pathname === '/') {
-      setActiveLink('/#hero');
-      return;
-    }
-    setActiveLink(undefined);
-  }, [location.pathname, location.hash]);
-
-  useEffect(() => {
-    if (location.pathname !== '/' || !location.hash) return;
-    const targetId = location.hash.slice(1);
-    const scrollToTarget = () => {
-      const target = document.getElementById(targetId);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-    const frame = window.requestAnimationFrame(scrollToTarget);
-    return () => window.cancelAnimationFrame(frame);
-  }, [location.pathname, location.hash]);
 
   const handleNavClick = (href: string) => {
     setActiveLink(href);
