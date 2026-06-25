@@ -12,7 +12,7 @@ import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel'
 import { HeaderBar } from '../../../../../components/composites/HeaderBar';
 import { pickLang } from '../../../../../services/cmsService';
 import type { CmsLanguage, ResolvedNavData } from '../../../../../types/cms';
-import { Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Copy, Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -26,6 +26,8 @@ type NavEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
 function resolvePreviewData(data: NavEditorProps['data'], language: CmsLanguage): ResolvedNavData {
@@ -44,7 +46,7 @@ function resolvePreviewData(data: NavEditorProps['data'], language: CmsLanguage)
   };
 }
 
-export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: NavEditorProps) {
+export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem }: NavEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const links = Array.isArray(data?.links) ? data.links : [];
 
@@ -55,9 +57,24 @@ export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, o
         <div key={index} className={adminSectionItemClass}>
           <div className="flex justify-between items-center">
             <span className="text-sm font-semibold text-[var(--admin-text-2)]">Link {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['links'], index)} className="text-rose-500 hover:text-rose-700 transition-colors">
-              <Trash2 className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-3">
+              {index > 0 && (
+                <button type="button" onClick={() => onMoveArrayItem(['links'], index, 'up')} aria-label="Mover para cima" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+                  <ArrowUp className="h-4 w-4" />
+                </button>
+              )}
+              {index < links.length - 1 && (
+                <button type="button" onClick={() => onMoveArrayItem(['links'], index, 'down')} aria-label="Mover para baixo" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+                  <ArrowDown className="h-4 w-4" />
+                </button>
+              )}
+              <button type="button" onClick={() => onDuplicateArrayItem(['links'], index)} aria-label="Duplicar" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+                <Copy className="h-4 w-4" />
+              </button>
+              <button type="button" onClick={() => onRemoveArrayItem(['links'], index)} aria-label="Remover" className="text-rose-500 hover:text-rose-700 transition-colors">
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <label className="block">

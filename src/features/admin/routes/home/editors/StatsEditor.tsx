@@ -21,6 +21,8 @@ type StatsEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
 function resolvePreviewData(data: StatsEditorProps['data'], language: CmsLanguage): ResolvedStatsData {
@@ -32,7 +34,7 @@ function resolvePreviewData(data: StatsEditorProps['data'], language: CmsLanguag
   };
 }
 
-export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: StatsEditorProps) {
+export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem }: StatsEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const items = Array.isArray(data?.items) ? data.items : [];
 
@@ -47,6 +49,9 @@ export function StatsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem,
           label={`Estatística ${index + 1}`}
           summary={item.label?.pt || ''}
           onRemove={() => onRemoveArrayItem(['items'], index)}
+          onDuplicate={() => onDuplicateArrayItem(['items'], index)}
+          onMoveUp={index > 0 ? () => onMoveArrayItem(['items'], index, 'up') : undefined}
+          onMoveDown={index < items.length - 1 ? () => onMoveArrayItem(['items'], index, 'down') : undefined}
         >
           <label className="block">
             <span className={adminFieldLabelClass}>Valor (global)</span>

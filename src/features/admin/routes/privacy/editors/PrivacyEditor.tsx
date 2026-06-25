@@ -23,6 +23,8 @@ type DocEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
 function I18nTextField({ label, pathPt, pathEn, valuePt, valueEn, isFieldDirty, onFieldChange, multiline = false }: {
@@ -60,7 +62,7 @@ function resolvePreviewData(data: DocEditorProps['data'], language: CmsLanguage)
   };
 }
 
-export function PrivacyEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: DocEditorProps) {
+export function PrivacyEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem }: DocEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const sections = Array.isArray(data?.sections) ? data.sections : [];
   return (
@@ -75,6 +77,9 @@ export function PrivacyEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           label={`Seção ${index + 1}`}
           summary={section.title?.pt || ''}
           onRemove={() => onRemoveArrayItem(['sections'], index)}
+          onDuplicate={() => onDuplicateArrayItem(['sections'], index)}
+          onMoveUp={index > 0 ? () => onMoveArrayItem(['sections'], index, 'up') : undefined}
+          onMoveDown={index < sections.length - 1 ? () => onMoveArrayItem(['sections'], index, 'down') : undefined}
         >
           <I18nTextField label="Título" pathPt={['sections',index,'title','pt']} pathEn={['sections',index,'title','en']} valuePt={section.title?.pt ?? ''} valueEn={section.title?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
           <I18nTextField label="Conteúdo (Markdown)" pathPt={['sections',index,'bodyMd','pt']} pathEn={['sections',index,'bodyMd','en']} valuePt={section.bodyMd?.pt ?? ''} valueEn={section.bodyMd?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} multiline />

@@ -16,6 +16,8 @@ type CarouselEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
   renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
 
@@ -31,6 +33,8 @@ export function CarouselEditor({
   onFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
+  onMoveArrayItem,
+  onDuplicateArrayItem,
   renderImageField,
 }: CarouselEditorProps) {
   const images = Array.isArray(data?.images) ? data.images : [];
@@ -49,6 +53,9 @@ export function CarouselEditor({
           label={`Imagem ${index + 1}`}
           summary={image.alt || ''}
           onRemove={() => onRemoveArrayItem(['images'], index)}
+          onDuplicate={() => onDuplicateArrayItem(['images'], index)}
+          onMoveUp={index > 0 ? () => onMoveArrayItem(['images'], index, 'up') : undefined}
+          onMoveDown={index < images.length - 1 ? () => onMoveArrayItem(['images'], index, 'down') : undefined}
         >
           {renderImageField(image.src ?? '', ['images', index, 'src'], 'Imagem', undefined, true)}
           <label className="block">

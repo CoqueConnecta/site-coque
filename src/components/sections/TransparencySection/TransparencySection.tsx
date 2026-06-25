@@ -1,6 +1,5 @@
 import { SectionHeader } from '../../ui/SectionHeader';
-import { Typography } from '../../ui/Typography';
-import { MarkdownContent } from '../../ui/MarkdownContent';
+import { TransparencyDocSection } from './TransparencyDocSection';
 import type { ResolvedTransparencyData } from '../../../types/cms';
 
 export interface TransparencySectionProps {
@@ -14,12 +13,7 @@ export function TransparencySection({ data }: TransparencySectionProps) {
 
       <div className="space-y-10 text-[color:var(--color-text-primary)]">
         {data.sections.map((section, index) => (
-          <section key={`${section.title}-${index}`} className="space-y-4">
-            <Typography variant="h2" className="text-2xl font-bold text-[color:var(--color-surface-orange)]">
-              {section.title}
-            </Typography>
-            <MarkdownContent content={section.bodyMd ?? ''} />
-          </section>
+          <TransparencyDocSection key={`${section.title}-${index}`} title={section.title} bodyMd={section.bodyMd ?? ''} />
         ))}
       </div>
     </>

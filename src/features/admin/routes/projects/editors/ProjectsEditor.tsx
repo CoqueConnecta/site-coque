@@ -32,6 +32,8 @@ type ProjectsEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
   renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
 };
 
@@ -49,7 +51,7 @@ function resolvePreviewData(data: ProjectsEditorProps['data'], language: CmsLang
   }));
 }
 
-export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField }: ProjectsEditorProps) {
+export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, renderImageField }: ProjectsEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const items = Array.isArray(data?.items) ? data.items : [];
 
@@ -64,6 +66,9 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
           label={`Projeto ${index + 1}`}
           summary={project.title?.pt || ''}
           onRemove={() => onRemoveArrayItem(['items'], index)}
+          onDuplicate={() => onDuplicateArrayItem(['items'], index)}
+          onMoveUp={index > 0 ? () => onMoveArrayItem(['items'], index, 'up') : undefined}
+          onMoveDown={index < items.length - 1 ? () => onMoveArrayItem(['items'], index, 'down') : undefined}
         >
           {/* Global fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

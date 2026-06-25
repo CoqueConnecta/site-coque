@@ -16,6 +16,8 @@ export function SettingsRoute({
   onFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
+  onMoveArrayItem,
+  onDuplicateArrayItem,
   sectionDirtyCount,
 }: AdminRouteProps) {
   return (
@@ -30,6 +32,8 @@ export function SettingsRoute({
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
               onAddArrayItem={(path) => onAddArrayItem(key, path)}
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
+              onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
+              onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
             />
           )}
           {key === 'shared.footer' && (
@@ -40,6 +44,8 @@ export function SettingsRoute({
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
               onAddArrayItem={(path) => onAddArrayItem(key, path)}
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
+              onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
+              onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
             />
           )}
           {key === 'shared.newsletter' && (
