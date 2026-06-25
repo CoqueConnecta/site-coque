@@ -77,3 +77,74 @@
   --admin-danger-text:     #fb7185;
   --admin-danger-bg-hover: rgba(244, 63, 94, 0.18);
 }
+
+/* ─── Rich text editor (TipTap / ProseMirror) ────────────────── */
+.rich-text-editor .ProseMirror {
+  outline: none;
+  min-height: inherit;
+}
+
+.rich-text-editor .ProseMirror p {
+  margin-bottom: 0.5em;
+  line-height: 1.65;
+}
+
+.rich-text-editor .ProseMirror h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.4em;
+  color: var(--admin-text-1);
+}
+
+.rich-text-editor .ProseMirror h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.35em;
+  color: var(--admin-text-1);
+}
+
+.rich-text-editor .ProseMirror strong {
+  font-weight: 700;
+}
+
+.rich-text-editor .ProseMirror em {
+  font-style: italic;
+}
+
+.rich-text-editor .ProseMirror ul,
+.rich-text-editor .ProseMirror ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.rich-text-editor .ProseMirror ul {
+  list-style-type: disc;
+}
+
+.rich-text-editor .ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.rich-text-editor .ProseMirror li {
+  margin-bottom: 0.2em;
+  line-height: 1.6;
+}
+
+.rich-text-editor .ProseMirror a {
+  color: var(--admin-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rich-text-editor .ProseMirror a:hover {
+  opacity: 0.8;
+}
+
+/* Placeholder */
+.rich-text-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--admin-text-4);
+  pointer-events: none;
+  height: 0;
+}

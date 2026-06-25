@@ -4,8 +4,8 @@ import {
   adminFieldLabelClass,
   adminPanelGridClass,
   getAdminInputClass,
-  getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
+import { RichTextEditor } from '../../../components/shared/RichTextEditor';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
@@ -96,10 +96,14 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
                   <span className={adminFieldLabelClass}>Título</span>
                   <input type="text" value={project.title?.[lang] ?? ''} onChange={(e) => onFieldChange(['items', index, 'title', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'title', lang]))} />
                 </label>
-                <label className="block">
+                <div className="block">
                   <span className={adminFieldLabelClass}>Descrição (Markdown)</span>
-                  <textarea value={project.bodyMd?.[lang] ?? ''} onChange={(e) => onFieldChange(['items', index, 'bodyMd', lang], e.target.value)} className={getAdminTextareaClass(isFieldDirty(['items', index, 'bodyMd', lang]))} rows={4} />
-                </label>
+                  <RichTextEditor
+                    value={project.bodyMd?.[lang] ?? ''}
+                    onChange={(md) => onFieldChange(['items', index, 'bodyMd', lang], md)}
+                    isDirty={isFieldDirty(['items', index, 'bodyMd', lang])}
+                  />
+                </div>
                 <label className="block">
                   <span className={adminFieldLabelClass}>Botão de ação</span>
                   <input type="text" value={project.actionLabel?.[lang] ?? ''} onChange={(e) => onFieldChange(['items', index, 'actionLabel', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'actionLabel', lang]))} />

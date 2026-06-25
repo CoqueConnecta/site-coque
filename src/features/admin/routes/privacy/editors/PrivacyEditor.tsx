@@ -4,8 +4,8 @@ import {
   adminPanelGridClass,
   adminSectionTitleClass,
   getAdminInputClass,
-  getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
+import { RichTextEditor } from '../../../components/shared/RichTextEditor';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
@@ -39,9 +39,30 @@ function I18nTextField({ label, pathPt, pathEn, valuePt, valueEn, isFieldDirty, 
       {([['pt', pathPt, valuePt], ['en', pathEn, valueEn]] as const).map(([lang, path, val]) => (
         <AdminEditorCard key={lang} title={`${label} (${lang.toUpperCase()})`}>
           {multiline
-            ? <textarea value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className={getAdminTextareaClass(isFieldDirty(path as Array<string|number>))} rows={4} />
+            ? <textarea value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className="w-full rounded-xl border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] p-3.5 text-sm text-[var(--admin-text-1)] min-h-24 outline-none transition focus:border-[var(--admin-accent)] focus:ring-4 focus:ring-[var(--admin-focus)]/20" rows={4} />
             : <input type="text" value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className={getAdminInputClass(isFieldDirty(path as Array<string|number>))} />
           }
+        </AdminEditorCard>
+      ))}
+    </div>
+  );
+}
+
+function I18nRichTextField({ label, pathPt, pathEn, valuePt, valueEn, isFieldDirty, onFieldChange }: {
+  label: string; pathPt: Array<string|number>; pathEn: Array<string|number>;
+  valuePt: string; valueEn: string;
+  isFieldDirty: (path: Array<string|number>) => boolean;
+  onFieldChange: (path: Array<string|number>, value: unknown) => void;
+}) {
+  return (
+    <div className={adminPanelGridClass}>
+      {([['pt', pathPt, valuePt], ['en', pathEn, valueEn]] as const).map(([lang, path, val]) => (
+        <AdminEditorCard key={lang} title={`${label} (${lang.toUpperCase()})`}>
+          <RichTextEditor
+            value={val as string}
+            onChange={(md) => onFieldChange(path as Array<string|number>, md)}
+            isDirty={isFieldDirty(path as Array<string|number>)}
+          />
         </AdminEditorCard>
       ))}
     </div>
@@ -82,7 +103,7 @@ export function PrivacyEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           onMoveDown={index < sections.length - 1 ? () => onMoveArrayItem(['sections'], index, 'down') : undefined}
         >
           <I18nTextField label="Título" pathPt={['sections',index,'title','pt']} pathEn={['sections',index,'title','en']} valuePt={section.title?.pt ?? ''} valueEn={section.title?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
-          <I18nTextField label="Conteúdo (Markdown)" pathPt={['sections',index,'bodyMd','pt']} pathEn={['sections',index,'bodyMd','en']} valuePt={section.bodyMd?.pt ?? ''} valueEn={section.bodyMd?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} multiline />
+          <I18nRichTextField label="Conteúdo" pathPt={['sections',index,'bodyMd','pt']} pathEn={['sections',index,'bodyMd','en']} valuePt={section.bodyMd?.pt ?? ''} valueEn={section.bodyMd?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['sections'])}>Adicionar seção</AdminAddButton>
