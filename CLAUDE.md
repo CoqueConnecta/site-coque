@@ -54,8 +54,9 @@ main
 Comandos CLI completos:
 
 ```bash
-# Criar branch
-git switch -c feature/nome-da-feature
+# Criar branch (sempre a partir de origin/staging para evitar divergência)
+git fetch origin
+git switch -c feature/nome-da-feature origin/staging
 
 # Abrir PR → staging
 gh pr create --base staging --title "feat: descrição"
@@ -71,7 +72,6 @@ gh pr merge --squash --delete-branch
 ```
 
 > `--delete-branch` remove a branch local e remota. `--squash` mantém histórico limpo.
-
 ## Skills Firebase instaladas
 
 - `firebase-basics` — setup, CLI e fluxos gerais

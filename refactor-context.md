@@ -39,12 +39,14 @@ Documentos historicos:
 - `staging` recriada a partir de `main`; `staging.coqueconnecta.ong.br` configurado na Vercel.
 - Script `deploy:staging` removido; workflow passa a ser inteiramente por PRs via GitHub.
 - Documentacao sincronizada com estado atual; `docs/backlog.md` e issue template de imagens atualizados.
+- Config Firebase migrada para variaveis de ambiente (`import.meta.env.VITE_*`); Vercel configurada com todas as envs.
 
 ## Pendencias imediatas
 
-(sem pendencias ativas)
+- Configurar protecao de branch `main` no GitHub com a conta `coqueconnecta@gmail.com`:
+  Settings → Branches → Add rule → `main` → "Require a pull request before merging" (1 approval).
 
 ## Proximo passo objetivo
 
-- Iniciar novas features via branches `feature/*` abertas a partir de `main`, com PR → staging → main.
+- Iniciar novas features via branches `feature/*` abertas a partir de `origin/staging`, com PR → staging → main.
 - Manter `docs/project-context.md` como fonte de verdade tecnica apos mudancas estruturais.

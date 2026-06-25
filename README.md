@@ -59,13 +59,14 @@ npm run dev
 
 - `main` → produção. **Protegida**: apenas via PR aprovado. Nunca commitar diretamente.
 - `staging` → homologação. Push gera preview automático na Vercel.
-- `feature/*` ou `fix/*` → branches de trabalho, criadas a partir de `main`.
+- `feature/*` ou `fix/*` → branches de trabalho, criadas a partir de `origin/staging`.
 
 Fluxo completo via CLI:
 
 ```bash
-# 1. Criar branch a partir de main
-git switch -c feature/nome-da-feature
+# 1. Criar branch a partir de origin/staging (evita divergência ao abrir PR)
+git fetch origin
+git switch -c feature/nome-da-feature origin/staging
 
 # 2. Trabalhar, commitar normalmente
 
@@ -86,7 +87,6 @@ gh pr merge --squash --delete-branch
 
 > `--squash` condensa os commits da branch em um único commit limpo no histórico.
 > `--delete-branch` remove a branch local e remota automaticamente após o merge.
-
 ## Deploy
 
 O projeto é deployado pela **Vercel** (conta `coqueconnecta@gmail.com`).
