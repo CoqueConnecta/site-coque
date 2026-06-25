@@ -1,3 +1,4 @@
+import { cn } from '../../../lib/cn';
 import type { GalleryData } from '../../../data/mockData';
 import { QuoteIcon, UserAvatarPlaceholderIcon } from '../../icons';
 
@@ -10,6 +11,7 @@ export interface GalleryCardProps {
   authorColor: string;
   tagBg: string;
   tagText: string;
+  imageRight?: boolean;
 }
 
 export const GalleryCard = ({
@@ -21,17 +23,20 @@ export const GalleryCard = ({
   authorColor,
   tagBg,
   tagText,
+  imageRight = false,
 }: GalleryCardProps) => {
   return (
     <div
       key={card.id}
-      className="overflow-hidden rounded-[25px]"
-      style={{
-        backgroundColor: bg,
-        boxShadow: card.variant === 'dark' ? 'rgba(16,16,20,0.2) 0px 0px 0px 1px' : 'none',
-      }}
+      className="overflow-hidden rounded-2xl transition-transform duration-300 ease-out hover:-translate-y-1"
+      style={{ backgroundColor: bg }}
     >
-      <div className="flex flex-col items-start gap-6 p-5 sm:p-6 lg:flex-row lg:gap-8 lg:p-8">
+      <div
+        className={cn(
+          'flex flex-col items-start gap-6 p-5 sm:p-6 lg:gap-8 lg:p-8',
+          imageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
+        )}
+      >
         {card.image && (
           <div className="h-[240px] w-full shrink-0 overflow-hidden rounded-[10px] sm:h-[260px] lg:h-[280px] lg:w-[280px]">
             <img
@@ -42,11 +47,11 @@ export const GalleryCard = ({
           </div>
         )}
 
-        <div className="flex flex-1 flex-col gap-4 lg:gap-4">
+        <div className="flex flex-1 flex-col gap-4">
           <h4
             className="m-0 text-[24px] font-semibold leading-[1.15] sm:text-[26px] lg:text-[28px]"
             style={{
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Figtree', sans-serif",
               color: titleColor,
             }}
           >
@@ -56,7 +61,7 @@ export const GalleryCard = ({
           <p
             className="m-0 text-[15px] leading-[1.6] lg:text-[16px]"
             style={{
-              fontFamily: "'Manrope', sans-serif",
+              fontFamily: "'Figtree', sans-serif",
               color: bodyColor,
             }}
           >
@@ -69,7 +74,7 @@ export const GalleryCard = ({
                 key={tag}
                 className="rounded-[16px] px-3 py-1 text-[12px] font-medium sm:px-[14px] sm:text-[13px]"
                 style={{
-                  fontFamily: "'Manrope', sans-serif",
+                  fontFamily: "'Figtree', sans-serif",
                   backgroundColor: tagBg,
                   color: tagText,
                 }}
@@ -88,7 +93,7 @@ export const GalleryCard = ({
             <p
               className="m-0 text-[15px] italic leading-[1.6] lg:text-[16px]"
               style={{
-                fontFamily: "'Manrope', sans-serif",
+                fontFamily: "'Figtree', sans-serif",
                 color: bodyColor,
               }}
             >
@@ -97,12 +102,7 @@ export const GalleryCard = ({
           </div>
 
           <div className="flex items-center gap-3">
-            <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#dbdad9] bg-[#e6e6e6] sm:h-[50px] sm:w-[50px]"
-              style={{
-                backgroundColor: '#e6e6e6',
-              }}
-            >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[color:var(--color-border-subtle)] bg-[#e6e6e6] sm:h-[50px] sm:w-[50px]">
               {card.blockquote.authorAvatar ? (
                 <img
                   src={card.blockquote.authorAvatar}
@@ -116,7 +116,7 @@ export const GalleryCard = ({
             <p
               className="m-0 text-[13px] font-medium sm:text-[14px]"
               style={{
-                fontFamily: "'Manrope', sans-serif",
+                fontFamily: "'Figtree', sans-serif",
                 color: authorColor,
               }}
             >

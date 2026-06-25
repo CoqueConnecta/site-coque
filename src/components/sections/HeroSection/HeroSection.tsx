@@ -1,7 +1,10 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { cn } from '../../../lib/cn';
+import { ROUTE_HASHES } from '../../../lib/constants';
 import type { ResolvedHeroData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
+import { Button } from '../../ui/Button';
 
 const LazyHeroCanvas = lazy(async () => {
   const module = await import('./HeroCanvas');
@@ -31,10 +34,9 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
     <section
       id="hero"
       className={cn(
-        // Framer: height:100vh; min-height:700px; overflow:hidden; padding-bottom:60px
         'relative w-full overflow-hidden bg-[#ff6a1a]',
-        'flex flex-col justify-end',
-        'min-h-[720px]',
+        'flex flex-col justify-center',
+        'min-h-[680px]',
         className
       )}
       {...props}
@@ -46,19 +48,20 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
         </Suspense>
       ) : null}
 
-      {/* Conteúdo alinhado no canto inferior esquerdo (padding-bottom: 60px do Framer) */}
-      <Block className="relative z-10 pb-16">
+      <Block className="relative z-10 py-12 pt-[140px]">
         <div className="max-w-3xl space-y-6">
-          {/* Título: linha 1 em DM Sans bold; linha 2 em Kirang Haerang */}
-          <h1 className="whitespace-pre-line text-[#fef7ee] leading-tight">
+          <h1
+            className="animate-hero-in whitespace-pre-line text-[color:var(--color-text-cream)] leading-tight [text-wrap:balance]"
+            style={{ textShadow: '0 1px 16px rgba(80,15,0,0.35)' }}
+          >
             {data.headline.split('\n').map((line, i) => (
               <span
                 key={i}
                 className={cn(
                   'block',
                   i === 0
-                    ? '[font-family:var(--font-body)] font-extrabold text-[40px] sm:text-[46px] lg:text-[51px]'
-                    : 'text-[48px] sm:text-[56px] lg:text-[64px]'
+                    ? '[font-family:var(--font-body)] font-extrabold text-[40px] sm:text-[46px] lg:text-[51px] tracking-[-0.03em]'
+                    : 'text-[48px] sm:text-[56px] lg:text-[64px] tracking-[-0.01em]'
                 )}
                 style={i === 1 ? { fontFamily: 'var(--font-display)' } : undefined}
               >
@@ -67,26 +70,32 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
             ))}
           </h1>
 
-          {/* Subtítulo */}
           {data.subheadline && (
-            <p className="max-w-xl text-[#fef7ee] text-base sm:text-lg leading-relaxed opacity-90 font-[var(--font-body)]">
+            <p
+              className="animate-hero-in max-w-xl text-[color:var(--color-text-cream)] text-base sm:text-lg leading-relaxed font-[var(--font-body)]"
+              style={{ animationDelay: '120ms' }}
+            >
               {data.subheadline}
             </p>
           )}
 
-          {/* Botão CTA em pílula âmbar, alinhado ao protótipo Framer */}
           {data.ctaText && (
-            <div className="pt-2">
-              <a
-                href="#contact"
-                className="inline-flex items-center justify-center rounded-[var(--radius-pill)] font-semibold tracking-tight transition-all bg-[#f9b778] text-[#411409] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
+            <div className="animate-hero-in pt-2" style={{ animationDelay: '240ms' }}>
+              <Button
+                href={data.ctaHref ?? ROUTE_HASHES.contact}
+                variant="unstyled"
+                className="bg-[color:var(--color-accent-peach)] text-[color:var(--color-tag-bg)] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
               >
                 {data.ctaText}
-              </a>
+              </Button>
             </div>
           )}
         </div>
       </Block>
+
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2" aria-hidden="true">
+        <ChevronDown className="h-5 w-5 text-[color:var(--color-text-cream)]/60 animate-scroll-hint" />
+      </div>
     </section>
   );
 };

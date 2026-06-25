@@ -4,6 +4,9 @@ import { CloseIcon } from '../../icons';
 import type { NavLink } from '../NavMenu';
 import { Typography } from '../../ui/Typography';
 import { LanguageToggle } from '../../ui/LanguageToggle/LanguageToggle';
+import { IconButton } from '../../ui/IconButton';
+import { Input } from '../../ui/Input';
+import { Button } from '../../ui/Button';
 import type { CmsLanguage } from '../../../types/cms';
 
 export interface MobileMenuOverlayProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -63,13 +66,14 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
             <Typography variant="h3" className="text-lg">
               Menu
             </Typography>
-            <button
+            <IconButton
               onClick={onClose}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-              aria-label="Fechar menu"
-            >
-              <CloseIcon className="h-6 w-6" />
-            </button>
+              variant="ghost"
+              size="sm"
+              className="rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+              icon={<CloseIcon className="h-6 w-6" />}
+              label="Fechar menu"
+            />
           </div>
 
           {/* Navigation Links */}
@@ -103,8 +107,9 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
 
           {/* CTA Button */}
           <div className="border-t border-gray-100 px-4 py-4">
-            <a
+            <Button
               href={ctaHref}
+              variant="unstyled"
               onClick={() => {
                 onNavClick?.(ctaHref);
                 onClose?.();
@@ -112,7 +117,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
               className="block w-full rounded-lg bg-orange-600 px-4 py-2 text-center font-semibold text-white transition-colors hover:bg-orange-700"
             >
               {ctaText}
-            </a>
+            </Button>
           </div>
 
           {/* Newsletter Section (Optional) */}
@@ -122,18 +127,20 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
                 📬 Receba nossas novidades
               </Typography>
               <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
-                <input
+                <Input
                   type="email"
                   placeholder="seu@email.com"
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-500 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  className="rounded-md px-3 py-2 text-sm"
                   aria-label="Email para newsletter"
                 />
-                <button
+                <Button
                   type="submit"
-                  className="w-full rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+                  variant="unstyled"
+                  fullWidth
+                  className="rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
                 >
                   Inscrever
-                </button>
+                </Button>
               </form>
             </div>
           )}

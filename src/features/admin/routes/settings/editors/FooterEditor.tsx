@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
@@ -7,6 +8,10 @@ import {
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
+import { FooterSection } from '../../../../../components/sections/FooterSection';
+import { pickLang } from '../../../../../services/cmsService';
+import type { CmsLanguage, CmsSocialLink, ResolvedFooterData } from '../../../../../types/cms';
 import { Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
@@ -27,7 +32,24 @@ type FooterEditorProps = {
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
+function resolvePreviewData(data: FooterEditorProps['data'], language: CmsLanguage): ResolvedFooterData {
+  const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });
+
+  return {
+    address: data.address ?? '',
+    phone: data.phone,
+    email: data.email,
+    copyright: pickLang(toI18nField(data.copyrights), language),
+    socialLinks: (data.socialLinks ?? []).filter((l): l is CmsSocialLink => Boolean(l.platform && l.url && l.icon)),
+    quickLinks: (data.quickLinks ?? []).map((link) => ({
+      href: link.href ?? '',
+      label: pickLang(toI18nField(link.labels), language),
+    })),
+  };
+}
+
 export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: FooterEditorProps) {
+  const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const socialLinks = Array.isArray(data?.socialLinks) ? data.socialLinks : [];
   const quickLinks = Array.isArray(data?.quickLinks) ? data.quickLinks : [];
 
@@ -83,6 +105,10 @@ export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem
         </div>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['quickLinks'])}>Link rápido</AdminAddButton>
+
+      <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
+        <FooterSection data={resolvePreviewData(data, previewLang)} />
+      </AdminPreviewPanel>
     </div>
   );
 }

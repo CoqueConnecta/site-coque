@@ -2,6 +2,7 @@ import { MapPin } from 'lucide-react';
 import { Typography } from '../ui/Typography';
 import { MarkdownContent } from '../ui/MarkdownContent';
 import { Tag } from '../ui/Tag';
+import { Button } from '../ui/Button';
 import type { ResolvedProject } from '../../types/cms';
 
 export interface ProjectCardProps {
@@ -51,12 +52,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {/* Action Button */}
         {hasAction && (
           <div className="mt-auto pt-6">
-            <a
+            <Button
               href={project.actionHref || '#'}
-              className="inline-flex items-center justify-center rounded-[var(--radius-pill)] bg-[color:var(--color-tag-bg)] text-[color:var(--color-text-on-dark)] hover:brightness-110 h-9 px-6 py-2 text-[11px] font-bold uppercase tracking-wider"
+              variant="primary"
+              className="h-9 px-6 py-2 text-[11px] font-bold uppercase tracking-wider"
             >
               {project.actionLabel || 'SAIBA MAIS'}
-            </a>
+            </Button>
           </div>
         )}
       </div>

@@ -5,6 +5,9 @@ import {
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
+import { CarouselSection } from '../../../../../components/sections/CarouselSection';
+import type { CmsCarouselImage } from '../../../../../types/cms';
 
 type CarouselEditorProps = {
   data: { images?: Array<{ src?: string; alt?: string }> };
@@ -15,6 +18,12 @@ type CarouselEditorProps = {
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
   renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
+
+function resolvePreviewImages(data: CarouselEditorProps['data']): CmsCarouselImage[] {
+  return (data.images ?? [])
+    .filter((image): image is { src: string; alt?: string } => Boolean(image.src))
+    .map((image) => ({ src: image.src, alt: image.alt ?? '' }));
+}
 
 export function CarouselEditor({
   data,
@@ -54,6 +63,10 @@ export function CarouselEditor({
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['images'])}>Adicionar imagem</AdminAddButton>
+
+      <AdminPreviewPanel>
+        <CarouselSection images={resolvePreviewImages(data)} />
+      </AdminPreviewPanel>
     </div>
   );
 }

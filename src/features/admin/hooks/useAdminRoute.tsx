@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { ref, update } from 'firebase/database';
 import toast from 'react-hot-toast';
-import { database } from '../../../../firebase';
+import { saveAdminFields } from '../services/cmsAdminService';
 import { ADMIN_ROUTES } from '../config/adminRoutes';
 import type { AdminRouteId } from '../config/adminRoutes';
 import { getRtdbPath } from '../config/rtdbRouting';
@@ -107,7 +106,7 @@ export function useAdminRoute(
       if (!isDescendant) finalPayload[key] = partialPayload[key];
     });
 
-    const savePromise = update(ref(database), finalPayload).then(() => {
+    const savePromise = saveAdminFields(finalPayload).then(() => {
       setOriginalCmsData(cmsData);
       setDirtyFields((prev) => {
         const next: Record<string, true> = {};

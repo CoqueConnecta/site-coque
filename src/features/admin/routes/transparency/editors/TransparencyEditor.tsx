@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminPanelGridClass,
@@ -7,6 +8,10 @@ import {
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
+import { TransparencySection } from '../../../../../components/sections/TransparencySection';
+import { pickLang } from '../../../../../services/cmsService';
+import type { CmsLanguage, ResolvedTransparencyData } from '../../../../../types/cms';
 
 type I18nField = { pt?: string; en?: string };
 type DocSection = { title?: I18nField; bodyMd?: I18nField };
@@ -41,7 +46,21 @@ function I18nTextField({ label, pathPt, pathEn, valuePt, valueEn, isFieldDirty, 
   );
 }
 
+function resolvePreviewData(data: TransparencyEditorProps['data'], language: CmsLanguage): ResolvedTransparencyData {
+  const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });
+
+  return {
+    title: pickLang(toI18nField(data.title), language),
+    intro: pickLang(toI18nField(data.intro), language),
+    sections: (data.sections ?? []).map((section) => ({
+      title: pickLang(toI18nField(section.title), language),
+      bodyMd: pickLang(toI18nField(section.bodyMd), language),
+    })),
+  };
+}
+
 export function TransparencyEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: TransparencyEditorProps) {
+  const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const sections = Array.isArray(data?.sections) ? data.sections : [];
   return (
     <div className="space-y-6">
@@ -60,6 +79,10 @@ export function TransparencyEditor({ data, isFieldDirty, onFieldChange, onAddArr
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['sections'])}>Adicionar seção</AdminAddButton>
+
+      <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
+        <TransparencySection data={resolvePreviewData(data, previewLang)} />
+      </AdminPreviewPanel>
     </div>
   );
 }

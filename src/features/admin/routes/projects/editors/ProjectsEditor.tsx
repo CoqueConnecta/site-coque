@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
@@ -8,6 +8,10 @@ import {
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
+import { ProjectsSection } from '../../../../../components/sections/ProjectsSection';
+import { pickLang } from '../../../../../services/cmsService';
+import type { CmsLanguage, ResolvedProject } from '../../../../../types/cms';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -31,7 +35,22 @@ type ProjectsEditorProps = {
   renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
 };
 
+function resolvePreviewData(data: ProjectsEditorProps['data'], language: CmsLanguage): ResolvedProject[] {
+  const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });
+
+  return (data.items ?? []).map((project) => ({
+    id: project.id ?? '',
+    image: project.image ?? '',
+    location: project.location ?? '',
+    actionHref: project.actionHref,
+    title: pickLang(toI18nField(project.title), language),
+    bodyMd: pickLang(toI18nField(project.bodyMd), language),
+    actionLabel: pickLang(toI18nField(project.actionLabel), language),
+  }));
+}
+
 export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField }: ProjectsEditorProps) {
+  const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const items = Array.isArray(data?.items) ? data.items : [];
 
   return (
@@ -86,6 +105,10 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar projeto</AdminAddButton>
+
+      <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
+        <ProjectsSection projects={resolvePreviewData(data, previewLang)} language={previewLang} />
+      </AdminPreviewPanel>
     </div>
   );
 }

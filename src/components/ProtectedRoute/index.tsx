@@ -3,17 +3,11 @@ import type { ReactNode } from 'react';
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { ref, get } from 'firebase/database';
-import { auth, database } from '../../../firebase';
-import { signOut } from 'firebase/auth';
+import { auth } from '../../../firebase';
+import { checkIsAdmin, signOutUser } from '../../services/authService';
 
 type ProtectedRouteProps = {
   children: ReactNode;
-};
-
-type AdminEntry = {
-  email: string;
-  isAdmin: boolean;
 };
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
@@ -25,30 +19,15 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (user) {
       setIsAuthorized(null);
-      const checkAdminStatus = async () => {
-        const adminsRef = ref(database, 'admins');
-        try {
-          const snapshot = await get(adminsRef);
-          let isAdmin = false;
-          if (snapshot.exists()) {
-            // 2. Pegamos todos os admins da lista.
-            const adminList: AdminEntry[] = snapshot.val();
-            // 3. Verificamos se algum item na lista tem o email do usuário logado.
-            isAdmin = adminList.some(admin => admin.email === user.email && admin.isAdmin === true);
-          }
-          setIsAuthorized(isAdmin);
-
-        } catch (error) {
-          console.error("Erro ao verificar permissão de admin:", error);
-          setIsAuthorized(false);
-        }
-      };
-      checkAdminStatus();
+      checkIsAdmin(user.email).then(setIsAuthorized).catch((error) => {
+        console.error("Erro ao verificar permissão de admin:", error);
+        setIsAuthorized(false);
+      });
     }
   }, [user]);
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await signOutUser();
     navigate('/login');
   };
 

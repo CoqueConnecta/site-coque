@@ -1,9 +1,8 @@
 // src/pages/AdminPage.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
 import toast from 'react-hot-toast';
-import { auth } from '../../firebase';
+import { signOutUser } from '../services/authService';
 import { ImageField } from '../features/admin/components/shared/ImageField';
 import { ImageLibraryModal } from '../features/admin/components/layout/ImageLibraryModal';
 import { AdminLayout } from '../features/admin/components/layout/AdminLayout';
@@ -206,7 +205,7 @@ export default function AdminPage() {
   };
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await signOutUser();
     navigate('/login');
   };
 

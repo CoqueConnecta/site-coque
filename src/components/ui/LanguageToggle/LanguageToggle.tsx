@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { cn } from '../../../lib/cn';
+import { useClickOutside } from '../../../hooks/useClickOutside';
 import type { CmsLanguage } from '../../../types/cms';
 
 interface LanguageOption {
@@ -23,23 +24,8 @@ export interface LanguageToggleProps {
 
 export function LanguageToggle({ value, onChange, compact = false, className }: LanguageToggleProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   const currentLanguage = languageOptions.find((option) => option.value === value) ?? languageOptions[0];
-
-  useEffect(() => {
-    const onDocumentClick = (event: MouseEvent) => {
-      if (!containerRef.current) {
-        return;
-      }
-
-      if (!containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', onDocumentClick);
-    return () => document.removeEventListener('mousedown', onDocumentClick);
-  }, []);
 
   return (
     <div ref={containerRef} className={cn('relative', className)}>

@@ -109,6 +109,7 @@ export async function getCmsHeroData(language: CmsLanguage): Promise<ResolvedHer
     headline:        pickLang(data.headline, language),
     subheadline:     pickLang(data.subheadline, language),
     ctaText:         pickLang(data.ctaText, language),
+    ctaHref:         data.ctaHref ? pickLang(data.ctaHref, language) : undefined,
   };
 }
 
@@ -116,33 +117,11 @@ export async function getCmsAboutData(language: CmsLanguage): Promise<ResolvedAb
   const data = await fetchNode<CmsAboutData>(`${V3}/pages/home/about`);
   if (!data) {
     return {
-      headline: '', subheadline: '', description: '', subdescription: '',
-      mission: { title: '', description: '' },
-      vision:  { title: '', description: '' },
-      values:  { title: '', items: [] },
+      description: '',
     };
   }
   return {
-    headline:       pickLang(data.headline, language),
-    subheadline:    pickLang(data.subheadline, language),
-    description:    pickLang(data.description, language),
-    subdescription: pickLang(data.subdescription, language),
-    mission: {
-      title:       pickLang(data.mission.title, language),
-      description: pickLang(data.mission.description, language),
-    },
-    vision: {
-      title:       pickLang(data.vision.title, language),
-      description: pickLang(data.vision.description, language),
-    },
-    values: {
-      title: pickLang(data.values.title, language),
-      items: (data.values.items ?? []).map((item) => ({
-        id:          item.id,
-        label:       pickLang(item.label, language),
-        description: pickLang(item.description, language),
-      })),
-    },
+    description: pickLang(data.description, language),
   };
 }
 

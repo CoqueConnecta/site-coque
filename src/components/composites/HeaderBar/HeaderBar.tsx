@@ -2,6 +2,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { CloseIcon, CoqueConnectaWordmark, MenuIcon } from '../../icons';
 import { cn } from '../../../lib/cn';
 import { IconButton } from '../../ui/IconButton';
+import { Button } from '../../ui/Button';
 import { NavMenu, type NavLink } from '../NavMenu';
 
 export interface HeaderBarProps extends HTMLAttributes<HTMLElement> {
@@ -42,9 +43,9 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
     const ctaBg =
       variant === 'dark'
         ? 'bg-white text-gray-900 hover:bg-gray-100'
-        : 'bg-[#f58634] text-[#fef7ee] hover:bg-[#e6782a]';
+        : 'bg-[color:var(--color-surface-orange)] text-[color:var(--color-tag-bg)] hover:bg-[#e6782a]';
 
-    const iconColor = 'text-[#f58634]';
+    const iconColor = 'text-[color:var(--color-surface-orange)]';
 
     const positionClass = isFixed ? 'fixed left-1/2 top-8 -translate-x-1/2' : 'relative';
 
@@ -58,10 +59,10 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
         )}
         {...props}
       >
-        <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-visible rounded-[999px] border border-white/15 bg-[rgba(244,212,194,0.94)] px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] backdrop-blur-[16px] sm:px-6 lg:gap-8 lg:px-8">
+        <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-visible rounded-[999px] bg-[rgba(244,212,194,0.94)] px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] sm:px-6 lg:gap-8 lg:px-8">
           {/* Logo */}
           <a href="/" className="flex shrink-0 items-center" aria-label="Coque Connecta">
-            <CoqueConnectaWordmark className="h-8 w-auto lg:h-9" />
+            <CoqueConnectaWordmark className="h-8 w-auto text-[color:var(--color-tag-bg)] lg:h-9" />
           </a>
 
           {/* Desktop Navigation */}
@@ -75,17 +76,15 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
             />
 
             {/* CTA Button */}
-            <a
+            <Button
               href={ctaHref}
-              target='_blank'
+              target="_blank"
               rel="noopener noreferrer"
-              className={cn(
-                'inline-flex h-[58px] items-center justify-center rounded-[50px] px-8 text-base font-semibold leading-none tracking-tight transition-all',
-                ctaBg
-              )}
+              variant="unstyled"
+              className={cn('h-[58px] rounded-[50px] px-8 text-base leading-none', ctaBg)}
             >
               {ctaText}
-            </a>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}

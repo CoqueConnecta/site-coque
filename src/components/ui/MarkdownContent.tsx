@@ -8,7 +8,7 @@ function renderSafeLink(href: string, children: React.ReactNode) {
 
   if (isRelative) {
     return (
-      <a href={url} className="text-[#f58634] underline hover:text-[#c73c00]">
+      <a href={url} className="text-[color:var(--color-surface-orange)] underline hover:text-[color:var(--color-link-hover)]">
         {children}
       </a>
     );
@@ -25,7 +25,7 @@ function renderSafeLink(href: string, children: React.ReactNode) {
     return (
       <a
         href={url}
-        className="text-[#f58634] underline hover:text-[#c73c00]"
+        className="text-[color:var(--color-surface-orange)] underline hover:text-[color:var(--color-link-hover)]"
         target={parsedUrl.protocol === 'https:' ? '_blank' : undefined}
         rel={parsedUrl.protocol === 'https:' ? 'noopener noreferrer' : undefined}
       >
@@ -39,7 +39,7 @@ function renderSafeLink(href: string, children: React.ReactNode) {
 
 export const defaultMarkdownComponents: Components = {
   h2: ({ children }) => (
-    <Typography variant="h2" className="text-2xl font-bold text-[#f58634]">
+    <Typography variant="h2" className="text-2xl font-bold text-[color:var(--color-surface-orange)]">
       {children}
     </Typography>
   ),
