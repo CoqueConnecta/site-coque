@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { STORAGE_KEYS } from '../../../lib/constants';
 
 type Theme = 'light' | 'dark';
 
@@ -14,7 +15,7 @@ function getSystemTheme(): Theme {
 }
 
 function getSavedTheme(): Theme {
-  const saved = localStorage.getItem('admin-theme');
+  const saved = localStorage.getItem(STORAGE_KEYS.adminTheme);
   return saved === 'light' || saved === 'dark' ? saved : getSystemTheme();
 }
 
@@ -25,7 +26,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const handleSystemChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('admin-theme')) {
+      if (!localStorage.getItem(STORAGE_KEYS.adminTheme)) {
         setTheme(e.matches ? 'dark' : 'light');
       }
     };
@@ -37,7 +38,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const toggle = () => {
     setTheme((prev) => {
       const next = prev === 'light' ? 'dark' : 'light';
-      localStorage.setItem('admin-theme', next);
+      localStorage.setItem(STORAGE_KEYS.adminTheme, next);
       return next;
     });
   };

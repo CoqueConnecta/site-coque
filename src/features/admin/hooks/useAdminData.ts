@@ -1,7 +1,6 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
-import { ref, get } from 'firebase/database';
 import toast from 'react-hot-toast';
-import { database } from '../../../../firebase';
+import { fetchAdminNode } from '../services/cmsAdminService';
 import type { CmsAdminState } from '../types';
 
 type UseAdminDataReturn = {
@@ -11,11 +10,6 @@ type UseAdminDataReturn = {
   setOriginalCmsData: Dispatch<SetStateAction<CmsAdminState | null>>;
 };
 
-async function fetchNode(path: string): Promise<Record<string, unknown>> {
-  const snapshot = await get(ref(database, path));
-  return snapshot.exists() ? (snapshot.val() as Record<string, unknown>) : {};
-}
-
 export function useAdminData(): UseAdminDataReturn {
   const [cmsData, setCmsData] = useState<CmsAdminState | null>(null);
   const [originalCmsData, setOriginalCmsData] = useState<CmsAdminState | null>(null);
@@ -24,11 +18,11 @@ export function useAdminData(): UseAdminDataReturn {
     const fetchData = async () => {
       try {
         const [shared, home, projects, privacy, transparency] = await Promise.all([
-          fetchNode('cms/v3/shared'),
-          fetchNode('cms/v3/pages/home'),
-          fetchNode('cms/v3/pages/projects'),
-          fetchNode('cms/v3/pages/privacy'),
-          fetchNode('cms/v3/pages/transparency'),
+          fetchAdminNode('cms/v3/shared'),
+          fetchAdminNode('cms/v3/pages/home'),
+          fetchAdminNode('cms/v3/pages/projects'),
+          fetchAdminNode('cms/v3/pages/privacy'),
+          fetchAdminNode('cms/v3/pages/transparency'),
         ]);
 
         const state: CmsAdminState = {

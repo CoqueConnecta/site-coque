@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { HeaderBar } from '../components/composites/HeaderBar';
 import { MobileMenuOverlay } from '../components/composites/MobileMenuOverlay';
 import { NewsletterSection } from '../components/sections/NewsletterSection';
 import { FooterSection } from '../components/sections/FooterSection';
-import { Globe } from 'lucide-react';
-import { cn } from '../lib/cn';
 import { useCmsSharedData } from '../hooks/useCmsSharedData';
+import { useScrollAnchor } from '../hooks/useScrollAnchor';
+import { LanguageBar } from '../components/composites/LanguageBar';
+import { STORAGE_KEYS } from '../lib/constants';
 import type { CmsLanguage } from '../types/cms';
-
-const LANGUAGE_STORAGE_KEY = 'site-coque-language';
 
 export interface PublicLayoutContextValue {
   language: CmsLanguage;
@@ -17,43 +16,19 @@ export interface PublicLayoutContextValue {
 }
 
 export default function PublicLayout() {
-  const location = useLocation();
   const [language, setLanguage] = useState<CmsLanguage>(() => {
-    const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    const saved = window.localStorage.getItem(STORAGE_KEYS.language);
     return saved === 'en' ? 'en' : 'pt';
   });
 
   const { data: shared } = useCmsSharedData(language);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState<string | undefined>(undefined);
+  const { activeLink, setActiveLink } = useScrollAnchor();
 
   useEffect(() => {
-    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    window.localStorage.setItem(STORAGE_KEYS.language, language);
   }, [language]);
-
-  useEffect(() => {
-    if (location.pathname === '/' && location.hash) {
-      setActiveLink(`/${location.hash}`);
-      return;
-    }
-    if (location.pathname === '/') {
-      setActiveLink('/#hero');
-      return;
-    }
-    setActiveLink(undefined);
-  }, [location.pathname, location.hash]);
-
-  useEffect(() => {
-    if (location.pathname !== '/' || !location.hash) return;
-    const targetId = location.hash.slice(1);
-    const scrollToTarget = () => {
-      const target = document.getElementById(targetId);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-    const frame = window.requestAnimationFrame(scrollToTarget);
-    return () => window.cancelAnimationFrame(frame);
-  }, [location.pathname, location.hash]);
 
   const handleNavClick = (href: string) => {
     setActiveLink(href);
@@ -79,30 +54,7 @@ export default function PublicLayout() {
         onLanguageChange={setLanguage}
       />
 
-      {/* Utility top bar */}
-      <div className="hidden h-8 w-full items-center justify-center gap-3 bg-[#2e3350] px-6 md:flex">
-        <Globe className="h-3.5 w-3.5 text-white/40" />
-        <span className="text-[11px] text-white/50">
-          {language === 'pt' ? 'Select the site language:' : 'Selecione o idioma do site:'}
-        </span>
-        <div className="flex items-center gap-2 text-[11px]">
-          <button
-            type="button"
-            onClick={() => setLanguage('pt')}
-            className={cn('transition hover:text-white', language === 'pt' ? 'font-semibold text-white' : 'text-white/60')}
-          >
-            🇧🇷 PT
-          </button>
-          <span className="text-white/30">|</span>
-          <button
-            type="button"
-            onClick={() => setLanguage('en')}
-            className={cn('transition hover:text-white', language === 'en' ? 'font-semibold text-white' : 'text-white/60')}
-          >
-            🇬🇧 EN
-          </button>
-        </div>
-      </div>
+      <LanguageBar language={language} onLanguageChange={setLanguage} isFixed />
 
       <HeaderBar
         navLinks={navLinks}

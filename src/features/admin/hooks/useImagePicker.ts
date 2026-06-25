@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ref, onValue } from 'firebase/database';
-import { database } from '../../../../firebase';
-import { uploadImageToStorage } from '../../../services/storageService';
+import { uploadImageToStorage, subscribeToMediaLibrary } from '../../../services/storageService';
 import { localImageCategories, localImageLibrary } from '../../../data/localImageLibrary';
 import type { CmsLanguage } from '../../../types/cms';
 import type { MediaAsset, PickerState } from '../types';
@@ -17,15 +15,7 @@ export function useImagePicker() {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
-    const mediaRef = ref(database, 'media/library');
-    return onValue(mediaRef, (snap) => {
-      const data = snap.val() ?? {};
-      const assets: MediaAsset[] = Object.entries(data).map(([id, val]) => ({
-        id,
-        ...(val as Omit<MediaAsset, 'id'>),
-      }));
-      setRtdbAssets(assets);
-    });
+    return subscribeToMediaLibrary(setRtdbAssets);
   }, []);
 
   const mediaAssets: MediaAsset[] = useMemo(

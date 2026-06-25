@@ -1,9 +1,7 @@
 // src/pages/LoginPage.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithPopup } from 'firebase/auth';
-
-import { auth, googleProvider } from '../../firebase';
+import { signInWithGoogle } from '../services/authService';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -14,7 +12,7 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithGoogle();
       navigate('/admin');
     } catch {
       setError('Não foi possível autenticar. Tente novamente.');

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Layers, Sun, Moon } from 'lucide-react';
-import { onAuthStateChanged, type User } from 'firebase/auth';
-import { auth } from '../../../../../firebase';
+import type { User } from 'firebase/auth';
+import { getCurrentUser, onAuthChange, reloadCurrentUser } from '../../../../services/authService';
 import { ADMIN_ROUTES } from '../../config/adminRoutes';
 import type { AdminRouteId } from '../../config/adminRoutes';
 import { AdminUserMenu } from './AdminUserMenu';
@@ -124,24 +124,20 @@ function AdminLayoutInner({
 }: AdminLayoutProps) {
   const { theme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(auth.currentUser);
+  const [user, setUser] = useState<User | null>(getCurrentUser());
   const [isUserLoading, setIsUserLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (nextUser) => {
+    const unsubscribe = onAuthChange(async (nextUser) => {
       if (!nextUser) {
         setUser(null);
         setIsUserLoading(false);
         return;
       }
 
-      try {
-        await nextUser.reload();
-      } catch {
-        // Ignore reload errors and keep the current session info.
-      }
+      await reloadCurrentUser(nextUser);
 
-      setUser(auth.currentUser ?? nextUser);
+      setUser(getCurrentUser() ?? nextUser);
       setIsUserLoading(false);
     });
 

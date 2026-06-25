@@ -1,5 +1,5 @@
 import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { ref as dbRef, push, set } from 'firebase/database';
+import { ref as dbRef, push, set, onValue, type Unsubscribe } from 'firebase/database';
 import { storage, database } from '../../firebase';
 import type { MediaAsset } from '../features/admin/types';
 
@@ -34,5 +34,13 @@ export function uploadImageToStorage(
         }
       },
     );
+  });
+}
+
+export function subscribeToMediaLibrary(callback: (assets: MediaAsset[]) => void): Unsubscribe {
+  return onValue(dbRef(database, 'media/library'), (snapshot) => {
+    const data = (snapshot.val() ?? {}) as Record<string, Omit<MediaAsset, 'id'>>;
+    const assets: MediaAsset[] = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+    callback(assets);
   });
 }

@@ -21,7 +21,7 @@ export interface CmsHomeData {
 
 const EMPTY_HOME: CmsHomeData = {
   hero:          { backgroundImage: '', headline: '', subheadline: '', ctaText: '' },
-  about:         { headline: '', subheadline: '', description: '', subdescription: '', mission: { title: '', description: '' }, vision: { title: '', description: '' }, values: { title: '', items: [] } },
+  about:         { description: '' },
   carousel:      { images: [] },
   youtubeVideos: [],
   gallery:       { headline: '', subtitle: '', cards: [] },

@@ -26,3 +26,25 @@
   white-space: nowrap;
   border: 0;
 }
+
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-hero-in {
+  animation: hero-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-in { animation: none; }
+}
+
+@keyframes scroll-hint {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  60%       { transform: translateY(7px); opacity: 1; }
+}
+.animate-scroll-hint {
+  animation: scroll-hint 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll-hint { animation: none; opacity: 0.5; }
+}

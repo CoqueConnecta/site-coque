@@ -1,7 +1,7 @@
 :root {
-  --font-body: "DM Sans", "Lato", system-ui, sans-serif;
-  --font-support: "Lato", "DM Sans", system-ui, sans-serif;
-  --font-display: "Kirang Haerang", "DM Sans", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+  --font-support: "Figtree", system-ui, sans-serif;
+  --font-display: "Kirang Haerang", "Figtree", system-ui, sans-serif;
 
   --color-surface-page: #f0f0f0;
   --color-surface-card: #f7b06f;
@@ -12,6 +12,13 @@
   --color-text-on-dark: #ffffff;
   --color-tag-bg: #411409;
   --color-tag-text: #fff4e8;
+
+  --color-surface-orange: #f58634;
+  --color-accent-peach: #f9b778;
+  --color-text-cream: #fef7ee;
+  --color-accent-brown: #792b15;
+  --color-link-hover: #c73c00;
+  --color-border-subtle: #dbdad9;
 
   --radius-sm: 10px;
   --radius-md: 16px;

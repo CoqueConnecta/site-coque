@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '../../../lib/cn';
 import { CloseIcon } from '../../icons';
+import { useScrollLock } from '../../../hooks/useScrollLock';
+import { useEscapeKey } from '../../../hooks/useEscapeKey';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -10,29 +12,14 @@ export interface ModalProps {
 }
 
 export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
-  // Efeito para travar o scroll da página e escutar a tecla ESC
-  useEffect(() => {
-    if (isOpen) {
-      // Trava o scroll
-      document.body.style.overflow = 'hidden';
-      
-      // Fecha ao apertar ESC
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') onClose();
-      };
-      document.addEventListener('keydown', handleKeyDown);
-      
-      // Cleanup: devolve o scroll e remove o listener ao fechar
-      return () => {
-        document.body.style.overflow = 'unset';
-        document.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [isOpen, onClose]);
+  useScrollLock(isOpen);
+  useEscapeKey(onClose, isOpen);
 
   if (!isOpen) return null;
 
-  return (
+  // Portal direto para document.body: um ancestor animado por FadeIn (translate-y-*)
+  // cria um novo containing block para position:fixed, quebrando o overlay em tela cheia.
+  return createPortal(
     // Overlay (Fundo escuro). O z-[100] garante que fique acima de tudo.
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-6"
@@ -54,6 +41,7 @@ export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

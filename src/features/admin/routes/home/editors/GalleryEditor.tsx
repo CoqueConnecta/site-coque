@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
@@ -8,7 +8,11 @@ import {
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
 import { Trash2 } from 'lucide-react';
+import { GallerySection } from '../../../../../components/sections/GallerySection';
+import { pickLang } from '../../../../../services/cmsService';
+import type { CmsLanguage, ResolvedGalleryData } from '../../../../../types/cms';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -31,7 +35,25 @@ type GalleryEditorProps = {
   renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
 
+function resolvePreviewData(data: GalleryEditorProps['data'], language: CmsLanguage): ResolvedGalleryData {
+  const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });
+
+  return {
+    headline: pickLang(toI18nField(data.headline), language),
+    subtitle: pickLang(toI18nField(data.subtitle), language),
+    cards: (data.cards ?? []).map((card) => ({
+      id: card.id ?? '',
+      image: card.image,
+      variant: card.variant ?? 'light',
+      title: pickLang(toI18nField(card.title), language),
+      description: pickLang(toI18nField(card.description), language),
+      tags: (card.tags ?? []).map((tag) => pickLang(toI18nField(tag), language)),
+    })),
+  };
+}
+
 export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField }: GalleryEditorProps) {
+  const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const cards = Array.isArray(data?.cards) ? data.cards : [];
 
   return (
@@ -112,6 +134,10 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['cards'])}>Adicionar card</AdminAddButton>
+
+      <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
+        <GallerySection data={resolvePreviewData(data, previewLang)} />
+      </AdminPreviewPanel>
     </div>
   );
 }

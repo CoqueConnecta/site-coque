@@ -2,34 +2,33 @@
 
 ## Register
 
-product
+brand
 
 ## Users
 
-Voluntários e staff da ONG Coque Connecta que editam conteúdo do site (textos, imagens, projetos). Nível técnico variado — precisam de feedback visual claro, labels auto-explicativos e tolerância a erro. O desenvolvedor (Gildo) também usa com frequência.
+Visitantes do site coqueconnecta.ong.br: doadores individuais, voluntários, empresas parceiras e membros da comunidade do Coque. Não são usuários técnicos. Chegam por indicação, redes sociais ou busca orgânica.
 
 ## Product Purpose
 
-CMS interno para gerenciar o conteúdo do site público coqueconnecta.ong.br. Sucesso = staff consegue editar texto e imagens sem precisar de ajuda técnica.
+Site institucional da ONG Coque Connecta. Sucesso = visitante entende quem é a organização, sente conexão com a causa e toma uma ação (doação, voluntariado, parceria ou inscrição na newsletter).
 
 ## Brand Personality
 
-Claro, confiável, direto. A ferramenta deve sumir na tarefa — o conteúdo em edição é o protagonista.
+Vibrante, humana, enraizada. Energia de juventude periférica de Recife. Laranja como âncora visual. Figtree como fonte humanista. Sem frieza corporativa, sem condescendência social.
 
 ## Anti-references
 
-- WordPress admin: hierarquia visual caótica, terminologia técnica exposta
-- Builders drag-and-drop: complexidade desnecessária para uma ONG pequena
-- CMSes "enterprise" que intimidam usuários não-técnicos
+- ONGs genéricas com layout azul institucional
+- Landing pages de startup: gradientes, glassmorphism, métricas em hero
+- Design "pobreza como estética": marrom terroso + tipografia degradada
 
 ## Design Principles
 
-1. A ferramenta some na tarefa — o conteúdo editado é o centro, não a UI
-2. Estado sempre visível — campos alterados, progresso de salvamento, erros são imediatamente perceptíveis
-3. Feedback antes de ação destrutiva — descartar mudanças exige confirmação explícita
-4. Labels auto-explicativos — sem terminologia técnica exposta ao staff da ONG
-5. Densidade calibrada — informação suficiente por tela sem overwhelm
+1. Laranja como âncora — a família laranja (do pêssego `#f9b778` ao marrom escuro `#411409`) é o sistema de cor do site. Outras cores da marca (magenta, verde, azul/roxo) ficam no logo e ícones.
+2. Humana antes de institucional — fotos reais, copy direto, sem jargão de ONG.
+3. Ação visível — CTA acessível em todas as seções; newsletter como conversão primária.
+4. Legibilidade acima de tudo — contraste WCAG AA mínimo em todo texto; fonte Figtree em todo o site.
 
 ## Accessibility & Inclusion
 
-WCAG AA. Focus rings visíveis. Suporte a prefers-reduced-motion e prefers-color-scheme.
+WCAG AA. Focus rings visíveis. Suporte a prefers-reduced-motion.
