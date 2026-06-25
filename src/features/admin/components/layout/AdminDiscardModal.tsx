@@ -15,7 +15,7 @@ export function AdminDiscardModal({ isOpen, onCancel, onConfirm }: AdminDiscardM
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-xl"
+        className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
         <h3 className="text-lg font-bold text-gray-900">Tem certeza?</h3>
@@ -26,14 +26,14 @@ export function AdminDiscardModal({ isOpen, onCancel, onConfirm }: AdminDiscardM
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
           >
             Cancelar
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600"
+            className="rounded-md bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600"
           >
             Sim, descartar
           </button>

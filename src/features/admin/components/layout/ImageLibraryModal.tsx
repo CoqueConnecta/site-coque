@@ -68,7 +68,7 @@ export function ImageLibraryModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-xl bg-white shadow-2xl">
+      <div className="max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-lg bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
           <div>
             <h3 className="text-lg font-bold text-gray-800">Biblioteca de Imagens</h3>
@@ -79,24 +79,24 @@ export function ImageLibraryModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+            className="rounded bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200"
           >
             Fechar
           </button>
         </div>
 
         <div className="grid max-h-[78vh] grid-cols-1 gap-6 overflow-y-auto p-6 lg:grid-cols-[360px_1fr]">
-          <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <div className="space-y-4 rounded-md border border-gray-200 bg-gray-50 p-4">
             <h4 className="text-sm font-bold uppercase tracking-wide text-gray-600">Enviar nova imagem</h4>
 
-            <div className="space-y-3 rounded-md border border-gray-200 bg-white p-3">
+            <div className="space-y-3 rounded border border-gray-200 bg-white p-3">
               <label className="block">
                 <span className="mb-1 block text-xs font-medium text-gray-600">Categoria</span>
                 <select
                   value={uploadCategory}
                   onChange={(e) => setUploadCategory(e.target.value)}
                   disabled={isUploading}
-                  className="h-9 w-full rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                  className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
                 >
                   {uploadCategories.map((c) => (
                     <option key={c.id} value={c.id}>{c.label}</option>
@@ -116,7 +116,7 @@ export function ImageLibraryModal({
                 type="button"
                 disabled={isUploading}
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                className="w-full rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
               >
                 {isUploading ? 'Enviando...' : 'Selecionar arquivo'}
               </button>
@@ -134,7 +134,7 @@ export function ImageLibraryModal({
               )}
             </div>
 
-            <label className="flex items-start gap-2 rounded-md border border-gray-200 bg-white p-3">
+            <label className="flex items-start gap-2 rounded border border-gray-200 bg-white p-3">
               <input
                 type="checkbox"
                 checked={shouldApplyMetadata}
@@ -146,7 +146,7 @@ export function ImageLibraryModal({
               </span>
             </label>
 
-            <div className="rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-700">
+            <div className="rounded border border-gray-200 bg-white p-3 text-sm text-gray-700">
               <p className="font-medium text-gray-800">Itens disponíveis</p>
               <p>{mediaAssetsCount} imagens na biblioteca.</p>
             </div>
@@ -158,7 +158,7 @@ export function ImageLibraryModal({
                 type="text"
                 value={mediaSearch}
                 onChange={(e) => onMediaSearchChange(e.target.value)}
-                className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="h-11 w-full rounded-md border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 placeholder="Buscar por nome, título ou alt"
               />
             </div>
@@ -171,7 +171,7 @@ export function ImageLibraryModal({
                     key={category.id}
                     type="button"
                     onClick={() => onSelectCategory(category.id)}
-                    className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                    className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
                       isActive
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -185,7 +185,7 @@ export function ImageLibraryModal({
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               {filteredAssets.map((asset) => (
-                <div key={asset.id} className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                <div key={asset.id} className="overflow-hidden rounded-md border border-gray-200 bg-white shadow-sm">
                   <div className="aspect-video w-full bg-gray-100">
                     <img src={asset.url} alt={asset.alt || asset.title || asset.name} className="h-full w-full object-cover" />
                   </div>
@@ -194,14 +194,14 @@ export function ImageLibraryModal({
                     {asset.alt ? <p className="line-clamp-2 text-xs text-gray-600">Alt: {asset.alt}</p> : null}
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-xs text-gray-500">{asset.name}</p>
-                      <span className="rounded-full bg-gray-100 px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-gray-600">
+                      <span className="rounded bg-gray-100 px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-gray-600">
                         {asset.category ?? 'geral'}
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={() => onSelectAsset(asset)}
-                      className="w-full rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                      className="w-full rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
                     >
                       Usar nesta seção
                     </button>
@@ -211,7 +211,7 @@ export function ImageLibraryModal({
             </div>
 
             {filteredAssets.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-600">
+              <div className="rounded-md border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-600">
                 Nenhuma imagem encontrada com os filtros atuais.
               </div>
             ) : null}

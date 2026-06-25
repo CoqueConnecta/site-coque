@@ -32,6 +32,8 @@ type GalleryEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
   renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
 
@@ -52,7 +54,7 @@ function resolvePreviewData(data: GalleryEditorProps['data'], language: CmsLangu
   };
 }
 
-export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField }: GalleryEditorProps) {
+export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, renderImageField }: GalleryEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const cards = Array.isArray(data?.cards) ? data.cards : [];
 
@@ -84,6 +86,9 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           label={`Card ${cardIndex + 1}`}
           summary={card.title?.pt || card.id || ''}
           onRemove={() => onRemoveArrayItem(['cards'], cardIndex)}
+          onDuplicate={() => onDuplicateArrayItem(['cards'], cardIndex)}
+          onMoveUp={cardIndex > 0 ? () => onMoveArrayItem(['cards'], cardIndex, 'up') : undefined}
+          onMoveDown={cardIndex < cards.length - 1 ? () => onMoveArrayItem(['cards'], cardIndex, 'down') : undefined}
         >
           {/* Global fields */}
           <div className="grid grid-cols-2 gap-4">

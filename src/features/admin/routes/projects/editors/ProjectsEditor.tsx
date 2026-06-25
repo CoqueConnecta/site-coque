@@ -3,9 +3,9 @@ import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
   adminPanelGridClass,
-  getAdminInputClass,
-  getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
+import { RichTextEditor } from '../../../components/shared/RichTextEditor';
+import { AdminInputField } from '../../../components/form/AdminInputField';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
@@ -32,6 +32,8 @@ type ProjectsEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
   renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string) => ReactNode;
 };
 
@@ -49,7 +51,7 @@ function resolvePreviewData(data: ProjectsEditorProps['data'], language: CmsLang
   }));
 }
 
-export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, renderImageField }: ProjectsEditorProps) {
+export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, renderImageField }: ProjectsEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const items = Array.isArray(data?.items) ? data.items : [];
 
@@ -64,21 +66,17 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
           label={`Projeto ${index + 1}`}
           summary={project.title?.pt || ''}
           onRemove={() => onRemoveArrayItem(['items'], index)}
+          onDuplicate={() => onDuplicateArrayItem(['items'], index)}
+          onMoveUp={index > 0 ? () => onMoveArrayItem(['items'], index, 'up') : undefined}
+          onMoveDown={index < items.length - 1 ? () => onMoveArrayItem(['items'], index, 'down') : undefined}
         >
           {/* Global fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="block">
-              <span className={adminFieldLabelClass}>ID</span>
-              <input type="text" value={project.id ?? ''} onChange={(e) => onFieldChange(['items', index, 'id'], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'id']))} />
-            </label>
-            <label className="block">
-              <span className={adminFieldLabelClass}>Localização</span>
-              <input type="text" value={project.location ?? ''} onChange={(e) => onFieldChange(['items', index, 'location'], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'location']))} />
-            </label>
-            <label className="block col-span-full">
-              <span className={adminFieldLabelClass}>URL da ação (actionHref)</span>
-              <input type="text" value={project.actionHref ?? ''} onChange={(e) => onFieldChange(['items', index, 'actionHref'], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'actionHref']))} />
-            </label>
+            <AdminInputField label="ID" path={['items', index, 'id']} value={project.id ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
+            <AdminInputField label="Localização" path={['items', index, 'location']} value={project.location ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
+            <div className="col-span-full">
+              <AdminInputField label="URL da ação (actionHref)" path={['items', index, 'actionHref']} value={project.actionHref ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
+            </div>
           </div>
 
           {renderImageField(project.image ?? '', ['items', index, 'image'], 'Imagem do projeto', '/placeholder-image.png')}
@@ -87,18 +85,17 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
               <AdminEditorCard key={lang} title={lang === 'pt' ? 'Português (PT)' : 'Inglês (EN)'}>
-                <label className="block">
-                  <span className={adminFieldLabelClass}>Título</span>
-                  <input type="text" value={project.title?.[lang] ?? ''} onChange={(e) => onFieldChange(['items', index, 'title', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'title', lang]))} />
-                </label>
-                <label className="block">
+                <AdminInputField label="Título" path={['items', index, 'title', lang]} value={project.title?.[lang] ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
+                <div className="block">
                   <span className={adminFieldLabelClass}>Descrição (Markdown)</span>
-                  <textarea value={project.bodyMd?.[lang] ?? ''} onChange={(e) => onFieldChange(['items', index, 'bodyMd', lang], e.target.value)} className={getAdminTextareaClass(isFieldDirty(['items', index, 'bodyMd', lang]))} rows={4} />
-                </label>
-                <label className="block">
-                  <span className={adminFieldLabelClass}>Botão de ação</span>
-                  <input type="text" value={project.actionLabel?.[lang] ?? ''} onChange={(e) => onFieldChange(['items', index, 'actionLabel', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['items', index, 'actionLabel', lang]))} />
-                </label>
+                  <RichTextEditor
+                    value={project.bodyMd?.[lang] ?? ''}
+                    onChange={(md) => onFieldChange(['items', index, 'bodyMd', lang], md)}
+                    isDirty={isFieldDirty(['items', index, 'bodyMd', lang])}
+                    ariaLabel={`Descrição (${lang.toUpperCase()})`}
+                  />
+                </div>
+                <AdminInputField label="Botão de ação" path={['items', index, 'actionLabel', lang]} value={project.actionLabel?.[lang] ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
               </AdminEditorCard>
             ))}
           </div>

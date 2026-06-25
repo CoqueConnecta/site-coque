@@ -22,6 +22,8 @@ export function HomeRoute({
   onFieldChange,
   onAddArrayItem,
   onRemoveArrayItem,
+  onMoveArrayItem,
+  onDuplicateArrayItem,
   renderImageField,
   sectionDirtyCount,
 }: AdminRouteProps) {
@@ -56,6 +58,8 @@ export function HomeRoute({
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
               onAddArrayItem={(path) => onAddArrayItem(key, path)}
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
+              onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
+              onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
               renderImageField={(value, path, lbl, ph, ro) => renderImageField(key, value, path, lbl, ph, ro)}
             />
           )}
@@ -67,6 +71,8 @@ export function HomeRoute({
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
               onAddArrayItem={(path) => onAddArrayItem(key, path)}
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
+              onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
+              onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
             />
           )}
           {key === 'pages.home.gallery' && (
@@ -77,6 +83,8 @@ export function HomeRoute({
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
               onAddArrayItem={(path) => onAddArrayItem(key, path)}
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
+              onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
+              onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
               renderImageField={(value, path, lbl, ph, ro) => renderImageField(key, value, path, lbl, ph, ro)}
             />
           )}
@@ -88,6 +96,8 @@ export function HomeRoute({
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
               onAddArrayItem={(path) => onAddArrayItem(key, path)}
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
+              onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
+              onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
             />
           )}
         </SectionCard>

@@ -2,7 +2,7 @@ import { SectionCard } from '../../components/shared/SectionCard';
 import { TransparencyEditor } from './editors/TransparencyEditor';
 import type { AdminRouteProps } from '../types';
 
-export function TransparencyRoute({ cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, sectionDirtyCount }: AdminRouteProps) {
+export function TransparencyRoute({ cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, sectionDirtyCount }: AdminRouteProps) {
   const sk = 'pages.transparency';
   return (
     <SectionCard title="Transparência" dirtyCount={sectionDirtyCount(sk)} defaultOpen>
@@ -13,6 +13,8 @@ export function TransparencyRoute({ cmsData, isFieldDirty, onFieldChange, onAddA
         onFieldChange={(path, value) => onFieldChange(sk, path, value)}
         onAddArrayItem={(path) => onAddArrayItem(sk, path)}
         onRemoveArrayItem={(path, index) => onRemoveArrayItem(sk, path, index)}
+        onMoveArrayItem={(path, index, direction) => onMoveArrayItem(sk, path, index, direction)}
+        onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(sk, path, index)}
       />
     </SectionCard>
   );

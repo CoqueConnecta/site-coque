@@ -1,11 +1,6 @@
 import { useState } from 'react';
-import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
-import {
-  adminFieldLabelClass,
-  adminPanelGridClass,
-  getAdminInputClass,
-  getAdminTextareaClass,
-} from '../../../components/shared/adminEditorStyles';
+import { AdminInputField } from '../../../components/form/AdminInputField';
+import { I18nTextField } from '../../../components/form/I18nTextField';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
 import { NewsletterSection } from '../../../../../components/sections/NewsletterSection';
 import { pickLang } from '../../../../../services/cmsService';
@@ -43,26 +38,28 @@ export function NewsletterEditor({ data, isFieldDirty, onFieldChange }: Newslett
   return (
     <div className="space-y-6">
       {/* Global accent */}
-      <label className="block">
-        <span className={adminFieldLabelClass}>Headline Accent (global)</span>
-        <input type="text" value={data.headlineAccent ?? ''} onChange={(e) => onFieldChange(['headlineAccent'], e.target.value)} className={getAdminInputClass(isFieldDirty(['headlineAccent']))} />
-      </label>
+      <AdminInputField
+        label="Headline Accent (global)"
+        path={['headlineAccent']}
+        value={data.headlineAccent ?? ''}
+        isFieldDirty={isFieldDirty}
+        onFieldChange={onFieldChange}
+      />
 
       {/* i18n fields */}
       {(['headline', 'description', 'buttonText', 'placeholderEmail'] as const).map((field) => (
-        <div key={field} className={adminPanelGridClass}>
-          {(['pt', 'en'] as const).map((lang) => (
-            <AdminEditorCard key={lang} title={`${field} (${lang.toUpperCase()})`}>
-              <label className="block">
-                <span className={adminFieldLabelClass}>{field}</span>
-                {field === 'description'
-                  ? <textarea value={data[field]?.[lang] ?? ''} onChange={(e) => onFieldChange([field, lang], e.target.value)} className={getAdminTextareaClass(isFieldDirty([field, lang]))} rows={3} />
-                  : <input type="text" value={data[field]?.[lang] ?? ''} onChange={(e) => onFieldChange([field, lang], e.target.value)} className={getAdminInputClass(isFieldDirty([field, lang]))} />
-                }
-              </label>
-            </AdminEditorCard>
-          ))}
-        </div>
+        <I18nTextField
+          key={field}
+          label={field}
+          pathPt={[field, 'pt']}
+          pathEn={[field, 'en']}
+          valuePt={data[field]?.pt ?? ''}
+          valueEn={data[field]?.en ?? ''}
+          isFieldDirty={isFieldDirty}
+          onFieldChange={onFieldChange}
+          multiline={field === 'description'}
+          rows={3}
+        />
       ))}
 
       <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
