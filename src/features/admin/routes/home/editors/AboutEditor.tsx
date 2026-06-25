@@ -1,11 +1,6 @@
 import { useState } from 'react';
-import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
-import {
-  adminFieldLabelClass,
-  adminPanelGridClass,
-  getAdminTextareaClass,
-} from '../../../components/shared/adminEditorStyles';
+import { I18nTextField } from '../../../components/form/I18nTextField';
 import { AboutSection } from '../../../../../components/sections/AboutSection';
 import { pickLang } from '../../../../../services/cmsService';
 import type { CmsLanguage, ResolvedAboutData } from '../../../../../types/cms';
@@ -34,24 +29,20 @@ export function AboutEditor({ data, isFieldDirty, onFieldChange }: AboutEditorPr
 
   return (
     <div className="space-y-8">
-      <div className={adminPanelGridClass}>
-        {(['pt', 'en'] as const).map((lang) => (
-          <AdminEditorCard key={lang} title={lang === 'pt' ? 'Português (PT)' : 'Inglês (EN)'}>
-            <label className="block">
-              <span className={adminFieldLabelClass}>Descrição</span>
-              <textarea
-                value={data.description?.[lang] ?? ''}
-                onChange={(e) => onFieldChange(['description', lang], e.target.value)}
-                className={getAdminTextareaClass(isFieldDirty(['description', lang]))}
-                rows={6}
-              />
-            </label>
-          </AdminEditorCard>
-        ))}
-        <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
-          <AboutSection data={resolvePreviewData(data, previewLang)} />
-        </AdminPreviewPanel>
-      </div>
+      <I18nTextField
+        label="Descrição"
+        pathPt={['description', 'pt']}
+        pathEn={['description', 'en']}
+        valuePt={data.description?.pt ?? ''}
+        valueEn={data.description?.en ?? ''}
+        isFieldDirty={isFieldDirty}
+        onFieldChange={onFieldChange}
+        multiline
+        rows={6}
+      />
+      <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
+        <AboutSection data={resolvePreviewData(data, previewLang)} />
+      </AdminPreviewPanel>
     </div>
   );
 }

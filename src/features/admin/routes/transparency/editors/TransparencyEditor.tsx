@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
-  adminPanelGridClass,
   adminSectionTitleClass,
-  getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
-import { RichTextEditor } from '../../../components/shared/RichTextEditor';
+import { I18nTextField } from '../../../components/form/I18nTextField';
+import { I18nRichTextField } from '../../../components/form/I18nRichTextField';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
@@ -27,49 +25,6 @@ type TransparencyEditorProps = {
   onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
   onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
 };
-
-function I18nTextField({ label, pathPt, pathEn, valuePt, valueEn, isFieldDirty, onFieldChange, multiline = false }: {
-  label: string; pathPt: Array<string|number>; pathEn: Array<string|number>;
-  valuePt: string; valueEn: string;
-  isFieldDirty: (p: Array<string|number>) => boolean;
-  onFieldChange: (p: Array<string|number>, v: unknown) => void;
-  multiline?: boolean;
-}) {
-  return (
-    <div className={adminPanelGridClass}>
-      {([['pt', pathPt, valuePt], ['en', pathEn, valueEn]] as const).map(([lang, path, val]) => (
-        <AdminEditorCard key={lang} title={`${label} (${lang.toUpperCase()})`}>
-          {multiline
-            ? <textarea value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className="w-full rounded-xl border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] p-3.5 text-sm text-[var(--admin-text-1)] min-h-24 outline-none transition focus:border-[var(--admin-accent)] focus:ring-4 focus:ring-[var(--admin-focus)]/20" rows={4} />
-            : <input type="text" value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className={getAdminInputClass(isFieldDirty(path as Array<string|number>))} />
-          }
-        </AdminEditorCard>
-      ))}
-    </div>
-  );
-}
-
-function I18nRichTextField({ label, pathPt, pathEn, valuePt, valueEn, isFieldDirty, onFieldChange }: {
-  label: string; pathPt: Array<string|number>; pathEn: Array<string|number>;
-  valuePt: string; valueEn: string;
-  isFieldDirty: (path: Array<string|number>) => boolean;
-  onFieldChange: (path: Array<string|number>, value: unknown) => void;
-}) {
-  return (
-    <div className={adminPanelGridClass}>
-      {([['pt', pathPt, valuePt], ['en', pathEn, valueEn]] as const).map(([lang, path, val]) => (
-        <AdminEditorCard key={lang} title={`${label} (${lang.toUpperCase()})`}>
-          <span className={adminFieldLabelClass}>{label}</span>
-          <RichTextEditor
-            value={val as string}
-            onChange={(md) => onFieldChange(path as Array<string|number>, md)}
-            isDirty={isFieldDirty(path as Array<string|number>)}
-          />
-        </AdminEditorCard>
-      ))}
-    </div>
-  );
-}
 
 function resolvePreviewData(data: TransparencyEditorProps['data'], language: CmsLanguage): ResolvedTransparencyData {
   const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });

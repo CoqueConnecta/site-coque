@@ -19,12 +19,8 @@ import { useAdminData } from '../features/admin/hooks/useAdminData';
 import { useDirtyFields } from '../features/admin/hooks/useDirtyFields';
 import { useImagePicker } from '../features/admin/hooks/useImagePicker';
 import { useAdminRoute } from '../features/admin/hooks/useAdminRoute';
-import {
-  buildEmptyFromTemplate,
-  getValueAtPath,
-  isRecord,
-  setValueAtPath,
-} from '../features/admin/utils/editorPath';
+import { useArrayFieldActions } from '../features/admin/hooks/useArrayFieldActions';
+import { getValueAtPath, isRecord, setValueAtPath } from '../features/admin/utils/editorPath';
 import type { MediaAsset } from '../features/admin/types';
 import type { CmsAdminState } from '../features/admin/types';
 
@@ -108,96 +104,12 @@ export default function AdminPage() {
     });
   };
 
-  const handleAddArrayItem = (sectionKey: string, path: Array<string | number>) => {
-    setCmsData((prev) => {
-      if (!prev) return prev;
-      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
-      const segments = sectionKey.split('.');
-      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
-      for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
-      const lastSeg = segments[segments.length - 1];
-      const sectionData = node[lastSeg];
-      const currentValue = getValueAtPath(sectionData, path);
-      if (!Array.isArray(currentValue)) return prev;
-      const templateSource = currentValue.length > 0 ? currentValue[0] : '';
-      const newItem = buildEmptyFromTemplate(templateSource);
-      const updatedArray = [...currentValue, newItem];
-      node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
-      markDirtyField(sectionKey, path, updatedArray);
-      return next;
-    });
-  };
-
-  const handleRemoveArrayItem = (
-    sectionKey: string,
-    path: Array<string | number>,
-    index: number,
-  ) => {
-    setCmsData((prev) => {
-      if (!prev) return prev;
-      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
-      const segments = sectionKey.split('.');
-      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
-      for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
-      const lastSeg = segments[segments.length - 1];
-      const sectionData = node[lastSeg];
-      const currentValue = getValueAtPath(sectionData, path);
-      if (!Array.isArray(currentValue)) return prev;
-      const updatedArray = currentValue.filter((_, i) => i !== index);
-      node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
-      markDirtyField(sectionKey, path, updatedArray);
-      return next;
-    });
-  };
-
-  const handleMoveArrayItem = (
-    sectionKey: string,
-    path: Array<string | number>,
-    index: number,
-    direction: 'up' | 'down',
-  ) => {
-    setCmsData((prev) => {
-      if (!prev) return prev;
-      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
-      const segments = sectionKey.split('.');
-      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
-      for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
-      const lastSeg = segments[segments.length - 1];
-      const sectionData = node[lastSeg];
-      const currentValue = getValueAtPath(sectionData, path);
-      if (!Array.isArray(currentValue)) return prev;
-      const targetIndex = direction === 'up' ? index - 1 : index + 1;
-      if (targetIndex < 0 || targetIndex >= currentValue.length) return prev;
-      const updatedArray = [...currentValue];
-      [updatedArray[index], updatedArray[targetIndex]] = [updatedArray[targetIndex], updatedArray[index]];
-      node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
-      markDirtyField(sectionKey, path, updatedArray);
-      return next;
-    });
-  };
-
-  const handleDuplicateArrayItem = (
-    sectionKey: string,
-    path: Array<string | number>,
-    index: number,
-  ) => {
-    setCmsData((prev) => {
-      if (!prev) return prev;
-      const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
-      const segments = sectionKey.split('.');
-      let node: Record<string, unknown> = next as unknown as Record<string, unknown>;
-      for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
-      const lastSeg = segments[segments.length - 1];
-      const sectionData = node[lastSeg];
-      const currentValue = getValueAtPath(sectionData, path);
-      if (!Array.isArray(currentValue)) return prev;
-      const clone = JSON.parse(JSON.stringify(currentValue[index]));
-      const updatedArray = [...currentValue.slice(0, index + 1), clone, ...currentValue.slice(index + 1)];
-      node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
-      markDirtyField(sectionKey, path, updatedArray);
-      return next;
-    });
-  };
+  const {
+    handleAddArrayItem,
+    handleRemoveArrayItem,
+    handleMoveArrayItem,
+    handleDuplicateArrayItem,
+  } = useArrayFieldActions(setCmsData, markDirtyField);
 
   const getObjectAtPath = (source: unknown, path: Array<string | number>) => {
     const value = getValueAtPath(source, path);

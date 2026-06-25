@@ -33,6 +33,7 @@ export function AdminPageHeader({
           <button
             type="button"
             onClick={onDiscard}
+            aria-label="Descartar alterações da página"
             className="h-9 px-4 rounded-md border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] text-sm font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-surface-2)] transition-all"
           >
             Descartar
@@ -40,6 +41,7 @@ export function AdminPageHeader({
           <button
             type="button"
             onClick={onSave}
+            aria-label="Salvar alterações da página"
             className="h-9 px-5 rounded-md bg-[var(--admin-accent)] text-sm font-semibold text-white hover:opacity-90 shadow-sm transition-all"
           >
             Salvar página

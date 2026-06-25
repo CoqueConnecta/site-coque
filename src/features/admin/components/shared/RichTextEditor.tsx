@@ -24,6 +24,8 @@ interface RichTextEditorProps {
   onChange: (md: string) => void;
   /** Highlights the border amber to signal unsaved changes */
   isDirty?: boolean;
+  /** Accessible name for the editable area (there are usually two instances, PT/EN, on screen at once) */
+  ariaLabel?: string;
 }
 
 // ─── Link dialog ─────────────────────────────────────────────────────────────
@@ -155,7 +157,7 @@ function ToolbarDivider() {
 
 // ─── RichTextEditor ───────────────────────────────────────────────────────────
 
-export function RichTextEditor({ value, onChange, isDirty = false }: RichTextEditorProps) {
+export function RichTextEditor({ value, onChange, isDirty = false, ariaLabel }: RichTextEditorProps) {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const linkButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -181,6 +183,12 @@ export function RichTextEditor({ value, onChange, isDirty = false }: RichTextEdi
     content: value,
     // Tell TipTap to treat the initial content as Markdown
     contentType: 'markdown',
+    editorProps: {
+      attributes: {
+        role: 'textbox',
+        ...(ariaLabel ? { 'aria-label': ariaLabel } : {}),
+      },
+    },
     onUpdate({ editor }) {
       // Serialize content back to Markdown on every change
       const md = editor.getMarkdown();

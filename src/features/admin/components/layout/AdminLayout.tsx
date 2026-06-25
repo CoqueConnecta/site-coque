@@ -77,6 +77,8 @@ function NavContent({
                 onSelectRoute(route.id);
                 onNavClick?.();
               }}
+              aria-label={route.label}
+              aria-current={isActive ? 'page' : undefined}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all text-left ${
                 isActive
                   ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)] shadow-sm'
@@ -190,6 +192,7 @@ function AdminLayoutInner({
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
+              aria-label="Abrir navegação"
               className="p-2 -ml-1 rounded-md hover:bg-[var(--admin-surface-2)] active:bg-[var(--admin-surface-2)] touch-manipulation"
             >
               <Menu className="w-6 h-6 text-[var(--admin-text-2)]" />

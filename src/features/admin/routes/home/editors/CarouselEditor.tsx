@@ -1,8 +1,5 @@
 import type { ReactNode } from 'react';
-import {
-  adminFieldLabelClass,
-  getAdminInputClass,
-} from '../../../components/shared/adminEditorStyles';
+import { AdminInputField } from '../../../components/form/AdminInputField';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
@@ -58,15 +55,13 @@ export function CarouselEditor({
           onMoveDown={index < images.length - 1 ? () => onMoveArrayItem(['images'], index, 'down') : undefined}
         >
           {renderImageField(image.src ?? '', ['images', index, 'src'], 'Imagem', undefined, true)}
-          <label className="block">
-            <span className={adminFieldLabelClass}>Alt Text (PT)</span>
-            <input
-              type="text"
-              value={image.alt ?? ''}
-              onChange={(e) => onFieldChange(['images', index, 'alt'], e.target.value)}
-              className={getAdminInputClass(isFieldDirty(['images', index, 'alt']))}
-            />
-          </label>
+          <AdminInputField
+            label="Alt Text (PT)"
+            path={['images', index, 'alt']}
+            value={image.alt ?? ''}
+            isFieldDirty={isFieldDirty}
+            onFieldChange={onFieldChange}
+          />
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['images'])}>Adicionar imagem</AdminAddButton>
