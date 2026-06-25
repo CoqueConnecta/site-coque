@@ -1,11 +1,7 @@
 import { useState } from 'react';
-import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
-import {
-  adminPanelGridClass,
-  adminSectionTitleClass,
-  getAdminInputClass,
-  getAdminTextareaClass,
-} from '../../../components/shared/adminEditorStyles';
+import { adminSectionTitleClass } from '../../../components/shared/adminEditorStyles';
+import { I18nTextField } from '../../../components/form/I18nTextField';
+import { I18nRichTextField } from '../../../components/form/I18nRichTextField';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
@@ -23,28 +19,9 @@ type DocEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
 };
-
-function I18nTextField({ label, pathPt, pathEn, valuePt, valueEn, isFieldDirty, onFieldChange, multiline = false }: {
-  label: string; pathPt: Array<string|number>; pathEn: Array<string|number>;
-  valuePt: string; valueEn: string;
-  isFieldDirty: (path: Array<string|number>) => boolean;
-  onFieldChange: (path: Array<string|number>, value: unknown) => void;
-  multiline?: boolean;
-}) {
-  return (
-    <div className={adminPanelGridClass}>
-      {([['pt', pathPt, valuePt], ['en', pathEn, valueEn]] as const).map(([lang, path, val]) => (
-        <AdminEditorCard key={lang} title={`${label} (${lang.toUpperCase()})`}>
-          {multiline
-            ? <textarea value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className={getAdminTextareaClass(isFieldDirty(path as Array<string|number>))} rows={4} />
-            : <input type="text" value={val as string} onChange={(e) => onFieldChange(path as Array<string|number>, e.target.value)} className={getAdminInputClass(isFieldDirty(path as Array<string|number>))} />
-          }
-        </AdminEditorCard>
-      ))}
-    </div>
-  );
-}
 
 function resolvePreviewData(data: DocEditorProps['data'], language: CmsLanguage): ResolvedPrivacyData {
   const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });
@@ -60,7 +37,7 @@ function resolvePreviewData(data: DocEditorProps['data'], language: CmsLanguage)
   };
 }
 
-export function PrivacyEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: DocEditorProps) {
+export function PrivacyEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem }: DocEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const sections = Array.isArray(data?.sections) ? data.sections : [];
   return (
@@ -75,9 +52,12 @@ export function PrivacyEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           label={`Seção ${index + 1}`}
           summary={section.title?.pt || ''}
           onRemove={() => onRemoveArrayItem(['sections'], index)}
+          onDuplicate={() => onDuplicateArrayItem(['sections'], index)}
+          onMoveUp={index > 0 ? () => onMoveArrayItem(['sections'], index, 'up') : undefined}
+          onMoveDown={index < sections.length - 1 ? () => onMoveArrayItem(['sections'], index, 'down') : undefined}
         >
           <I18nTextField label="Título" pathPt={['sections',index,'title','pt']} pathEn={['sections',index,'title','en']} valuePt={section.title?.pt ?? ''} valueEn={section.title?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
-          <I18nTextField label="Conteúdo (Markdown)" pathPt={['sections',index,'bodyMd','pt']} pathEn={['sections',index,'bodyMd','en']} valuePt={section.bodyMd?.pt ?? ''} valueEn={section.bodyMd?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} multiline />
+          <I18nRichTextField label="Conteúdo" pathPt={['sections',index,'bodyMd','pt']} pathEn={['sections',index,'bodyMd','en']} valuePt={section.bodyMd?.pt ?? ''} valueEn={section.bodyMd?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['sections'])}>Adicionar seção</AdminAddButton>

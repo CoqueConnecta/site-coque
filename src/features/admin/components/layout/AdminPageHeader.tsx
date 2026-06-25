@@ -23,7 +23,7 @@ export function AdminPageHeader({
           <div className="flex items-center gap-3 mt-1">
             <p className="text-[var(--admin-text-3)] text-sm">{description}</p>
             {dirtyCount > 0 && (
-              <span className="inline-flex items-center text-xs font-semibold bg-amber-100 text-amber-700 rounded-full px-2.5 py-0.5 flex-shrink-0">
+              <span className="inline-flex items-center text-[11px] font-semibold bg-amber-100 text-amber-700 rounded px-2 py-0.5 flex-shrink-0 tabular-nums">
                 {dirtyCount} {dirtyCount === 1 ? 'alteração' : 'alterações'}
               </span>
             )}
@@ -33,14 +33,16 @@ export function AdminPageHeader({
           <button
             type="button"
             onClick={onDiscard}
-            className="h-9 px-4 rounded-xl border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] text-sm font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-surface-2)] transition-all"
+            aria-label="Descartar alterações da página"
+            className="h-9 px-4 rounded-md border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] text-sm font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-surface-2)] transition-all"
           >
             Descartar
           </button>
           <button
             type="button"
             onClick={onSave}
-            className="h-9 px-5 rounded-xl bg-[var(--admin-accent)] text-sm font-semibold text-white hover:opacity-90 shadow-sm transition-all"
+            aria-label="Salvar alterações da página"
+            className="h-9 px-5 rounded-md bg-[var(--admin-accent)] text-sm font-semibold text-white hover:opacity-90 shadow-sm transition-all"
           >
             Salvar página
           </button>

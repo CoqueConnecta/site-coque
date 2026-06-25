@@ -21,6 +21,8 @@ type YoutubeEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
 function resolvePreviewVideos(data: YoutubeEditorProps['data']): ResolvedYoutubeVideo[] {
@@ -32,12 +34,15 @@ function resolvePreviewVideos(data: YoutubeEditorProps['data']): ResolvedYoutube
 type VideoItemProps = {
   video: { id?: string; title?: I18nField };
   index: number;
+  isLast: boolean;
   isFieldDirty: (path: Array<string | number>) => boolean;
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
-function VideoItem({ video, index, isFieldDirty, onFieldChange, onRemoveArrayItem }: VideoItemProps) {
+function VideoItem({ video, index, isLast, isFieldDirty, onFieldChange, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem }: VideoItemProps) {
   const [draft, setDraft] = useState(video.id ?? '');
   const extractedId = extractYouTubeId(draft) ?? (video.id || null);
 
@@ -60,6 +65,9 @@ function VideoItem({ video, index, isFieldDirty, onFieldChange, onRemoveArrayIte
       label={`Vídeo ${index + 1}`}
       summary={video.title?.pt || video.id || ''}
       onRemove={() => onRemoveArrayItem(['items'], index)}
+      onDuplicate={() => onDuplicateArrayItem(['items'], index)}
+      onMoveUp={index > 0 ? () => onMoveArrayItem(['items'], index, 'up') : undefined}
+      onMoveDown={!isLast ? () => onMoveArrayItem(['items'], index, 'down') : undefined}
     >
 
       <label className="block">
@@ -107,7 +115,7 @@ function VideoItem({ video, index, isFieldDirty, onFieldChange, onRemoveArrayIte
   );
 }
 
-export function YoutubeEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: YoutubeEditorProps) {
+export function YoutubeEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem }: YoutubeEditorProps) {
   const items = Array.isArray(data?.items) ? data.items : [];
 
   return (
@@ -120,9 +128,12 @@ export function YoutubeEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
           key={index}
           video={video}
           index={index}
+          isLast={index === items.length - 1}
           isFieldDirty={isFieldDirty}
           onFieldChange={onFieldChange}
           onRemoveArrayItem={onRemoveArrayItem}
+          onMoveArrayItem={onMoveArrayItem}
+          onDuplicateArrayItem={onDuplicateArrayItem}
         />
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar vídeo</AdminAddButton>

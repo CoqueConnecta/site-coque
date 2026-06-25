@@ -12,7 +12,7 @@ import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel'
 import { FooterSection } from '../../../../../components/sections/FooterSection';
 import { pickLang } from '../../../../../services/cmsService';
 import type { CmsLanguage, CmsSocialLink, ResolvedFooterData } from '../../../../../types/cms';
-import { Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Copy, Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -30,6 +30,8 @@ type FooterEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
   onAddArrayItem: (path: Array<string | number>) => void;
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
+  onMoveArrayItem: (path: Array<string | number>, index: number, direction: 'up' | 'down') => void;
+  onDuplicateArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
 function resolvePreviewData(data: FooterEditorProps['data'], language: CmsLanguage): ResolvedFooterData {
@@ -48,7 +50,7 @@ function resolvePreviewData(data: FooterEditorProps['data'], language: CmsLangua
   };
 }
 
-export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: FooterEditorProps) {
+export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem }: FooterEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const socialLinks = Array.isArray(data?.socialLinks) ? data.socialLinks : [];
   const quickLinks = Array.isArray(data?.quickLinks) ? data.quickLinks : [];
@@ -81,7 +83,22 @@ export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem
           <label className="block"><span className={adminFieldLabelClass}>Plataforma</span><input type="text" value={link.platform ?? ''} onChange={(e) => onFieldChange(['socialLinks', index, 'platform'], e.target.value)} className={getAdminInputClass(isFieldDirty(['socialLinks', index, 'platform']))} /></label>
           <label className="block"><span className={adminFieldLabelClass}>URL</span><input type="text" value={link.url ?? ''} onChange={(e) => onFieldChange(['socialLinks', index, 'url'], e.target.value)} className={getAdminInputClass(isFieldDirty(['socialLinks', index, 'url']))} /></label>
           <label className="block"><span className={adminFieldLabelClass}>Ícone</span><input type="text" value={link.icon ?? ''} onChange={(e) => onFieldChange(['socialLinks', index, 'icon'], e.target.value)} className={getAdminInputClass(isFieldDirty(['socialLinks', index, 'icon']))} /></label>
-          <button type="button" onClick={() => onRemoveArrayItem(['socialLinks'], index)} className="text-rose-500 hover:text-rose-700 transition-colors mb-1"><Trash2 className="h-4 w-4" /></button>
+          <div className="flex items-center gap-3 mb-1">
+            {index > 0 && (
+              <button type="button" onClick={() => onMoveArrayItem(['socialLinks'], index, 'up')} aria-label="Mover para cima" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+                <ArrowUp className="h-4 w-4" />
+              </button>
+            )}
+            {index < socialLinks.length - 1 && (
+              <button type="button" onClick={() => onMoveArrayItem(['socialLinks'], index, 'down')} aria-label="Mover para baixo" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+                <ArrowDown className="h-4 w-4" />
+              </button>
+            )}
+            <button type="button" onClick={() => onDuplicateArrayItem(['socialLinks'], index)} aria-label="Duplicar" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+              <Copy className="h-4 w-4" />
+            </button>
+            <button type="button" onClick={() => onRemoveArrayItem(['socialLinks'], index)} aria-label="Remover" className="text-rose-500 hover:text-rose-700 transition-colors"><Trash2 className="h-4 w-4" /></button>
+          </div>
         </div>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['socialLinks'])}>Rede social</AdminAddButton>
@@ -92,7 +109,22 @@ export function FooterEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem
         <div key={index} className={adminSectionItemClass}>
           <div className="flex justify-between items-center">
             <span className="text-sm font-semibold text-[var(--admin-text-2)]">Link {index + 1}</span>
-            <button type="button" onClick={() => onRemoveArrayItem(['quickLinks'], index)} className="text-rose-500 hover:text-rose-700 transition-colors"><Trash2 className="h-4 w-4" /></button>
+            <div className="flex items-center gap-3">
+              {index > 0 && (
+                <button type="button" onClick={() => onMoveArrayItem(['quickLinks'], index, 'up')} aria-label="Mover para cima" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+                  <ArrowUp className="h-4 w-4" />
+                </button>
+              )}
+              {index < quickLinks.length - 1 && (
+                <button type="button" onClick={() => onMoveArrayItem(['quickLinks'], index, 'down')} aria-label="Mover para baixo" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+                  <ArrowDown className="h-4 w-4" />
+                </button>
+              )}
+              <button type="button" onClick={() => onDuplicateArrayItem(['quickLinks'], index)} aria-label="Duplicar" className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors">
+                <Copy className="h-4 w-4" />
+              </button>
+              <button type="button" onClick={() => onRemoveArrayItem(['quickLinks'], index)} aria-label="Remover" className="text-rose-500 hover:text-rose-700 transition-colors"><Trash2 className="h-4 w-4" /></button>
+            </div>
           </div>
           <label className="block"><span className={adminFieldLabelClass}>href</span><input type="text" value={link.href ?? ''} onChange={(e) => onFieldChange(['quickLinks', index, 'href'], e.target.value)} className={getAdminInputClass(isFieldDirty(['quickLinks', index, 'href']))} /></label>
           <div className={adminPanelGridClass}>

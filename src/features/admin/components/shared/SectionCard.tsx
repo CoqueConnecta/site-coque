@@ -17,16 +17,16 @@ export function SectionCard({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-[var(--admin-surface)] rounded-xl shadow-sm border border-[var(--admin-border)] overflow-hidden">
+    <div className="bg-[var(--admin-surface)] rounded-lg shadow-sm border border-[var(--admin-border)] overflow-hidden border-l-[3px] border-l-[var(--admin-accent)]">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-[var(--admin-surface-2)] transition-colors"
+        className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-[var(--admin-surface-2)] transition-colors"
       >
         <div className="flex items-center gap-3">
-          <span className="text-base font-semibold text-[var(--admin-text-1)]">{title}</span>
+          <span className="text-sm font-semibold tracking-tight text-[var(--admin-text-1)]">{title}</span>
           {dirtyCount > 0 && (
-            <span className="text-xs font-semibold bg-amber-100 text-amber-700 rounded-full px-2.5 py-0.5">
+            <span className="text-[11px] font-semibold bg-amber-100 text-amber-700 rounded px-2 py-0.5 tabular-nums">
               {dirtyCount} {dirtyCount === 1 ? 'alteração' : 'alterações'}
             </span>
           )}
@@ -39,7 +39,7 @@ export function SectionCard({
       </button>
 
       {open && (
-        <div className="px-6 pb-6 border-t border-[var(--admin-border)]">
+        <div className="px-5 pb-6 border-t border-[var(--admin-border)]">
           <div className="pt-5">{children}</div>
         </div>
       )}
