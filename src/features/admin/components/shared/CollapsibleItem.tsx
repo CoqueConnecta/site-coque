@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { ArrowDown, ArrowUp, ChevronDown, ChevronUp, Copy, Trash2 } from 'lucide-react';
+import { useDisclosure } from '../../hooks/useDisclosure';
 
 type CollapsibleItemProps = {
   label: string;
@@ -13,13 +13,13 @@ type CollapsibleItemProps = {
 };
 
 export function CollapsibleItem({ label, summary, onRemove, onDuplicate, onMoveUp, onMoveDown, children, defaultOpen = false }: CollapsibleItemProps) {
-  const [open, setOpen] = useState(defaultOpen);
+  const { isOpen: open, toggle } = useDisclosure(defaultOpen);
   return (
     <div className="rounded-md border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] shadow-sm overflow-hidden">
       <div className="flex items-center px-4 py-2.5 gap-2 bg-[var(--admin-surface-2)]">
         <button
           type="button"
-          onClick={() => setOpen((v) => !v)}
+          onClick={toggle}
           className="flex items-center gap-2 flex-1 min-w-0 text-left"
         >
           {open
