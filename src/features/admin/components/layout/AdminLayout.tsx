@@ -23,7 +23,7 @@ function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-[var(--admin-surface-2)] text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)] text-sm font-medium transition-all mb-1"
+      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-md hover:bg-[var(--admin-surface-2)] text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)] text-sm font-medium transition-all mb-1"
     >
       {theme === 'dark' ? (
         <Sun className="w-4 h-4 flex-shrink-0" />
@@ -53,7 +53,7 @@ function NavContent({
       {/* Logo */}
       <div className="px-6 py-6 border-b border-[var(--admin-border)]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200/50">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200/50">
             <Layers className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -70,14 +70,14 @@ function NavContent({
           const isActive = activeRouteId === route.id;
           const dirty = routeDirtyCount(route.id);
           return (
-            <button
+              <button
               key={route.id}
               type="button"
               onClick={() => {
                 onSelectRoute(route.id);
                 onNavClick?.();
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all text-left ${
                 isActive
                   ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)] shadow-sm'
                   : 'text-[var(--admin-text-3)] hover:bg-[var(--admin-surface-2)] hover:text-[var(--admin-text-1)]'
@@ -86,8 +86,8 @@ function NavContent({
               <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[var(--admin-accent)]' : 'text-[var(--admin-text-4)]'}`} />
               <span className="flex-1">{route.label}</span>
               {dirty > 0 && (
-                <span className={`text-xs font-semibold rounded-full px-2 py-0.5 ${
-                  isActive ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)]' : 'bg-orange-100 text-orange-700'
+                <span className={`text-[11px] font-semibold rounded px-2 py-0.5 tabular-nums ${
+                  isActive ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)]' : 'bg-amber-100 text-amber-700'
                 }`}>
                   {dirty}
                 </span>
@@ -104,7 +104,7 @@ function NavContent({
           to="/"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-[var(--admin-surface-2)] text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)] text-sm font-medium transition-all mb-2"
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-md hover:bg-[var(--admin-surface-2)] text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)] text-sm font-medium transition-all mb-2"
         >
           <span className="text-base leading-none">🌐</span>
           Ver site público
@@ -190,12 +190,12 @@ function AdminLayoutInner({
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="p-2 -ml-1 rounded-xl hover:bg-[var(--admin-surface-2)] active:bg-[var(--admin-surface-2)] touch-manipulation"
+              className="p-2 -ml-1 rounded-md hover:bg-[var(--admin-surface-2)] active:bg-[var(--admin-surface-2)] touch-manipulation"
             >
               <Menu className="w-6 h-6 text-[var(--admin-text-2)]" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
                 <Layers className="w-4 h-4 text-white" />
               </div>
               <span className="text-sm font-bold text-[var(--admin-text-1)]">Admin CMS</span>

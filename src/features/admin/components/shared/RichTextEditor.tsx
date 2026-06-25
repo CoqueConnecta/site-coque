@@ -63,7 +63,7 @@ function LinkDialog({ anchorRef, initialUrl, onConfirm, onRemove, onClose }: Lin
       <div
         role="dialog"
         aria-label="Inserir link"
-        className="absolute z-50 flex flex-col gap-2 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-2)] p-3 shadow-xl"
+        className="absolute z-50 flex flex-col gap-2 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface-2)] p-3 shadow-xl"
         style={{ top, left, minWidth: 300 }}
       >
         <label className="text-xs font-semibold text-[var(--admin-text-2)]">URL do link</label>
@@ -77,14 +77,14 @@ function LinkDialog({ anchorRef, initialUrl, onConfirm, onRemove, onClose }: Lin
             if (e.key === 'Enter') { e.preventDefault(); onConfirm(url); }
             if (e.key === 'Escape') onClose();
           }}
-          className="h-9 w-full rounded-lg border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-3 text-sm text-[var(--admin-text-1)] outline-none focus:border-[var(--admin-accent)] focus:ring-2 focus:ring-[var(--admin-focus)]/20"
+          className="h-9 w-full rounded-md border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-3 text-sm text-[var(--admin-text-1)] outline-none focus:border-[var(--admin-accent)] focus:ring-2 focus:ring-[var(--admin-focus)]/20"
         />
         <div className="flex items-center justify-between gap-2">
           {initialUrl && (
             <button
               type="button"
               onClick={onRemove}
-              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-[var(--admin-danger-text)] hover:bg-[var(--admin-danger-bg)] transition-colors"
+              className="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold text-[var(--admin-danger-text)] hover:bg-[var(--admin-danger-bg)] transition-colors"
             >
               <Unlink className="h-3.5 w-3.5" />
               Remover link
@@ -94,14 +94,14 @@ function LinkDialog({ anchorRef, initialUrl, onConfirm, onRemove, onClose }: Lin
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg px-3 py-1.5 text-xs font-semibold text-[var(--admin-text-3)] hover:bg-[var(--admin-surface)] transition-colors"
+              className="rounded-md px-3 py-1.5 text-xs font-semibold text-[var(--admin-text-3)] hover:bg-[var(--admin-surface)] transition-colors"
             >
               Cancelar
             </button>
             <button
               type="button"
               onClick={() => onConfirm(url)}
-              className="rounded-lg bg-[var(--admin-active-bg)] px-3 py-1.5 text-xs font-semibold text-[var(--admin-active-text)] hover:opacity-80 transition-opacity"
+              className="rounded-md bg-[var(--admin-active-bg)] px-3 py-1.5 text-xs font-semibold text-[var(--admin-active-text)] hover:opacity-80 transition-opacity"
             >
               Confirmar
             </button>
@@ -136,7 +136,7 @@ function ToolbarButton({ onClick, isActive, title, children, buttonRef }: Toolba
       aria-label={title}
       aria-pressed={isActive}
       className={[
-        'flex h-7 w-7 items-center justify-center rounded-md text-sm transition-colors',
+        'flex h-7 w-7 items-center justify-center rounded text-sm transition-colors',
         isActive
           ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)]'
           : 'text-[var(--admin-text-3)] hover:bg-[var(--admin-surface)] hover:text-[var(--admin-text-1)]',
@@ -230,7 +230,7 @@ export function RichTextEditor({ value, onChange, isDirty = false }: RichTextEdi
   return (
     <div
       className={[
-        'w-full overflow-hidden rounded-xl border bg-[var(--admin-input-bg)] shadow-sm transition focus-within:ring-4',
+        'w-full overflow-hidden rounded-md border bg-[var(--admin-input-bg)] shadow-sm transition focus-within:ring-4',
         borderClass,
       ].join(' ')}
     >

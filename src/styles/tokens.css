@@ -53,6 +53,12 @@
   --admin-danger-bg:       #fef2f2;
   --admin-danger-text:     #be123c;
   --admin-danger-bg-hover: #fee2e2;
+
+  /* Radius scale */
+  --admin-radius-sm:  4px;
+  --admin-radius-md:  6px;
+  --admin-radius-lg:  8px;
+  --admin-radius-xl: 10px;
 }
 
 [data-theme="dark"] {
