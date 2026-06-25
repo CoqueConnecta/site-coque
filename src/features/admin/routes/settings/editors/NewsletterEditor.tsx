@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
@@ -5,6 +6,10 @@ import {
   getAdminInputClass,
   getAdminTextareaClass,
 } from '../../../components/shared/adminEditorStyles';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
+import { NewsletterSection } from '../../../../../components/sections/NewsletterSection';
+import { pickLang } from '../../../../../services/cmsService';
+import type { CmsLanguage, ResolvedNewsletterData } from '../../../../../types/cms';
 
 type I18nField = { pt?: string; en?: string };
 
@@ -21,7 +26,20 @@ type NewsletterEditorProps = {
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
 };
 
+function resolvePreviewData(data: NewsletterEditorProps['data'], language: CmsLanguage): ResolvedNewsletterData {
+  const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });
+
+  return {
+    headlineAccent: data.headlineAccent ?? '',
+    headline: pickLang(toI18nField(data.headline), language),
+    description: pickLang(toI18nField(data.description), language),
+    buttonText: pickLang(toI18nField(data.buttonText), language),
+    placeholderEmail: pickLang(toI18nField(data.placeholderEmail), language),
+  };
+}
+
 export function NewsletterEditor({ data, isFieldDirty, onFieldChange }: NewsletterEditorProps) {
+  const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   return (
     <div className="space-y-6">
       {/* Global accent */}
@@ -46,6 +64,10 @@ export function NewsletterEditor({ data, isFieldDirty, onFieldChange }: Newslett
           ))}
         </div>
       ))}
+
+      <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
+        <NewsletterSection data={resolvePreviewData(data, previewLang)} previewMode />
+      </AdminPreviewPanel>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import {
   adminFieldLabelClass,
@@ -7,6 +8,10 @@ import {
   getAdminInputClass,
 } from '../../../components/shared/adminEditorStyles';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
+import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
+import { HeaderBar } from '../../../../../components/composites/HeaderBar';
+import { pickLang } from '../../../../../services/cmsService';
+import type { CmsLanguage, ResolvedNavData } from '../../../../../types/cms';
 import { Trash2 } from 'lucide-react';
 
 type I18nField = { pt?: string; en?: string };
@@ -23,7 +28,24 @@ type NavEditorProps = {
   onRemoveArrayItem: (path: Array<string | number>, index: number) => void;
 };
 
+function resolvePreviewData(data: NavEditorProps['data'], language: CmsLanguage): ResolvedNavData {
+  const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });
+
+  return {
+    links: (data.links ?? []).map((link) => ({
+      id: link.id ?? '',
+      href: link.href ?? '',
+      label: pickLang(toI18nField(link.labels), language),
+    })),
+    cta: {
+      href: data.cta?.href ?? '',
+      label: pickLang(toI18nField(data.cta?.labels), language),
+    },
+  };
+}
+
 export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem }: NavEditorProps) {
+  const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const links = Array.isArray(data?.links) ? data.links : [];
 
   return (
@@ -73,6 +95,15 @@ export function NavEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, o
           </AdminEditorCard>
         ))}
       </div>
+
+      <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
+        <HeaderBar
+          navLinks={resolvePreviewData(data, previewLang).links}
+          ctaText={resolvePreviewData(data, previewLang).cta.label}
+          ctaHref={resolvePreviewData(data, previewLang).cta.href}
+          isFixed={false}
+        />
+      </AdminPreviewPanel>
     </div>
   );
 }

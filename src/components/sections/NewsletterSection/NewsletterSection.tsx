@@ -10,12 +10,13 @@ import { NEWSLETTER_SUCCESS_RESET_MS } from '../../../lib/constants';
 
 export interface NewsletterSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: ResolvedNewsletterData;
+  previewMode?: boolean;
 }
 
 const fieldBase =
   'h-[54px] w-full rounded-full border border-[color:var(--color-border-subtle)] bg-[#fafafa] px-6 text-[16px] text-[color:var(--color-text-primary)] placeholder:text-gray-500 [font-family:var(--font-body)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-brown)] focus-visible:ring-offset-1';
 
-export const NewsletterSection = ({ data, className, ...props }: NewsletterSectionProps) => {
+export const NewsletterSection = ({ data, previewMode, className, ...props }: NewsletterSectionProps) => {
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -34,6 +35,8 @@ export const NewsletterSection = ({ data, className, ...props }: NewsletterSecti
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (previewMode) return;
 
     if (!formData.consent) {
       toast.error('Você precisa aceitar os termos para continuar.');
