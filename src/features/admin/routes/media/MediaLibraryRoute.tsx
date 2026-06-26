@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Copy, Trash2, Check, UploadCloud, Search } from 'lucide-react';
 import type { MediaAsset } from '../../types';
+import { optimizeImage, formatBytes } from '../../../../utils/imageOptimizer';
 
 type MediaLibraryRouteProps = {
   mediaAssets: MediaAsset[];
@@ -13,7 +14,7 @@ type MediaLibraryRouteProps = {
   filteredAssets: MediaAsset[];
   isUploading: boolean;
   uploadProgress: number;
-  onUpload: (file: File, category: string) => void;
+  onUpload: (file: File, category: string) => Promise<void>;
   onDelete: (id: string, url: string) => Promise<void>;
   onCategoryCreate: (label: string) => Promise<string>;
 };
@@ -40,6 +41,14 @@ export function MediaLibraryRoute({
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryLabel, setNewCategoryLabel] = useState('');
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [optimizationResult, setOptimizationResult] = useState<{
+    originalSize: string;
+    compressedSize: string;
+  } | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'optimizing' | 'uploading' | 'success' | 'error'>('idle');
+
   const uploadCategories = categories.filter((c) => c.id !== 'all');
 
   const handleSaveNewCategory = async () => {
@@ -63,8 +72,47 @@ export function MediaLibraryRoute({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      onUpload(file, uploadCategory);
+      setSelectedFile(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setUploadStatus('idle');
+      setOptimizationResult(null);
       e.target.value = '';
+    }
+  };
+
+  const handleOptimizeAndSave = async () => {
+    if (!selectedFile) return;
+
+    setUploadStatus('optimizing');
+    try {
+      const result = await optimizeImage(selectedFile);
+      setUploadStatus('uploading');
+      setOptimizationResult({
+        originalSize: result.originalFormatted,
+        compressedSize: result.compressedFormatted,
+      });
+
+      await onUpload(result.file, uploadCategory);
+
+      setUploadStatus('success');
+      setSelectedFile(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
+
+      setTimeout(() => {
+        setUploadStatus('idle');
+        setOptimizationResult(null);
+      }, 5000);
+    } catch (err) {
+      setUploadStatus('error');
+      toast.error('Erro ao otimizar ou enviar imagem.');
+      console.error(err);
     }
   };
 
@@ -163,6 +211,24 @@ export function MediaLibraryRoute({
             </label>
           )}
 
+          {selectedFile && (
+            <div className="space-y-2 rounded border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] p-2">
+              {previewUrl && (
+                <div className="aspect-video w-full rounded overflow-hidden bg-[var(--admin-bg)] border border-[var(--admin-border)]">
+                  <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
+                </div>
+              )}
+              <div className="text-xs space-y-1">
+                <p className="font-semibold truncate text-[var(--admin-text-2)]" title={selectedFile.name}>
+                  {selectedFile.name}
+                </p>
+                <p className="text-[var(--admin-text-4)]">
+                  Tamanho: <span className="font-semibold text-[var(--admin-text-3)]">{formatBytes(selectedFile.size)}</span>
+                </p>
+              </div>
+            </div>
+          )}
+
           <input
             ref={fileInputRef}
             type="file"
@@ -171,16 +237,54 @@ export function MediaLibraryRoute({
             onChange={handleFileChange}
           />
 
-          <button
-            type="button"
-            disabled={isUploading}
-            onClick={() => fileInputRef.current?.click()}
-            className="w-full rounded bg-[var(--admin-accent)] px-3 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 shadow-sm transition-all"
-          >
-            {isUploading ? 'Enviando...' : 'Selecionar Arquivo'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+              onClick={() => fileInputRef.current?.click()}
+              className="flex-1 rounded border border-[var(--admin-border)] bg-[var(--admin-surface-2)] px-3 py-2 text-xs font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-border-sub)] transition-all disabled:opacity-50"
+            >
+              {selectedFile ? 'Mudar Imagem' : 'Selecionar Arquivo'}
+            </button>
+            {selectedFile && (
+              <button
+                type="button"
+                disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                onClick={() => {
+                  setSelectedFile(null);
+                  if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                    setPreviewUrl(null);
+                  }
+                  setUploadStatus('idle');
+                }}
+                className="rounded bg-rose-50 border border-rose-100 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-100 transition-all disabled:opacity-50"
+              >
+                Remover
+              </button>
+            )}
+          </div>
 
-          {isUploading && (
+          {selectedFile && (
+            <button
+              type="button"
+              disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+              onClick={handleOptimizeAndSave}
+              className="w-full rounded bg-[var(--admin-accent)] px-3 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 shadow-sm transition-all"
+            >
+              {uploadStatus === 'optimizing' && 'Otimizando...'}
+              {uploadStatus === 'uploading' && 'Enviando...'}
+              {uploadStatus === 'idle' && 'Otimizar e Salvar Imagem'}
+            </button>
+          )}
+
+          {uploadStatus === 'optimizing' && (
+            <p className="text-center text-xs text-[var(--admin-text-3)] font-semibold animate-pulse">
+              ⚙️ Otimizando imagem...
+            </p>
+          )}
+
+          {uploadStatus === 'uploading' && (
             <div className="space-y-1 pt-1">
               <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--admin-border)]">
                 <div
@@ -188,7 +292,17 @@ export function MediaLibraryRoute({
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
-              <p className="text-center text-xs text-[var(--admin-text-3)] font-semibold">{uploadProgress}%</p>
+              <p className="text-center text-xs text-[var(--admin-text-3)] font-semibold">Enviando: {uploadProgress}%</p>
+            </div>
+          )}
+
+          {uploadStatus === 'success' && optimizationResult && (
+            <div className="rounded border border-green-200 bg-green-50 p-2.5 text-xs text-green-800 space-y-1">
+              <p className="font-bold">✓ Upload efetuado com sucesso!</p>
+              <p className="text-[10px]">
+                Otimizada de <span className="font-bold">{optimizationResult.originalSize}</span> para{' '}
+                <span className="font-bold">{optimizationResult.compressedSize}</span>.
+              </p>
             </div>
           )}
         </div>

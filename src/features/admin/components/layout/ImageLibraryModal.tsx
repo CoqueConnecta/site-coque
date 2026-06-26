@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { optimizeImage, formatBytes } from '../../../../utils/imageOptimizer';
 
 type MediaAsset = {
   id: string;
@@ -31,7 +32,7 @@ type ImageLibraryModalProps = {
   onSelectAsset: (asset: MediaAsset) => void;
   isUploading: boolean;
   uploadProgress: number;
-  onUpload: (file: File, category: string) => void;
+  onUpload: (file: File, category: string) => Promise<void>;
   onCategoryCreate: (label: string) => Promise<string>;
 };
 
@@ -59,6 +60,14 @@ export function ImageLibraryModal({
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryLabel, setNewCategoryLabel] = useState('');
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [optimizationResult, setOptimizationResult] = useState<{
+    originalSize: string;
+    compressedSize: string;
+  } | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'optimizing' | 'uploading' | 'success' | 'error'>('idle');
+
   const handleSaveNewCategory = async () => {
     const label = newCategoryLabel.trim();
     if (!label) {
@@ -77,17 +86,56 @@ export function ImageLibraryModal({
     }
   };
 
-  if (!isOpen) return null;
-
-  const uploadCategories = categories.filter((c) => c.id !== 'all');
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      onUpload(file, uploadCategory);
+      setSelectedFile(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setUploadStatus('idle');
+      setOptimizationResult(null);
       e.target.value = '';
     }
   };
+
+  const handleOptimizeAndSave = async () => {
+    if (!selectedFile) return;
+
+    setUploadStatus('optimizing');
+    try {
+      const result = await optimizeImage(selectedFile);
+      setUploadStatus('uploading');
+      setOptimizationResult({
+        originalSize: result.originalFormatted,
+        compressedSize: result.compressedFormatted,
+      });
+
+      await onUpload(result.file, uploadCategory);
+
+      setUploadStatus('success');
+      setSelectedFile(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
+
+      setTimeout(() => {
+        setUploadStatus('idle');
+        setOptimizationResult(null);
+      }, 5000);
+    } catch (err) {
+      setUploadStatus('error');
+      toast.error('Erro ao otimizar ou enviar imagem.');
+      console.error(err);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  const uploadCategories = categories.filter((c) => c.id !== 'all');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -167,6 +215,24 @@ export function ImageLibraryModal({
                 </label>
               )}
 
+              {selectedFile && (
+                <div className="space-y-2 rounded border border-gray-200 bg-gray-50 p-2">
+                  {previewUrl && (
+                    <div className="aspect-video w-full rounded overflow-hidden bg-gray-100 border border-gray-200">
+                      <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
+                    </div>
+                  )}
+                  <div className="text-xs space-y-1">
+                    <p className="font-semibold truncate text-gray-800" title={selectedFile.name}>
+                      {selectedFile.name}
+                    </p>
+                    <p className="text-gray-500">
+                      Tamanho: <span className="font-semibold text-gray-700">{formatBytes(selectedFile.size)}</span>
+                    </p>
+                  </div>
+                </div>
+              )}
+
               <input
                 ref={fileInputRef}
                 type="file"
@@ -175,16 +241,54 @@ export function ImageLibraryModal({
                 onChange={handleFileChange}
               />
 
-              <button
-                type="button"
-                disabled={isUploading}
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-              >
-                {isUploading ? 'Enviando...' : 'Selecionar arquivo'}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1 rounded border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-all disabled:opacity-50"
+                >
+                  {selectedFile ? 'Mudar imagem' : 'Selecionar arquivo'}
+                </button>
+                {selectedFile && (
+                  <button
+                    type="button"
+                    disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                    onClick={() => {
+                      setSelectedFile(null);
+                      if (previewUrl) {
+                        URL.revokeObjectURL(previewUrl);
+                        setPreviewUrl(null);
+                      }
+                      setUploadStatus('idle');
+                    }}
+                    className="rounded bg-red-50 border border-red-100 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 transition-all disabled:opacity-50"
+                  >
+                    Remover
+                  </button>
+                )}
+              </div>
 
-              {isUploading && (
+              {selectedFile && (
+                <button
+                  type="button"
+                  disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                  onClick={handleOptimizeAndSave}
+                  className="w-full rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                >
+                  {uploadStatus === 'optimizing' && 'Otimizando...'}
+                  {uploadStatus === 'uploading' && 'Enviando...'}
+                  {uploadStatus === 'idle' && 'Otimizar e Salvar Imagem'}
+                </button>
+              )}
+
+              {uploadStatus === 'optimizing' && (
+                <p className="text-center text-xs text-gray-600 font-semibold animate-pulse">
+                  ⚙️ Otimizando imagem...
+                </p>
+              )}
+
+              {uploadStatus === 'uploading' && (
                 <div className="space-y-1">
                   <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
                     <div
@@ -192,7 +296,17 @@ export function ImageLibraryModal({
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
-                  <p className="text-center text-xs text-gray-500">{uploadProgress}%</p>
+                  <p className="text-center text-xs text-gray-500">Enviando: {uploadProgress}%</p>
+                </div>
+              )}
+
+              {uploadStatus === 'success' && optimizationResult && (
+                <div className="rounded border border-green-200 bg-green-50 p-2.5 text-xs text-green-800 space-y-1">
+                  <p className="font-bold">✓ Upload efetuado com sucesso!</p>
+                  <p className="text-[10px]">
+                    Otimizada de <span className="font-bold">{optimizationResult.originalSize}</span> para{' '}
+                    <span className="font-bold">{optimizationResult.compressedSize}</span>.
+                  </p>
                 </div>
               )}
             </div>
