@@ -79,6 +79,7 @@ export default function AdminPage() {
     handleUpload,
     handleDelete,
     handleCreateCategory,
+    handleUpdateMetadata,
     openImagePicker,
     closeImagePicker,
   } = useImagePicker();
@@ -235,6 +236,7 @@ export default function AdminPage() {
               onUpload={handleUpload}
               onDelete={handleDelete}
               onCategoryCreate={handleCreateCategory}
+              onUpdateMetadata={handleUpdateMetadata}
             />
           )}
         </div>
@@ -264,6 +266,7 @@ export default function AdminPage() {
         uploadProgress={uploadProgress}
         onUpload={handleUpload}
         onCategoryCreate={handleCreateCategory}
+        onUpdateMetadata={handleUpdateMetadata}
       />
     </AdminLayout>
   );

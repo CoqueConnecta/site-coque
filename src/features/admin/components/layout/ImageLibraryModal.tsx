@@ -32,8 +32,9 @@ type ImageLibraryModalProps = {
   onSelectAsset: (asset: MediaAsset) => void;
   isUploading: boolean;
   uploadProgress: number;
-  onUpload: (file: File, category: string) => Promise<void>;
+  onUpload: (file: File, category: string, title?: string, alt?: string) => Promise<void>;
   onCategoryCreate: (label: string) => Promise<string>;
+  onUpdateMetadata: (id: string, title: string, alt: string) => Promise<void>;
 };
 
 export function ImageLibraryModal({
@@ -54,6 +55,7 @@ export function ImageLibraryModal({
   uploadProgress,
   onUpload,
   onCategoryCreate,
+  onUpdateMetadata,
 }: ImageLibraryModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadCategory, setUploadCategory] = useState('gallery');
@@ -67,6 +69,14 @@ export function ImageLibraryModal({
     compressedSize: string;
   } | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'optimizing' | 'uploading' | 'success' | 'error'>('idle');
+
+  const [imageTitle, setImageTitle] = useState('');
+  const [imageAlt, setImageAlt] = useState('');
+
+  const [editingAsset, setEditingAsset] = useState<MediaAsset | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editAlt, setEditAlt] = useState('');
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   const handleSaveNewCategory = async () => {
     const label = newCategoryLabel.trim();
@@ -86,10 +96,33 @@ export function ImageLibraryModal({
     }
   };
 
+  const handleStartEdit = (asset: MediaAsset) => {
+    setEditingAsset(asset);
+    setEditTitle(asset.title || '');
+    setEditAlt(asset.alt || '');
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingAsset) return;
+    setIsSavingEdit(true);
+    try {
+      await onUpdateMetadata(editingAsset.id, editTitle.trim(), editAlt.trim());
+      toast.success('Imagem atualizada com sucesso!');
+      setEditingAsset(null);
+    } catch (err) {
+      toast.error('Erro ao atualizar metadados.');
+      console.error(err);
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      setImageTitle(file.name.replace(/\.[^/.]+$/, ''));
+      setImageAlt('');
       const url = URL.createObjectURL(file);
       setPreviewUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev);
@@ -113,10 +146,12 @@ export function ImageLibraryModal({
         compressedSize: result.compressedFormatted,
       });
 
-      await onUpload(result.file, uploadCategory);
+      await onUpload(result.file, uploadCategory, imageTitle.trim(), imageAlt.trim());
 
       setUploadStatus('success');
       setSelectedFile(null);
+      setImageTitle('');
+      setImageAlt('');
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
         setPreviewUrl(null);
@@ -216,7 +251,7 @@ export function ImageLibraryModal({
               )}
 
               {selectedFile && (
-                <div className="space-y-2 rounded border border-gray-200 bg-gray-50 p-2">
+                <div className="space-y-3 rounded border border-gray-200 bg-gray-50 p-2.5">
                   {previewUrl && (
                     <div className="aspect-video w-full rounded overflow-hidden bg-gray-100 border border-gray-200">
                       <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
@@ -229,6 +264,31 @@ export function ImageLibraryModal({
                     <p className="text-gray-500">
                       Tamanho: <span className="font-semibold text-gray-700">{formatBytes(selectedFile.size)}</span>
                     </p>
+                  </div>
+
+                  <div className="space-y-2 border-t border-gray-200 pt-2">
+                    <label className="block">
+                      <span className="mb-0.5 block text-[10px] font-medium text-gray-600">Título da Imagem</span>
+                      <input
+                        type="text"
+                        value={imageTitle}
+                        onChange={(e) => setImageTitle(e.target.value)}
+                        placeholder="Ex: Crianças na horta"
+                        disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                        className="h-8 w-full rounded border border-gray-200 bg-white px-2 text-xs text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="mb-0.5 block text-[10px] font-medium text-gray-600">Texto Alternativo (Alt)</span>
+                      <input
+                        type="text"
+                        value={imageAlt}
+                        onChange={(e) => setImageAlt(e.target.value)}
+                        placeholder="Descrição para leitores de tela..."
+                        disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                        className="h-8 w-full rounded border border-gray-200 bg-white px-2 text-xs text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                      />
+                    </label>
                   </div>
                 </div>
               )}
@@ -256,6 +316,8 @@ export function ImageLibraryModal({
                     disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
                     onClick={() => {
                       setSelectedFile(null);
+                      setImageTitle('');
+                      setImageAlt('');
                       if (previewUrl) {
                         URL.revokeObjectURL(previewUrl);
                         setPreviewUrl(null);
@@ -375,13 +437,25 @@ export function ImageLibraryModal({
                         {asset.category ?? 'geral'}
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => onSelectAsset(asset)}
-                      className="w-full rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                    >
-                      Usar nesta seção
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onSelectAsset(asset)}
+                        className="flex-1 rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                      >
+                        Usar nesta seção
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleStartEdit(asset)}
+                        className="rounded bg-gray-100 border border-gray-200 p-2 text-gray-700 hover:bg-gray-200"
+                        title="Editar metadados"
+                      >
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -395,6 +469,61 @@ export function ImageLibraryModal({
           </div>
         </div>
       </div>
+
+      {/* Editing Modal */}
+      {editingAsset && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 animate-fade-in">
+          <div className="w-full max-w-md overflow-hidden rounded-lg bg-white shadow-2xl border border-gray-200 p-6 space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-gray-800">Editar Detalhes da Imagem</h3>
+              <p className="text-xs text-gray-500 mt-1.5 truncate">
+                {editingAsset.name}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Título</span>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Texto Alternativo (Alt)</span>
+                <textarea
+                  value={editAlt}
+                  onChange={(e) => setEditAlt(e.target.value)}
+                  className="w-full rounded border border-gray-200 bg-white p-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-20 resize-none"
+                  placeholder="Descreva a imagem para acessibilidade..."
+                />
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={isSavingEdit}
+                onClick={() => setEditingAsset(null)}
+                className="h-9 px-4 rounded bg-gray-100 text-sm font-semibold text-gray-700 hover:bg-gray-200 transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={isSavingEdit}
+                onClick={handleSaveEdit}
+                className="h-9 px-4 rounded bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 shadow-sm transition-colors disabled:opacity-50"
+              >
+                {isSavingEdit ? 'Salvando...' : 'Salvar Alterações'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

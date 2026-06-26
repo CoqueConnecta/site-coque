@@ -5,6 +5,7 @@ import {
   deleteImageFromStorage,
   subscribeToMediaCategories,
   createMediaCategory,
+  updateImageMetadata,
 } from '../../../services/storageService';
 import { localImageCategories, localImageLibrary } from '../../../data/localImageLibrary';
 import type { CmsLanguage } from '../../../types/cms';
@@ -85,11 +86,11 @@ export function useImagePicker() {
     setSelectedMediaCategory('all');
   };
 
-  const handleUpload = async (file: File, category: string) => {
+  const handleUpload = async (file: File, category: string, title = '', alt = '') => {
     setIsUploading(true);
     setUploadProgress(0);
     try {
-      await uploadImageToStorage(file, category, setUploadProgress);
+      await uploadImageToStorage(file, category, setUploadProgress, title, alt);
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -127,6 +128,9 @@ export function useImagePicker() {
       if (!id) throw new Error('Nome de categoria inválido.');
       await createMediaCategory(id, label);
       return id;
+    },
+    handleUpdateMetadata: async (id: string, title: string, alt: string): Promise<void> => {
+      await updateImageMetadata(id, { title, alt });
     },
     openImagePicker,
     closeImagePicker,

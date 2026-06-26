@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Copy, Trash2, Check, UploadCloud, Search } from 'lucide-react';
+import { Copy, Trash2, Check, UploadCloud, Search, Pencil } from 'lucide-react';
 import type { MediaAsset } from '../../types';
 import { optimizeImage, formatBytes } from '../../../../utils/imageOptimizer';
 
@@ -14,9 +14,10 @@ type MediaLibraryRouteProps = {
   filteredAssets: MediaAsset[];
   isUploading: boolean;
   uploadProgress: number;
-  onUpload: (file: File, category: string) => Promise<void>;
+  onUpload: (file: File, category: string, title?: string, alt?: string) => Promise<void>;
   onDelete: (id: string, url: string) => Promise<void>;
   onCategoryCreate: (label: string) => Promise<string>;
+  onUpdateMetadata: (id: string, title: string, alt: string) => Promise<void>;
 };
 
 export function MediaLibraryRoute({
@@ -32,6 +33,7 @@ export function MediaLibraryRoute({
   onUpload,
   onDelete,
   onCategoryCreate,
+  onUpdateMetadata,
 }: MediaLibraryRouteProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadCategory, setUploadCategory] = useState('gallery');
@@ -48,6 +50,14 @@ export function MediaLibraryRoute({
     compressedSize: string;
   } | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'optimizing' | 'uploading' | 'success' | 'error'>('idle');
+
+  const [imageTitle, setImageTitle] = useState('');
+  const [imageAlt, setImageAlt] = useState('');
+
+  const [editingAsset, setEditingAsset] = useState<MediaAsset | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editAlt, setEditAlt] = useState('');
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   const uploadCategories = categories.filter((c) => c.id !== 'all');
 
@@ -69,10 +79,33 @@ export function MediaLibraryRoute({
     }
   };
 
+  const handleStartEdit = (asset: MediaAsset) => {
+    setEditingAsset(asset);
+    setEditTitle(asset.title || '');
+    setEditAlt(asset.alt || '');
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingAsset) return;
+    setIsSavingEdit(true);
+    try {
+      await onUpdateMetadata(editingAsset.id, editTitle.trim(), editAlt.trim());
+      toast.success('Imagem atualizada com sucesso!');
+      setEditingAsset(null);
+    } catch (err) {
+      toast.error('Erro ao atualizar metadados.');
+      console.error(err);
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      setImageTitle(file.name.replace(/\.[^/.]+$/, ''));
+      setImageAlt('');
       const url = URL.createObjectURL(file);
       setPreviewUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev);
@@ -96,10 +129,12 @@ export function MediaLibraryRoute({
         compressedSize: result.compressedFormatted,
       });
 
-      await onUpload(result.file, uploadCategory);
+      await onUpload(result.file, uploadCategory, imageTitle.trim(), imageAlt.trim());
 
       setUploadStatus('success');
       setSelectedFile(null);
+      setImageTitle('');
+      setImageAlt('');
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
         setPreviewUrl(null);
@@ -212,7 +247,7 @@ export function MediaLibraryRoute({
           )}
 
           {selectedFile && (
-            <div className="space-y-2 rounded border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] p-2">
+            <div className="space-y-3 rounded border border-[var(--admin-border-sub)] bg-[var(--admin-surface-2)] p-2.5">
               {previewUrl && (
                 <div className="aspect-video w-full rounded overflow-hidden bg-[var(--admin-bg)] border border-[var(--admin-border)]">
                   <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
@@ -225,6 +260,31 @@ export function MediaLibraryRoute({
                 <p className="text-[var(--admin-text-4)]">
                   Tamanho: <span className="font-semibold text-[var(--admin-text-3)]">{formatBytes(selectedFile.size)}</span>
                 </p>
+              </div>
+
+              <div className="space-y-2 border-t border-[var(--admin-border-sub)] pt-2">
+                <label className="block">
+                  <span className="mb-0.5 block text-[10px] font-semibold text-[var(--admin-text-3)]">Título da Imagem</span>
+                  <input
+                    type="text"
+                    value={imageTitle}
+                    onChange={(e) => setImageTitle(e.target.value)}
+                    placeholder="Ex: Crianças na horta"
+                    disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                    className="h-8 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-xs text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)] disabled:opacity-50"
+                  />
+                </label>
+                <label className="block">
+                  <span className="mb-0.5 block text-[10px] font-semibold text-[var(--admin-text-3)]">Texto Alternativo (Alt)</span>
+                  <input
+                    type="text"
+                    value={imageAlt}
+                    onChange={(e) => setImageAlt(e.target.value)}
+                    placeholder="Descrição para leitores de tela..."
+                    disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                    className="h-8 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-xs text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)] disabled:opacity-50"
+                  />
+                </label>
               </div>
             </div>
           )}
@@ -252,6 +312,8 @@ export function MediaLibraryRoute({
                 disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
                 onClick={() => {
                   setSelectedFile(null);
+                  setImageTitle('');
+                  setImageAlt('');
                   if (previewUrl) {
                     URL.revokeObjectURL(previewUrl);
                     setPreviewUrl(null);
@@ -397,6 +459,15 @@ export function MediaLibraryRoute({
 
                   <button
                     type="button"
+                    onClick={() => handleStartEdit(asset)}
+                    className="flex items-center justify-center h-9 w-9 rounded bg-[var(--admin-surface-2)] border border-[var(--admin-border)] text-[var(--admin-text-2)] hover:bg-[var(--admin-border-sub)] transition-colors"
+                    title="Editar metadados"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={() => setDeleteConfirmAsset(asset)}
                     className="flex items-center justify-center h-9 w-9 rounded bg-rose-50 border border-rose-100 text-rose-600 hover:bg-rose-100 transition-colors"
                     title="Excluir imagem"
@@ -446,6 +517,61 @@ export function MediaLibraryRoute({
                 className="h-9 px-4 rounded-md bg-rose-600 text-sm font-semibold text-white hover:bg-rose-700 shadow-sm transition-colors disabled:opacity-50"
               >
                 {isDeleting ? 'Excluindo...' : 'Confirmar Exclusão'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Editing Modal */}
+      {editingAsset && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in">
+          <div className="w-full max-w-md overflow-hidden rounded-lg bg-[var(--admin-surface)] shadow-2xl border border-[var(--admin-border)] p-6 space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-[var(--admin-text-1)]">Editar Detalhes da Imagem</h3>
+              <p className="text-xs text-[var(--admin-text-4)] mt-1.5 truncate">
+                {editingAsset.name}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold text-[var(--admin-text-3)]">Título</span>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="h-9 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-sm text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)]"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold text-[var(--admin-text-3)]">Texto Alternativo (Alt)</span>
+                <textarea
+                  value={editAlt}
+                  onChange={(e) => setEditAlt(e.target.value)}
+                  className="w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] p-2 text-sm text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)] h-20 resize-none"
+                  placeholder="Descreva a imagem para acessibilidade..."
+                />
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={isSavingEdit}
+                onClick={() => setEditingAsset(null)}
+                className="h-9 px-4 rounded-md border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] text-sm font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-surface-2)] transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={isSavingEdit}
+                onClick={handleSaveEdit}
+                className="h-9 px-4 rounded-md bg-[var(--admin-accent)] text-sm font-semibold text-white hover:opacity-90 shadow-sm transition-colors disabled:opacity-50"
+              >
+                {isSavingEdit ? 'Salvando...' : 'Salvar Alterações'}
               </button>
             </div>
           </div>

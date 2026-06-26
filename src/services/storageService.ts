@@ -1,5 +1,5 @@
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import { ref as dbRef, push, set, onValue, remove, type Unsubscribe } from 'firebase/database';
+import { ref as dbRef, push, set, onValue, remove, update, type Unsubscribe } from 'firebase/database';
 import { storage, database } from '../../firebase';
 import type { MediaAsset } from '../features/admin/types';
 
@@ -7,6 +7,8 @@ export function uploadImageToStorage(
   file: File,
   category: string,
   onProgress: (pct: number) => void,
+  title = '',
+  alt = '',
 ): Promise<MediaAsset> {
   return new Promise((resolve, reject) => {
     const timestamp = Date.now();
@@ -26,8 +28,8 @@ export function uploadImageToStorage(
           const url = await getDownloadURL(task.snapshot.ref);
           const newRef = push(dbRef(database, 'media/library'));
           const id = newRef.key!;
-          const asset: MediaAsset = { id, url, name: file.name, title: '', alt: '', category: safeCategory };
-          await set(newRef, { url, name: file.name, title: '', alt: '', category: safeCategory, uploadedAt: timestamp });
+          const asset: MediaAsset = { id, url, name: file.name, title, alt, category: safeCategory };
+          await set(newRef, { url, name: file.name, title, alt, category: safeCategory, uploadedAt: timestamp });
           resolve(asset);
         } catch (err) {
           reject(err);
@@ -69,4 +71,11 @@ export function subscribeToMediaCategories(
 
 export async function createMediaCategory(id: string, label: string): Promise<void> {
   await set(dbRef(database, `media/categories/${id}`), { label });
+}
+
+export async function updateImageMetadata(
+  id: string,
+  metadata: { title: string; alt: string }
+): Promise<void> {
+  await update(dbRef(database, `media/library/${id}`), metadata);
 }
