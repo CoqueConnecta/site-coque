@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 type MediaAsset = {
   id: string;
@@ -23,7 +24,7 @@ type ImageLibraryModalProps = {
   mediaAssetsCount: number;
   mediaSearch: string;
   onMediaSearchChange: (value: string) => void;
-  categories: readonly ImageCategory[];
+  categories: ImageCategory[];
   selectedCategory: string;
   onSelectCategory: (categoryId: string) => void;
   filteredAssets: MediaAsset[];
@@ -31,6 +32,7 @@ type ImageLibraryModalProps = {
   isUploading: boolean;
   uploadProgress: number;
   onUpload: (file: File, category: string) => void;
+  onCategoryCreate: (label: string) => Promise<string>;
 };
 
 export function ImageLibraryModal({
@@ -50,9 +52,30 @@ export function ImageLibraryModal({
   isUploading,
   uploadProgress,
   onUpload,
+  onCategoryCreate,
 }: ImageLibraryModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadCategory, setUploadCategory] = useState('gallery');
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryLabel, setNewCategoryLabel] = useState('');
+
+  const handleSaveNewCategory = async () => {
+    const label = newCategoryLabel.trim();
+    if (!label) {
+      toast.error('O nome da categoria não pode ser vazio.');
+      return;
+    }
+    try {
+      const createdId = await onCategoryCreate(label);
+      setUploadCategory(createdId);
+      setIsCreatingCategory(false);
+      setNewCategoryLabel('');
+      toast.success(`Categoria "${label}" criada com sucesso!`);
+    } catch (err) {
+      toast.error('Erro ao criar categoria.');
+      console.error(err);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -90,19 +113,59 @@ export function ImageLibraryModal({
             <h4 className="text-sm font-bold uppercase tracking-wide text-gray-600">Enviar nova imagem</h4>
 
             <div className="space-y-3 rounded border border-gray-200 bg-white p-3">
-              <label className="block">
-                <span className="mb-1 block text-xs font-medium text-gray-600">Categoria</span>
-                <select
-                  value={uploadCategory}
-                  onChange={(e) => setUploadCategory(e.target.value)}
-                  disabled={isUploading}
-                  className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
-                >
-                  {uploadCategories.map((c) => (
-                    <option key={c.id} value={c.id}>{c.label}</option>
-                  ))}
-                </select>
-              </label>
+              {isCreatingCategory ? (
+                <div className="space-y-2 pt-1 animate-fade-in">
+                  <span className="block text-xs font-medium text-gray-600">Nova Categoria</span>
+                  <input
+                    type="text"
+                    value={newCategoryLabel}
+                    onChange={(e) => setNewCategoryLabel(e.target.value)}
+                    placeholder="Ex: Eventos"
+                    className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveNewCategory}
+                      className="flex-1 h-9 rounded bg-blue-600 px-3 text-xs font-semibold text-white hover:bg-blue-700 transition-colors"
+                    >
+                      Salvar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCreatingCategory(false);
+                        setNewCategoryLabel('');
+                        setUploadCategory('gallery');
+                      }}
+                      className="flex-1 h-9 rounded bg-gray-100 border border-gray-200 px-3 text-xs font-semibold text-gray-700 hover:bg-gray-200 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label className="block">
+                  <span className="mb-1 block text-xs font-medium text-gray-600">Categoria</span>
+                  <select
+                    value={uploadCategory}
+                    onChange={(e) => {
+                      if (e.target.value === 'NEW_CATEGORY') {
+                        setIsCreatingCategory(true);
+                      } else {
+                        setUploadCategory(e.target.value);
+                      }
+                    }}
+                    disabled={isUploading}
+                    className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                  >
+                    {uploadCategories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.label}</option>
+                    ))}
+                    <option value="NEW_CATEGORY">+ Criar nova categoria...</option>
+                  </select>
+                </label>
+              )}
 
               <input
                 ref={fileInputRef}

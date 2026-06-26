@@ -78,6 +78,7 @@ export default function AdminPage() {
     uploadProgress,
     handleUpload,
     handleDelete,
+    handleCreateCategory,
     openImagePicker,
     closeImagePicker,
   } = useImagePicker();
@@ -233,6 +234,7 @@ export default function AdminPage() {
               uploadProgress={uploadProgress}
               onUpload={handleUpload}
               onDelete={handleDelete}
+              onCategoryCreate={handleCreateCategory}
             />
           )}
         </div>
@@ -255,12 +257,13 @@ export default function AdminPage() {
         onMediaSearchChange={setMediaSearch}
         categories={categories}
         selectedCategory={selectedMediaCategory ?? 'all'}
-        onSelectCategory={(id) => setSelectedMediaCategory(id as 'all')}
+        onSelectCategory={setSelectedMediaCategory}
         filteredAssets={filteredMediaAssets}
         onSelectAsset={applyAssetToField}
         isUploading={isUploading}
         uploadProgress={uploadProgress}
         onUpload={handleUpload}
+        onCategoryCreate={handleCreateCategory}
       />
     </AdminLayout>
   );

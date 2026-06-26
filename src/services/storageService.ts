@@ -57,3 +57,16 @@ export async function deleteImageFromStorage(id: string, url: string): Promise<v
     console.error('[storageService] Failed to delete file from Storage:', err);
   }
 }
+
+export function subscribeToMediaCategories(
+  callback: (categories: Record<string, { label: string }>) => void,
+): Unsubscribe {
+  return onValue(dbRef(database, 'media/categories'), (snapshot) => {
+    const data = (snapshot.val() ?? {}) as Record<string, { label: string }>;
+    callback(data);
+  });
+}
+
+export async function createMediaCategory(id: string, label: string): Promise<void> {
+  await set(dbRef(database, `media/categories/${id}`), { label });
+}

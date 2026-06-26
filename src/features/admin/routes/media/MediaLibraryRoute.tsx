@@ -7,7 +7,7 @@ type MediaLibraryRouteProps = {
   mediaAssets: MediaAsset[];
   mediaSearch: string;
   onMediaSearchChange: (value: string) => void;
-  categories: readonly { id: string; label: string }[];
+  categories: { id: string; label: string }[];
   selectedCategory: string;
   onSelectCategory: (categoryId: string) => void;
   filteredAssets: MediaAsset[];
@@ -15,6 +15,7 @@ type MediaLibraryRouteProps = {
   uploadProgress: number;
   onUpload: (file: File, category: string) => void;
   onDelete: (id: string, url: string) => Promise<void>;
+  onCategoryCreate: (label: string) => Promise<string>;
 };
 
 export function MediaLibraryRoute({
@@ -29,14 +30,35 @@ export function MediaLibraryRoute({
   uploadProgress,
   onUpload,
   onDelete,
+  onCategoryCreate,
 }: MediaLibraryRouteProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadCategory, setUploadCategory] = useState('gallery');
   const [copiedAssetId, setCopiedAssetId] = useState<string | null>(null);
   const [deleteConfirmAsset, setDeleteConfirmAsset] = useState<MediaAsset | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryLabel, setNewCategoryLabel] = useState('');
 
   const uploadCategories = categories.filter((c) => c.id !== 'all');
+
+  const handleSaveNewCategory = async () => {
+    const label = newCategoryLabel.trim();
+    if (!label) {
+      toast.error('O nome da categoria não pode ser vazio.');
+      return;
+    }
+    try {
+      const createdId = await onCategoryCreate(label);
+      setUploadCategory(createdId);
+      setIsCreatingCategory(false);
+      setNewCategoryLabel('');
+      toast.success(`Categoria "${label}" criada com sucesso!`);
+    } catch (err) {
+      toast.error('Erro ao criar categoria.');
+      console.error(err);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -87,19 +109,59 @@ export function MediaLibraryRoute({
         </h4>
 
         <div className="space-y-3 rounded-md border border-[var(--admin-border-sub)] bg-[var(--admin-bg)] p-3">
-          <label className="block">
-            <span className="mb-1 block text-xs font-semibold text-[var(--admin-text-3)]">Categoria</span>
-            <select
-              value={uploadCategory}
-              onChange={(e) => setUploadCategory(e.target.value)}
-              disabled={isUploading}
-              className="h-9 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-sm text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)] disabled:opacity-50"
-            >
-              {uploadCategories.map((c) => (
-                <option key={c.id} value={c.id}>{c.label}</option>
-              ))}
-            </select>
-          </label>
+          {isCreatingCategory ? (
+            <div className="space-y-2 pt-1 animate-fade-in">
+              <span className="block text-xs font-semibold text-[var(--admin-text-3)]">Nova Categoria</span>
+              <input
+                type="text"
+                value={newCategoryLabel}
+                onChange={(e) => setNewCategoryLabel(e.target.value)}
+                placeholder="Ex: Eventos"
+                className="h-9 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-sm text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)]"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleSaveNewCategory}
+                  className="flex-1 h-9 rounded bg-[var(--admin-accent)] px-3 text-xs font-semibold text-white hover:opacity-90 shadow-sm transition-all"
+                >
+                  Salvar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsCreatingCategory(false);
+                    setNewCategoryLabel('');
+                    setUploadCategory('gallery');
+                  }}
+                  className="flex-1 h-9 rounded bg-[var(--admin-surface-2)] border border-[var(--admin-border)] px-3 text-xs font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-border-sub)] transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <label className="block">
+              <span className="mb-1 block text-xs font-semibold text-[var(--admin-text-3)]">Categoria</span>
+              <select
+                value={uploadCategory}
+                onChange={(e) => {
+                  if (e.target.value === 'NEW_CATEGORY') {
+                    setIsCreatingCategory(true);
+                  } else {
+                    setUploadCategory(e.target.value);
+                  }
+                }}
+                disabled={isUploading}
+                className="h-9 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-sm text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)] disabled:opacity-50"
+              >
+                {uploadCategories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.label}</option>
+                ))}
+                <option value="NEW_CATEGORY">+ Criar nova categoria...</option>
+              </select>
+            </label>
+          )}
 
           <input
             ref={fileInputRef}
