@@ -75,7 +75,7 @@ export async function createMediaCategory(id: string, label: string): Promise<vo
 
 export async function updateImageMetadata(
   id: string,
-  metadata: { title: string; alt: string }
+  metadata: { title: string; alt: string; category?: string }
 ): Promise<void> {
   await update(dbRef(database, `media/library/${id}`), metadata);
 }

@@ -129,8 +129,8 @@ export function useImagePicker() {
       await createMediaCategory(id, label);
       return id;
     },
-    handleUpdateMetadata: async (id: string, title: string, alt: string): Promise<void> => {
-      await updateImageMetadata(id, { title, alt });
+    handleUpdateMetadata: async (id: string, title: string, alt: string, category?: string): Promise<void> => {
+      await updateImageMetadata(id, { title, alt, category });
     },
     openImagePicker,
     closeImagePicker,

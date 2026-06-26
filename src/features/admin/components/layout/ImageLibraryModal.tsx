@@ -34,7 +34,7 @@ type ImageLibraryModalProps = {
   uploadProgress: number;
   onUpload: (file: File, category: string, title?: string, alt?: string) => Promise<void>;
   onCategoryCreate: (label: string) => Promise<string>;
-  onUpdateMetadata: (id: string, title: string, alt: string) => Promise<void>;
+  onUpdateMetadata: (id: string, title: string, alt: string, category?: string) => Promise<void>;
 };
 
 export function ImageLibraryModal({
@@ -58,7 +58,7 @@ export function ImageLibraryModal({
   onUpdateMetadata,
 }: ImageLibraryModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadCategory, setUploadCategory] = useState('gallery');
+  const [uploadCategory, setUploadCategory] = useState('');
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryLabel, setNewCategoryLabel] = useState('');
 
@@ -76,6 +76,7 @@ export function ImageLibraryModal({
   const [editingAsset, setEditingAsset] = useState<MediaAsset | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editAlt, setEditAlt] = useState('');
+  const [editCategory, setEditCategory] = useState('');
   const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   const handleSaveNewCategory = async () => {
@@ -100,13 +101,14 @@ export function ImageLibraryModal({
     setEditingAsset(asset);
     setEditTitle(asset.title || '');
     setEditAlt(asset.alt || '');
+    setEditCategory(asset.category || '');
   };
 
   const handleSaveEdit = async () => {
     if (!editingAsset) return;
     setIsSavingEdit(true);
     try {
-      await onUpdateMetadata(editingAsset.id, editTitle.trim(), editAlt.trim());
+      await onUpdateMetadata(editingAsset.id, editTitle.trim(), editAlt.trim(), editCategory);
       toast.success('Imagem atualizada com sucesso!');
       setEditingAsset(null);
     } catch (err) {
@@ -150,6 +152,7 @@ export function ImageLibraryModal({
 
       setUploadStatus('success');
       setSelectedFile(null);
+      setUploadCategory('');
       setImageTitle('');
       setImageAlt('');
       if (previewUrl) {
@@ -219,7 +222,7 @@ export function ImageLibraryModal({
                       onClick={() => {
                         setIsCreatingCategory(false);
                         setNewCategoryLabel('');
-                        setUploadCategory('gallery');
+                        setUploadCategory('');
                       }}
                       className="flex-1 h-9 rounded bg-gray-100 border border-gray-200 px-3 text-xs font-semibold text-gray-700 hover:bg-gray-200 transition-colors"
                     >
@@ -242,6 +245,7 @@ export function ImageLibraryModal({
                     disabled={isUploading}
                     className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
                   >
+                    <option value="" disabled>Selecione uma categoria...</option>
                     {uploadCategories.map((c) => (
                       <option key={c.id} value={c.id}>{c.label}</option>
                     ))}
@@ -304,7 +308,7 @@ export function ImageLibraryModal({
               <div className="flex gap-2">
                 <button
                   type="button"
-                  disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                  disabled={!uploadCategory || uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
                   onClick={() => fileInputRef.current?.click()}
                   className="flex-1 rounded border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-all disabled:opacity-50"
                 >
@@ -490,6 +494,19 @@ export function ImageLibraryModal({
                   onChange={(e) => setEditTitle(e.target.value)}
                   className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Categoria</span>
+                <select
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                  className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                >
+                  {uploadCategories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.label}</option>
+                  ))}
+                </select>
               </label>
 
               <label className="block">

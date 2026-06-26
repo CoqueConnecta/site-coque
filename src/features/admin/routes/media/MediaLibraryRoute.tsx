@@ -17,7 +17,7 @@ type MediaLibraryRouteProps = {
   onUpload: (file: File, category: string, title?: string, alt?: string) => Promise<void>;
   onDelete: (id: string, url: string) => Promise<void>;
   onCategoryCreate: (label: string) => Promise<string>;
-  onUpdateMetadata: (id: string, title: string, alt: string) => Promise<void>;
+  onUpdateMetadata: (id: string, title: string, alt: string, category?: string) => Promise<void>;
 };
 
 export function MediaLibraryRoute({
@@ -36,7 +36,7 @@ export function MediaLibraryRoute({
   onUpdateMetadata,
 }: MediaLibraryRouteProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadCategory, setUploadCategory] = useState('gallery');
+  const [uploadCategory, setUploadCategory] = useState('');
   const [copiedAssetId, setCopiedAssetId] = useState<string | null>(null);
   const [deleteConfirmAsset, setDeleteConfirmAsset] = useState<MediaAsset | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -57,6 +57,7 @@ export function MediaLibraryRoute({
   const [editingAsset, setEditingAsset] = useState<MediaAsset | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editAlt, setEditAlt] = useState('');
+  const [editCategory, setEditCategory] = useState('');
   const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   const uploadCategories = categories.filter((c) => c.id !== 'all');
@@ -83,13 +84,14 @@ export function MediaLibraryRoute({
     setEditingAsset(asset);
     setEditTitle(asset.title || '');
     setEditAlt(asset.alt || '');
+    setEditCategory(asset.category || '');
   };
 
   const handleSaveEdit = async () => {
     if (!editingAsset) return;
     setIsSavingEdit(true);
     try {
-      await onUpdateMetadata(editingAsset.id, editTitle.trim(), editAlt.trim());
+      await onUpdateMetadata(editingAsset.id, editTitle.trim(), editAlt.trim(), editCategory);
       toast.success('Imagem atualizada com sucesso!');
       setEditingAsset(null);
     } catch (err) {
@@ -133,6 +135,7 @@ export function MediaLibraryRoute({
 
       setUploadStatus('success');
       setSelectedFile(null);
+      setUploadCategory('');
       setImageTitle('');
       setImageAlt('');
       if (previewUrl) {
@@ -215,7 +218,7 @@ export function MediaLibraryRoute({
                   onClick={() => {
                     setIsCreatingCategory(false);
                     setNewCategoryLabel('');
-                    setUploadCategory('gallery');
+                    setUploadCategory('');
                   }}
                   className="flex-1 h-9 rounded bg-[var(--admin-surface-2)] border border-[var(--admin-border)] px-3 text-xs font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-border-sub)] transition-colors"
                 >
@@ -238,6 +241,7 @@ export function MediaLibraryRoute({
                 disabled={isUploading}
                 className="h-9 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-sm text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)] disabled:opacity-50"
               >
+                <option value="" disabled>Selecione uma categoria...</option>
                 {uploadCategories.map((c) => (
                   <option key={c.id} value={c.id}>{c.label}</option>
                 ))}
@@ -300,7 +304,7 @@ export function MediaLibraryRoute({
           <div className="flex gap-2">
             <button
               type="button"
-              disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+              disabled={!uploadCategory || uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
               onClick={() => fileInputRef.current?.click()}
               className="flex-1 rounded border border-[var(--admin-border)] bg-[var(--admin-surface-2)] px-3 py-2 text-xs font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-border-sub)] transition-all disabled:opacity-50"
             >
@@ -543,6 +547,19 @@ export function MediaLibraryRoute({
                   onChange={(e) => setEditTitle(e.target.value)}
                   className="h-9 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-sm text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)]"
                 />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold text-[var(--admin-text-3)]">Categoria</span>
+                <select
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                  className="h-9 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-sm text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)]"
+                >
+                  {uploadCategories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.label}</option>
+                  ))}
+                </select>
               </label>
 
               <label className="block">
