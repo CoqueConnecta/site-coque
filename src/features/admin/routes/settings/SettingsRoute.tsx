@@ -1,8 +1,9 @@
+import { useOutletContext } from 'react-router-dom';
 import { SectionCard } from '../../components/shared/SectionCard';
 import { NavEditor } from './editors/NavEditor';
 import { FooterEditor } from './editors/FooterEditor';
 import { NewsletterEditor } from './editors/NewsletterEditor';
-import type { AdminRouteProps } from '../types';
+import type { AdminOutletContext } from '../types';
 
 const SECTIONS = [
   { key: 'shared.nav',        label: 'Navegação'  },
@@ -10,16 +11,17 @@ const SECTIONS = [
   { key: 'shared.newsletter', label: 'Newsletter' },
 ];
 
-export function SettingsRoute({
-  cmsData,
-  isFieldDirty,
-  onFieldChange,
-  onAddArrayItem,
-  onRemoveArrayItem,
-  onMoveArrayItem,
-  onDuplicateArrayItem,
-  sectionDirtyCount,
-}: AdminRouteProps) {
+export function SettingsRoute() {
+  const {
+    cmsData,
+    isFieldDirty,
+    onFieldChange,
+    onAddArrayItem,
+    onRemoveArrayItem,
+    onMoveArrayItem,
+    onDuplicateArrayItem,
+    sectionDirtyCount,
+  } = useOutletContext<AdminOutletContext>();
   return (
     <div className="space-y-4">
       {SECTIONS.map(({ key, label }) => (

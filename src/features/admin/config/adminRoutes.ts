@@ -9,6 +9,8 @@ export interface AdminSectionConfig {
 
 export interface AdminRouteConfig {
   id: 'home' | 'privacy' | 'transparency' | 'projects' | 'settings' | 'media';
+  /** URL slug used in /admin/:routePath */
+  path: string;
   label: string;
   description: string;
   icon: LucideIcon;
@@ -18,6 +20,7 @@ export interface AdminRouteConfig {
 export const ADMIN_ROUTES: AdminRouteConfig[] = [
   {
     id: 'home',
+    path: 'home',
     label: 'Home',
     description: 'Página principal do site',
     icon: Home,
@@ -32,6 +35,7 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
   },
   {
     id: 'projects',
+    path: 'nossos-projetos',
     label: 'Nossos Projetos',
     description: 'Gerenciar projetos',
     icon: FolderOpen,
@@ -41,6 +45,7 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
   },
   {
     id: 'privacy',
+    path: 'privacidade',
     label: 'Privacidade',
     description: 'Política de privacidade',
     icon: Lock,
@@ -50,6 +55,7 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
   },
   {
     id: 'transparency',
+    path: 'transparencia',
     label: 'Transparência',
     description: 'Página de transparência',
     icon: FileText,
@@ -59,6 +65,7 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
   },
   {
     id: 'settings',
+    path: 'configuracoes',
     label: 'Configurações',
     description: 'Navegação, rodapé e newsletter',
     icon: Settings,
@@ -70,6 +77,7 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
   },
   {
     id: 'media',
+    path: 'biblioteca',
     label: 'Biblioteca',
     description: 'Biblioteca e galeria de imagens',
     icon: Image,
@@ -78,3 +86,4 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
 ];
 
 export type AdminRouteId = AdminRouteConfig['id'];
+

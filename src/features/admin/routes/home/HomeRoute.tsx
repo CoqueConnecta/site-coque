@@ -1,3 +1,4 @@
+import { useOutletContext } from 'react-router-dom';
 import { SectionCard } from '../../components/shared/SectionCard';
 import { HeroEditor } from './editors/HeroEditor';
 import { CarouselEditor } from './editors/CarouselEditor';
@@ -5,7 +6,7 @@ import { YoutubeEditor } from './editors/YoutubeEditor';
 import { WaysToHelpEditor } from './editors/WaysToHelpEditor';
 import { StatsEditor } from './editors/StatsEditor';
 import { AboutEditor } from './editors/AboutEditor';
-import type { AdminRouteProps } from '../types';
+import type { AdminOutletContext } from '../types';
 
 const SECTIONS = [
   { key: 'pages.home.hero',          label: 'Hero'            },
@@ -16,17 +17,18 @@ const SECTIONS = [
   { key: 'pages.home.stats',         label: 'Estatísticas'    },
 ];
 
-export function HomeRoute({
-  cmsData,
-  isFieldDirty,
-  onFieldChange,
-  onAddArrayItem,
-  onRemoveArrayItem,
-  onMoveArrayItem,
-  onDuplicateArrayItem,
-  renderImageField,
-  sectionDirtyCount,
-}: AdminRouteProps) {
+export function HomeRoute() {
+  const {
+    cmsData,
+    isFieldDirty,
+    onFieldChange,
+    onAddArrayItem,
+    onRemoveArrayItem,
+    onMoveArrayItem,
+    onDuplicateArrayItem,
+    renderImageField,
+    sectionDirtyCount,
+  } = useOutletContext<AdminOutletContext>();
   return (
     <div className="space-y-4">
       {SECTIONS.map(({ key, label }) => (

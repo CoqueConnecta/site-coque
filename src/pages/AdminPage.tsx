@@ -1,6 +1,6 @@
 // src/pages/AdminPage.tsx
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useBlocker, Outlet } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { signOutUser } from '../services/authService';
 import { ImageField } from '../features/admin/components/shared/ImageField';
@@ -8,13 +8,6 @@ import { ImageLibraryModal } from '../features/admin/components/layout/ImageLibr
 import { AdminLayout } from '../features/admin/components/layout/AdminLayout';
 import { AdminPageHeader } from '../features/admin/components/layout/AdminPageHeader';
 import { AdminDiscardModal } from '../features/admin/components/layout/AdminDiscardModal';
-
-import { HomeRoute } from '../features/admin/routes/home/HomeRoute';
-import { ProjectsRoute } from '../features/admin/routes/projects/ProjectsRoute';
-import { PrivacyRoute } from '../features/admin/routes/privacy/PrivacyRoute';
-import { TransparencyRoute } from '../features/admin/routes/transparency/TransparencyRoute';
-import { SettingsRoute } from '../features/admin/routes/settings/SettingsRoute';
-import { MediaLibraryRoute } from '../features/admin/routes/media/MediaLibraryRoute';
 
 import { useAdminData } from '../features/admin/hooks/useAdminData';
 import { useDirtyFields } from '../features/admin/hooks/useDirtyFields';
@@ -46,7 +39,6 @@ export default function AdminPage() {
 
   const {
     activeRouteId,
-    setActiveRouteId,
     activeRoute,
     activeSectionKey,
     setActiveSectionKey,
@@ -168,12 +160,31 @@ export default function AdminPage() {
   const handleConfirmDiscard = () => {
     handleDiscardRoute();
     setIsDiscardConfirmOpen(false);
+    blocker.reset?.();
+  };
+
+  const handleCancelDiscard = () => {
+    setIsDiscardConfirmOpen(false);
+    blocker.reset?.();
   };
 
   const handleLogout = async () => {
     await signOutUser();
     navigate('/login');
   };
+
+  // Block navigation when there are unsaved changes
+  const totalRouteDirtyForBlocker = routeDirtyCount(activeRouteId);
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      totalRouteDirtyForBlocker > 0 &&
+      currentLocation.pathname !== nextLocation.pathname,
+  );
+
+  // When router blocks navigation, open the discard modal
+  if (blocker.state === 'blocked' && !isDiscardConfirmOpen) {
+    setIsDiscardConfirmOpen(true);
+  }
 
   if (!cmsData) {
     return (
@@ -186,6 +197,7 @@ export default function AdminPage() {
   const totalRouteDirty = routeDirtyCount(activeRouteId);
 
   const routeProps = {
+    // CMS editor props
     cmsData,
     activeSectionKey,
     onActiveSectionChange: setActiveSectionKey,
@@ -197,12 +209,25 @@ export default function AdminPage() {
     onDuplicateArrayItem: handleDuplicateArrayItem,
     renderImageField,
     sectionDirtyCount,
+    // Media library props (used by MediaLibraryRoute)
+    mediaAssets,
+    mediaSearch,
+    onMediaSearchChange: setMediaSearch,
+    categories,
+    selectedCategory: selectedMediaCategory ?? 'all',
+    onSelectCategory: setSelectedMediaCategory,
+    filteredAssets: filteredMediaAssets,
+    isUploading,
+    uploadProgress,
+    onUpload: handleUpload,
+    onDelete: handleDelete,
+    onCategoryCreate: handleCreateCategory,
+    onUpdateMetadata: handleUpdateMetadata,
   };
 
   return (
     <AdminLayout
       activeRouteId={activeRouteId}
-      onSelectRoute={setActiveRouteId}
       routeDirtyCount={routeDirtyCount}
       onLogout={handleLogout}
     >
@@ -217,34 +242,13 @@ export default function AdminPage() {
         />
 
         <div className="space-y-4">
-          {activeRouteId === 'home'         && <HomeRoute         {...routeProps} />}
-          {activeRouteId === 'projects'     && <ProjectsRoute     {...routeProps} />}
-          {activeRouteId === 'privacy'      && <PrivacyRoute      {...routeProps} />}
-          {activeRouteId === 'transparency' && <TransparencyRoute {...routeProps} />}
-          {activeRouteId === 'settings'     && <SettingsRoute     {...routeProps} />}
-          {activeRouteId === 'media'        && (
-            <MediaLibraryRoute
-              mediaAssets={mediaAssets}
-              mediaSearch={mediaSearch}
-              onMediaSearchChange={setMediaSearch}
-              categories={categories}
-              selectedCategory={selectedMediaCategory ?? 'all'}
-              onSelectCategory={setSelectedMediaCategory}
-              filteredAssets={filteredMediaAssets}
-              isUploading={isUploading}
-              uploadProgress={uploadProgress}
-              onUpload={handleUpload}
-              onDelete={handleDelete}
-              onCategoryCreate={handleCreateCategory}
-              onUpdateMetadata={handleUpdateMetadata}
-            />
-          )}
+          <Outlet context={routeProps} />
         </div>
       </div>
 
       <AdminDiscardModal
         isOpen={isDiscardConfirmOpen}
-        onCancel={() => setIsDiscardConfirmOpen(false)}
+        onCancel={handleCancelDiscard}
         onConfirm={handleConfirmDiscard}
       />
 

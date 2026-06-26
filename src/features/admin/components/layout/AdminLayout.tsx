@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Menu, Layers, Sun, Moon } from 'lucide-react';
 import type { User } from 'firebase/auth';
 import { getCurrentUser, onAuthChange, reloadCurrentUser } from '../../../../services/authService';
@@ -10,7 +10,6 @@ import { ThemeProvider, useTheme } from '../../context/ThemeContext';
 
 type AdminLayoutProps = {
   activeRouteId: AdminRouteId;
-  onSelectRoute: (id: AdminRouteId) => void;
   routeDirtyCount: (id: AdminRouteId) => number;
   children: React.ReactNode;
   onLogout: () => void;
@@ -36,14 +35,12 @@ function ThemeToggle() {
 }
 
 function NavContent({
-  activeRouteId,
-  onSelectRoute,
   routeDirtyCount,
   user,
   isUserLoading,
   onLogout,
   onNavClick,
-}: Omit<AdminLayoutProps, 'children'> & {
+}: Omit<AdminLayoutProps, 'children' | 'activeRouteId'> & {
   user: User | null;
   isUserLoading: boolean;
   onNavClick?: () => void;
@@ -67,34 +64,35 @@ function NavContent({
       <nav className="flex-1 px-3 py-4 space-y-1">
         {ADMIN_ROUTES.map((route) => {
           const Icon = route.icon;
-          const isActive = activeRouteId === route.id;
           const dirty = routeDirtyCount(route.id);
           return (
-              <button
+            <NavLink
               key={route.id}
-              type="button"
-              onClick={() => {
-                onSelectRoute(route.id);
-                onNavClick?.();
-              }}
+              to={`/admin/${route.path}`}
               aria-label={route.label}
-              aria-current={isActive ? 'page' : undefined}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all text-left ${
-                isActive
-                  ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)] shadow-sm'
-                  : 'text-[var(--admin-text-3)] hover:bg-[var(--admin-surface-2)] hover:text-[var(--admin-text-1)]'
-              }`}
+              onClick={onNavClick}
+              className={({ isActive }) =>
+                `w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all ${
+                  isActive
+                    ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)] shadow-sm'
+                    : 'text-[var(--admin-text-3)] hover:bg-[var(--admin-surface-2)] hover:text-[var(--admin-text-1)]'
+                }`
+              }
             >
-              <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[var(--admin-accent)]' : 'text-[var(--admin-text-4)]'}`} />
-              <span className="flex-1">{route.label}</span>
-              {dirty > 0 && (
-                <span className={`text-[11px] font-semibold rounded px-2 py-0.5 tabular-nums ${
-                  isActive ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)]' : 'bg-amber-100 text-amber-700'
-                }`}>
-                  {dirty}
-                </span>
+              {({ isActive }) => (
+                <>
+                  <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[var(--admin-accent)]' : 'text-[var(--admin-text-4)]'}`} />
+                  <span className="flex-1">{route.label}</span>
+                  {dirty > 0 && (
+                    <span className={`text-[11px] font-semibold rounded px-2 py-0.5 tabular-nums ${
+                      isActive ? 'bg-[var(--admin-active-bg)] text-[var(--admin-active-text)]' : 'bg-amber-100 text-amber-700'
+                    }`}>
+                      {dirty}
+                    </span>
+                  )}
+                </>
               )}
-            </button>
+            </NavLink>
           );
         })}
       </nav>
@@ -118,8 +116,6 @@ function NavContent({
 }
 
 function AdminLayoutInner({
-  activeRouteId,
-  onSelectRoute,
   routeDirtyCount,
   children,
   onLogout,
@@ -154,8 +150,6 @@ function AdminLayoutInner({
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-[var(--admin-sidebar-bg)] border-r border-[var(--admin-border)] z-30">
         <NavContent
-          activeRouteId={activeRouteId}
-          onSelectRoute={onSelectRoute}
           routeDirtyCount={routeDirtyCount}
           user={user}
           isUserLoading={isUserLoading}
@@ -172,8 +166,6 @@ function AdminLayoutInner({
           />
           <aside className="fixed inset-y-0 left-0 w-64 bg-[var(--admin-sidebar-bg)] z-50 shadow-xl border-r border-[var(--admin-border)]">
             <NavContent
-              activeRouteId={activeRouteId}
-              onSelectRoute={onSelectRoute}
               routeDirtyCount={routeDirtyCount}
               user={user}
               isUserLoading={isUserLoading}

@@ -1,40 +1,28 @@
 import { useRef, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Copy, Trash2, Check, UploadCloud, Search, Pencil } from 'lucide-react';
 import type { MediaAsset } from '../../types';
 import { optimizeImage, formatBytes } from '../../../../utils/imageOptimizer';
+import type { AdminOutletContext } from '../types';
 
-type MediaLibraryRouteProps = {
-  mediaAssets: MediaAsset[];
-  mediaSearch: string;
-  onMediaSearchChange: (value: string) => void;
-  categories: { id: string; label: string }[];
-  selectedCategory: string;
-  onSelectCategory: (categoryId: string) => void;
-  filteredAssets: MediaAsset[];
-  isUploading: boolean;
-  uploadProgress: number;
-  onUpload: (file: File, category: string, title?: string, alt?: string) => Promise<void>;
-  onDelete: (id: string, url: string) => Promise<void>;
-  onCategoryCreate: (label: string) => Promise<string>;
-  onUpdateMetadata: (id: string, title: string, alt: string, category?: string) => Promise<void>;
-};
 
-export function MediaLibraryRoute({
-  mediaAssets,
-  mediaSearch,
-  onMediaSearchChange,
-  categories,
-  selectedCategory,
-  onSelectCategory,
-  filteredAssets,
-  isUploading,
-  uploadProgress,
-  onUpload,
-  onDelete,
-  onCategoryCreate,
-  onUpdateMetadata,
-}: MediaLibraryRouteProps) {
+export function MediaLibraryRoute() {
+  const {
+    mediaAssets,
+    mediaSearch,
+    onMediaSearchChange,
+    categories,
+    selectedCategory,
+    onSelectCategory,
+    filteredAssets,
+    isUploading,
+    uploadProgress,
+    onUpload,
+    onDelete,
+    onCategoryCreate,
+    onUpdateMetadata,
+  } = useOutletContext<AdminOutletContext>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadCategory, setUploadCategory] = useState('');
   const [copiedAssetId, setCopiedAssetId] = useState<string | null>(null);

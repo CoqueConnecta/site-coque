@@ -1,8 +1,10 @@
+import { useOutletContext } from 'react-router-dom';
 import { SectionCard } from '../../components/shared/SectionCard';
 import { TransparencyEditor } from './editors/TransparencyEditor';
-import type { AdminRouteProps } from '../types';
+import type { AdminOutletContext } from '../types';
 
-export function TransparencyRoute({ cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, sectionDirtyCount }: AdminRouteProps) {
+export function TransparencyRoute() {
+  const { cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, sectionDirtyCount } = useOutletContext<AdminOutletContext>();
   const sk = 'pages.transparency';
   return (
     <SectionCard title="Transparência" dirtyCount={sectionDirtyCount(sk)} defaultOpen>
