@@ -10,6 +10,7 @@ export interface StatsSectionProps extends React.HTMLAttributes<HTMLElement> {
 export const StatsSection = ({ data, className, ...props }: StatsSectionProps) => {
   return (
     <section
+      id="impact"
       className={cn('w-full bg-[color:var(--color-tag-bg)]', className)}
       {...props}
     >

@@ -82,24 +82,29 @@ export interface CmsYoutubeData {
   items: CmsYoutubeVideo[];
 }
 
-export interface CmsGalleryTag {
+export interface CmsWaysToHelpTag {
   pt: string;
   en: string;
 }
 
-export interface CmsGalleryCard {
+export interface CmsWaysToHelpCard {
   id: string;
   image?: string;
   variant: 'light' | 'dark';
   title: I18nField;
   description: I18nField;
-  tags: CmsGalleryTag[];
+  tags: CmsWaysToHelpTag[];
+  blockquote?: {
+    text: I18nField;
+    authorName: string;
+    authorAvatar?: string;
+  };
 }
 
-export interface CmsGalleryData {
+export interface CmsWaysToHelpData {
   headline: I18nField;
   subtitle: I18nField;
-  cards: CmsGalleryCard[];
+  cards: CmsWaysToHelpCard[];
 }
 
 export interface CmsStatItem {
@@ -167,8 +172,20 @@ export interface ResolvedHeroData    { backgroundImage: string; headline: string
 export interface ResolvedAboutData   {
   description: string;
 }
-export interface ResolvedGalleryCard { id: string; image?: string; variant: 'light'|'dark'; title: string; description: string; tags: string[] }
-export interface ResolvedGalleryData { headline: string; subtitle: string; cards: ResolvedGalleryCard[] }
+export interface ResolvedWaysToHelpCard {
+  id: string;
+  image?: string;
+  variant: 'light' | 'dark';
+  title: string;
+  description: string;
+  tags: string[];
+  blockquote?: {
+    text: string;
+    authorName: string;
+    authorAvatar?: string;
+  };
+}
+export interface ResolvedWaysToHelpData { headline: string; subtitle: string; cards: ResolvedWaysToHelpCard[] }
 export interface ResolvedStatItem    { value: string; label: string }
 export interface ResolvedStatsData   { items: ResolvedStatItem[] }
 export interface ResolvedYoutubeVideo { id: string; title: string }

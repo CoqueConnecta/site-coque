@@ -20,7 +20,7 @@ export type CmsAdminState = {
       about: CmsAdminData;
       carousel: CmsAdminData;
       youtubeVideos: CmsAdminData;
-      gallery: CmsAdminData;
+      waysToHelp: CmsAdminData;
       stats: CmsAdminData;
     };
     projects: CmsAdminData;

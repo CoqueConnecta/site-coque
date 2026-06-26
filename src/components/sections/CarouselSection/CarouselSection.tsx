@@ -27,6 +27,7 @@ export const CarouselSection = ({
 
   return (
     <section
+      id="photos"
       className={cn('w-full bg-white pt-12 pb-16 md:pt-16 md:pb-24', className)}
       {...props}
     >

@@ -33,7 +33,7 @@ export interface HelpCard {
   };
 }
 
-export interface GalleryData {
+export interface WaysToHelpData {
   headline: string;
   subtitle: string;
   cards: HelpCard[];
@@ -88,7 +88,7 @@ export interface FooterData {
 export interface LandingPageData {
   hero: HeroData;
   about: AboutData;
-  gallery: GalleryData;
+  waysToHelp: WaysToHelpData;
   stats: StatsData;
   help: HelpData;
   newsletter: NewsletterData;
@@ -108,7 +108,7 @@ export const mockDataPT: LandingPageData = {
     description:
       "Tudo começou com uma ideia potente, nascida do encontro entre dois líderes locais, um jovem sonhador e sua mãe, que acreditavam que a educação podia reescrever destinos e transformar realidades. Marcone Ribeiro e Dona Danda, inspirados por suas próprias vivências, transformaram visão em ação, criando um espaço onde juventudes periféricas e suas famílias pudessem se enxergar, reconhecer seu valor e construir novos caminhos. Desde então, a Coque Connecta tornou-se um movimento coletivo de transformação, um espaço vivo feito de escuta, cuidado e formação cidadã.",
   },
-  gallery: {
+  waysToHelp: {
     headline: "Saiba como ajudar",
     subtitle: "Existem diversas formas de colaborar com o nosso trabalho voluntário. Escolha aquela que mais combina com você!",
     cards: [
@@ -207,7 +207,7 @@ export const mockDataPT: LandingPageData = {
     ],
     quickLinks: [
       { label: "Sobre nós", href: "/#about" },
-      { label: "Nossos projetos", href: "/#our-work" },
+      { label: "Como ajudar", href: "/#ways-to-help" },
       { label: "Como doar", href: "https://benfeitoria.com/projeto/coqueconnecta" },
       { label: "Transparência", href: "/transparencia" },
     ],
@@ -227,7 +227,7 @@ export const mockDataEN: LandingPageData = {
     description:
       "Coque Connecta is a social organization founded in 2018 in the heart of the Coque community, in Recife, Brazil. It began with a powerful idea born from the connection between two local leaders—a young dreamer and his mother—who believed that education could rewrite destinies and transform realities.",
   },
-  gallery: {
+  waysToHelp: {
     headline: "How to Help",
     subtitle: "There are many ways to collaborate with our volunteer work. Choose the one that suits you best!",
     cards: [
@@ -326,7 +326,7 @@ export const mockDataEN: LandingPageData = {
     ],
     quickLinks: [
       { label: "About us", href: "/#about" },
-      { label: "Our projects", href: "/#our-work" },
+      { label: "How to help", href: "/#ways-to-help" },
       { label: "How to donate", href: "https://benfeitoria.com/projeto/coqueconnecta" },
       { label: "Transparency", href: "/transparencia" },
     ],

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import type { CmsLanguage, ResolvedHeroData, ResolvedAboutData, ResolvedGalleryData, ResolvedStatsData, ResolvedYoutubeVideo } from '../types/cms';
+import type { CmsLanguage, ResolvedHeroData, ResolvedAboutData, ResolvedWaysToHelpData, ResolvedStatsData, ResolvedYoutubeVideo } from '../types/cms';
 import type { CmsCarouselData } from '../types/cms';
 import {
   getCmsHeroData,
   getCmsAboutData,
   getCmsCarouselData,
   getCmsYoutubeData,
-  getCmsGalleryData,
+  getCmsWaysToHelpData,
   getCmsStatsData,
 } from '../services/cmsService';
 
@@ -15,7 +15,7 @@ export interface CmsHomeData {
   about: ResolvedAboutData;
   carousel: CmsCarouselData;
   youtubeVideos: ResolvedYoutubeVideo[];
-  gallery: ResolvedGalleryData;
+  waysToHelp: ResolvedWaysToHelpData;
   stats: ResolvedStatsData;
 }
 
@@ -24,7 +24,7 @@ const EMPTY_HOME: CmsHomeData = {
   about:         { description: '' },
   carousel:      { images: [] },
   youtubeVideos: [],
-  gallery:       { headline: '', subtitle: '', cards: [] },
+  waysToHelp:    { headline: '', subtitle: '', cards: [] },
   stats:         { items: [] },
 };
 
@@ -50,11 +50,11 @@ export function useCmsLandingData(language: CmsLanguage) {
       getCmsAboutData(language),
       getCmsCarouselData(),
       getCmsYoutubeData(language),
-      getCmsGalleryData(language),
+      getCmsWaysToHelpData(language),
       getCmsStatsData(language),
-    ]).then(([hero, about, carousel, youtubeVideos, gallery, stats]) => {
+    ]).then(([hero, about, carousel, youtubeVideos, waysToHelp, stats]) => {
       if (!isMounted) return;
-      const resolved: CmsHomeData = { hero, about, carousel, youtubeVideos, gallery, stats };
+      const resolved: CmsHomeData = { hero, about, carousel, youtubeVideos, waysToHelp, stats };
       inMemoryCache[language] = resolved;
       setData(resolved);
       setIsLoading(false);

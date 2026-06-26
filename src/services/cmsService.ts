@@ -10,7 +10,7 @@ import type {
   CmsAboutData,
   CmsCarouselData,
   CmsYoutubeData,
-  CmsGalleryData,
+  CmsWaysToHelpData,
   CmsStatsData,
   CmsProjectsData,
   CmsPrivacyData,
@@ -20,7 +20,7 @@ import type {
   ResolvedNewsletterData,
   ResolvedHeroData,
   ResolvedAboutData,
-  ResolvedGalleryData,
+  ResolvedWaysToHelpData,
   ResolvedStatsData,
   ResolvedYoutubeVideo,
   ResolvedProject,
@@ -136,8 +136,8 @@ export async function getCmsYoutubeData(language: CmsLanguage): Promise<Resolved
   return data.items.map((v) => ({ id: v.id, title: pickLang(v.title, language) }));
 }
 
-export async function getCmsGalleryData(language: CmsLanguage): Promise<ResolvedGalleryData> {
-  const data = await fetchNode<CmsGalleryData>(`${V3}/pages/home/gallery`);
+export async function getCmsWaysToHelpData(language: CmsLanguage): Promise<ResolvedWaysToHelpData> {
+  const data = await fetchNode<CmsWaysToHelpData>(`${V3}/pages/home/waysToHelp`);
   if (!data) return { headline: '', subtitle: '', cards: [] };
   return {
     headline: pickLang(data.headline, language),
@@ -149,6 +149,11 @@ export async function getCmsGalleryData(language: CmsLanguage): Promise<Resolved
       title:       pickLang(card.title, language),
       description: pickLang(card.description, language),
       tags:        (card.tags ?? []).map((tag) => tag[language] ?? tag.pt),
+      blockquote:  card.blockquote ? {
+        text: pickLang(card.blockquote.text, language),
+        authorName: card.blockquote.authorName,
+        authorAvatar: card.blockquote.authorAvatar,
+      } : undefined,
     })),
   };
 }

@@ -8,7 +8,7 @@ export const RTDB_SECTION_PATHS: Record<string, string> = {
   'pages.home.about':         'cms/v3/pages/home/about',
   'pages.home.carousel':      'cms/v3/pages/home/carousel',
   'pages.home.youtubeVideos': 'cms/v3/pages/home/youtubeVideos',
-  'pages.home.gallery':       'cms/v3/pages/home/gallery',
+  'pages.home.waysToHelp':    'cms/v3/pages/home/waysToHelp',
   'pages.home.stats':         'cms/v3/pages/home/stats',
   'pages.projects':           'cms/v3/pages/projects',
   'pages.privacy':            'cms/v3/pages/privacy',

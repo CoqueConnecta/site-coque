@@ -1,11 +1,11 @@
 import { cn } from '../../../lib/cn';
-import type { ResolvedGalleryData } from '../../../types/cms';
+import type { ResolvedWaysToHelpData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
-import { GalleryCard } from './GalleryCard';
+import { WaysToHelpCard } from './WaysToHelpCard';
 import { FadeIn } from '../../ui/FadeIn';
 
-export interface GallerySectionProps extends React.HTMLAttributes<HTMLElement> {
-  data: ResolvedGalleryData;
+export interface WaysToHelpSectionProps extends React.HTMLAttributes<HTMLElement> {
+  data: ResolvedWaysToHelpData;
 }
 
 const CARD_BG_LIGHT = 'var(--color-accent-peach)';
@@ -13,10 +13,10 @@ const CARD_BG_DARK = 'var(--color-tag-bg)';
 const TAG_BG = 'var(--color-tag-bg)';
 const TAG_TEXT = 'var(--color-text-cream)';
 
-export const GallerySection = ({ data, className, ...props }: GallerySectionProps) => {
+export const WaysToHelpSection = ({ data, className, ...props }: WaysToHelpSectionProps) => {
   return (
     <section
-      id="our-work"
+      id="ways-to-help"
       className={cn('w-full bg-white py-12 sm:py-16', className)}
       {...props}
     >
@@ -66,7 +66,7 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
 
             return (
               <FadeIn key={card.id} delay={Math.min(index * 80, 240)}>
-                <GalleryCard
+                <WaysToHelpCard
                   card={card}
                   bg={bg}
                   titleColor={titleColor}
@@ -86,4 +86,4 @@ export const GallerySection = ({ data, className, ...props }: GallerySectionProp
   );
 };
 
-GallerySection.displayName = 'GallerySection';
+WaysToHelpSection.displayName = 'WaysToHelpSection';

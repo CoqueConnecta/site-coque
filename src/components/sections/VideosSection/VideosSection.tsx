@@ -15,7 +15,8 @@ export const VideosSection = ({
 }: VideosSectionProps) => {
   return (
     <section
-      className={cn('w-full bg-white pt-12 pb-0 md:pt-16 md:pb-0', className)}
+      id="videos"
+      className={cn('w-full bg-white py-12 md:py-16', className)}
       {...props}
     >
       <Block>

@@ -37,7 +37,7 @@ export function useAdminData(): UseAdminDataReturn {
               about:         (home.about         as Record<string, unknown>) ?? {},
               carousel:      (home.carousel      as Record<string, unknown>) ?? {},
               youtubeVideos: (home.youtubeVideos as Record<string, unknown>) ?? {},
-              gallery:       (home.gallery       as Record<string, unknown>) ?? {},
+              waysToHelp:    (home.waysToHelp    as Record<string, unknown>) ?? {},
               stats:         (home.stats         as Record<string, unknown>) ?? {},
             },
             projects,

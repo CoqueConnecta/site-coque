@@ -2,7 +2,7 @@ import { SectionCard } from '../../components/shared/SectionCard';
 import { HeroEditor } from './editors/HeroEditor';
 import { CarouselEditor } from './editors/CarouselEditor';
 import { YoutubeEditor } from './editors/YoutubeEditor';
-import { GalleryEditor } from './editors/GalleryEditor';
+import { WaysToHelpEditor } from './editors/WaysToHelpEditor';
 import { StatsEditor } from './editors/StatsEditor';
 import { AboutEditor } from './editors/AboutEditor';
 import type { AdminRouteProps } from '../types';
@@ -12,7 +12,7 @@ const SECTIONS = [
   { key: 'pages.home.about',         label: 'Quem Somos'      },
   { key: 'pages.home.carousel',      label: 'Carrossel'       },
   { key: 'pages.home.youtubeVideos', label: 'YouTube Videos'  },
-  { key: 'pages.home.gallery',       label: 'Galeria'         },
+  { key: 'pages.home.waysToHelp',    label: 'Como Ajudar'     },
   { key: 'pages.home.stats',         label: 'Estatísticas'    },
 ];
 
@@ -75,9 +75,9 @@ export function HomeRoute({
               onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
             />
           )}
-          {key === 'pages.home.gallery' && (
-            <GalleryEditor
-              data={cmsData.pages.home.gallery as any}
+          {key === 'pages.home.waysToHelp' && (
+            <WaysToHelpEditor
+              data={cmsData.pages.home.waysToHelp as any}
               sectionKey={key}
               isFieldDirty={(path) => isFieldDirty(path, key)}
               onFieldChange={(path, value) => onFieldChange(key, path, value)}

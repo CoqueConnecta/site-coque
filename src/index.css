@@ -34,8 +34,11 @@ html {
 
 #hero,
 #about,
-#our-work,
-#contact {
+#ways-to-help,
+#contact,
+#impact,
+#videos,
+#photos {
   scroll-margin-top: 132px;
 }
 
