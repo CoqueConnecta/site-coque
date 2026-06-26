@@ -26,12 +26,25 @@ export function optimizeImage(
   file: File,
   options: OptimizeOptions = {}
 ): Promise<OptimizationResult> {
+  // SVG Bypass: do not draw on canvas or convert, preserve vector graphics as-is
+  if (file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')) {
+    return Promise.resolve({
+      file,
+      originalSize: file.size,
+      compressedSize: file.size,
+      originalFormatted: formatBytes(file.size),
+      compressedFormatted: formatBytes(file.size),
+    });
+  }
+
   const {
     maxWidth = 1920,
     maxHeight = 1920,
     quality = 0.8,
-    outputFormat = 'image/webp',
   } = options;
+
+  // Determine output format dynamically if not specified. Keep PNG as PNG, convert others to WebP.
+  const outputFormat = options.outputFormat || (file.type === 'image/png' ? 'image/png' : 'image/webp');
 
   return new Promise((resolve, reject) => {
     // If not an image, reject immediately
@@ -83,6 +96,8 @@ export function optimizeImage(
               newName = file.name.replace(/\.[^/.]+$/, '') + '.webp';
             } else if (outputFormat === 'image/jpeg') {
               newName = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
+            } else if (outputFormat === 'image/png') {
+              newName = file.name.replace(/\.[^/.]+$/, '') + '.png';
             }
 
             const optimizedFile = new File([blob], newName, {
