@@ -1,4 +1,4 @@
-import { Home, Lock, FileText, FolderOpen, Settings } from 'lucide-react';
+import { Home, Lock, FileText, FolderOpen, Settings, Image } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface AdminSectionConfig {
@@ -8,7 +8,7 @@ export interface AdminSectionConfig {
 }
 
 export interface AdminRouteConfig {
-  id: 'home' | 'privacy' | 'transparency' | 'projects' | 'settings';
+  id: 'home' | 'privacy' | 'transparency' | 'projects' | 'settings' | 'media';
   label: string;
   description: string;
   icon: LucideIcon;
@@ -67,6 +67,13 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
       { key: 'shared.footer',     label: 'Rodapé'      },
       { key: 'shared.newsletter', label: 'Newsletter'  },
     ],
+  },
+  {
+    id: 'media',
+    label: 'Biblioteca',
+    description: 'Biblioteca e galeria de imagens',
+    icon: Image,
+    sections: [],
   },
 ];
 

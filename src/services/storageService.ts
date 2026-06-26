@@ -1,5 +1,5 @@
-import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { ref as dbRef, push, set, onValue, type Unsubscribe } from 'firebase/database';
+import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { ref as dbRef, push, set, onValue, remove, type Unsubscribe } from 'firebase/database';
 import { storage, database } from '../../firebase';
 import type { MediaAsset } from '../features/admin/types';
 
@@ -43,4 +43,17 @@ export function subscribeToMediaLibrary(callback: (assets: MediaAsset[]) => void
     const assets: MediaAsset[] = Object.entries(data).map(([id, val]) => ({ id, ...val }));
     callback(assets);
   });
+}
+
+export async function deleteImageFromStorage(id: string, url: string): Promise<void> {
+  // 1. Delete database record
+  await remove(dbRef(database, `media/library/${id}`));
+
+  // 2. Delete storage object
+  try {
+    const fileRef = storageRef(storage, url);
+    await deleteObject(fileRef);
+  } catch (err) {
+    console.error('[storageService] Failed to delete file from Storage:', err);
+  }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { uploadImageToStorage, subscribeToMediaLibrary } from '../../../services/storageService';
+import { uploadImageToStorage, subscribeToMediaLibrary, deleteImageFromStorage } from '../../../services/storageService';
 import { localImageCategories, localImageLibrary } from '../../../data/localImageLibrary';
 import type { CmsLanguage } from '../../../types/cms';
 import type { MediaAsset, PickerState } from '../types';
@@ -66,6 +66,15 @@ export function useImagePicker() {
     }
   };
 
+  const handleDelete = async (id: string, url: string) => {
+    try {
+      await deleteImageFromStorage(id, url);
+    } catch (err) {
+      console.error('[useImagePicker] Failed to delete image:', err);
+      throw err;
+    }
+  };
+
   return {
     mediaAssets,
     rtdbAssetsCount: rtdbAssets.length,
@@ -82,6 +91,7 @@ export function useImagePicker() {
     isUploading,
     uploadProgress,
     handleUpload,
+    handleDelete,
     openImagePicker,
     closeImagePicker,
   };

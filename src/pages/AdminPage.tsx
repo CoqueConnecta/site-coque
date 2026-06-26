@@ -14,6 +14,7 @@ import { ProjectsRoute } from '../features/admin/routes/projects/ProjectsRoute';
 import { PrivacyRoute } from '../features/admin/routes/privacy/PrivacyRoute';
 import { TransparencyRoute } from '../features/admin/routes/transparency/TransparencyRoute';
 import { SettingsRoute } from '../features/admin/routes/settings/SettingsRoute';
+import { MediaLibraryRoute } from '../features/admin/routes/media/MediaLibraryRoute';
 
 import { useAdminData } from '../features/admin/hooks/useAdminData';
 import { useDirtyFields } from '../features/admin/hooks/useDirtyFields';
@@ -62,6 +63,7 @@ export default function AdminPage() {
   );
 
   const {
+    mediaAssets,
     isMediaModalOpen,
     pickerState,
     mediaSearch,
@@ -75,6 +77,7 @@ export default function AdminPage() {
     isUploading,
     uploadProgress,
     handleUpload,
+    handleDelete,
     openImagePicker,
     closeImagePicker,
   } = useImagePicker();
@@ -208,6 +211,7 @@ export default function AdminPage() {
           dirtyCount={totalRouteDirty}
           onSave={handleSaveRoute}
           onDiscard={handleRequestDiscard}
+          showActions={activeRoute.sections.length > 0}
         />
 
         <div className="space-y-4">
@@ -216,6 +220,21 @@ export default function AdminPage() {
           {activeRouteId === 'privacy'      && <PrivacyRoute      {...routeProps} />}
           {activeRouteId === 'transparency' && <TransparencyRoute {...routeProps} />}
           {activeRouteId === 'settings'     && <SettingsRoute     {...routeProps} />}
+          {activeRouteId === 'media'        && (
+            <MediaLibraryRoute
+              mediaAssets={mediaAssets}
+              mediaSearch={mediaSearch}
+              onMediaSearchChange={setMediaSearch}
+              categories={categories}
+              selectedCategory={selectedMediaCategory ?? 'all'}
+              onSelectCategory={setSelectedMediaCategory}
+              filteredAssets={filteredMediaAssets}
+              isUploading={isUploading}
+              uploadProgress={uploadProgress}
+              onUpload={handleUpload}
+              onDelete={handleDelete}
+            />
+          )}
         </div>
       </div>
 
