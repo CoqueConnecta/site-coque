@@ -39,6 +39,7 @@ export function useAdminData(): UseAdminDataReturn {
               youtubeVideos: (home.youtubeVideos as Record<string, unknown>) ?? {},
               waysToHelp:    (home.waysToHelp    as Record<string, unknown>) ?? {},
               stats:         (home.stats         as Record<string, unknown>) ?? {},
+              trust:         (home.trust         as Record<string, unknown>) ?? {},
             },
             projects,
             privacy,

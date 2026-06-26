@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { CmsLanguage, ResolvedHeroData, ResolvedAboutData, ResolvedWaysToHelpData, ResolvedStatsData, ResolvedYoutubeVideo } from '../types/cms';
+import type { CmsLanguage, ResolvedHeroData, ResolvedAboutData, ResolvedWaysToHelpData, ResolvedStatsData, ResolvedTrustData, ResolvedYoutubeVideo } from '../types/cms';
 import type { CmsCarouselData } from '../types/cms';
 import {
   getCmsHeroData,
@@ -8,6 +8,7 @@ import {
   getCmsYoutubeData,
   getCmsWaysToHelpData,
   getCmsStatsData,
+  getCmsTrustData,
 } from '../services/cmsService';
 
 export interface CmsHomeData {
@@ -17,15 +18,17 @@ export interface CmsHomeData {
   youtubeVideos: ResolvedYoutubeVideo[];
   waysToHelp: ResolvedWaysToHelpData;
   stats: ResolvedStatsData;
+  trust: ResolvedTrustData;
 }
 
 const EMPTY_HOME: CmsHomeData = {
-  hero:          { backgroundImage: '', headline: '', subheadline: '', ctaText: '' },
+  hero:          { photos: [], headline: '', subheadline: '', ctaText: '', secondaryCtaText: '' },
   about:         { description: '' },
   carousel:      { images: [] },
   youtubeVideos: [],
   waysToHelp:    { headline: '', subtitle: '', cards: [] },
   stats:         { items: [] },
+  trust:         { headline: '', subtitle: '', pressItems: [], partnerLogos: [] },
 };
 
 const inMemoryCache: Partial<Record<CmsLanguage, CmsHomeData>> = {};
@@ -52,9 +55,10 @@ export function useCmsLandingData(language: CmsLanguage) {
       getCmsYoutubeData(language),
       getCmsWaysToHelpData(language),
       getCmsStatsData(language),
-    ]).then(([hero, about, carousel, youtubeVideos, waysToHelp, stats]) => {
+      getCmsTrustData(language),
+    ]).then(([hero, about, carousel, youtubeVideos, waysToHelp, stats, trust]) => {
       if (!isMounted) return;
-      const resolved: CmsHomeData = { hero, about, carousel, youtubeVideos, waysToHelp, stats };
+      const resolved: CmsHomeData = { hero, about, carousel, youtubeVideos, waysToHelp, stats, trust };
       inMemoryCache[language] = resolved;
       setData(resolved);
       setIsLoading(false);

@@ -53,11 +53,13 @@ export interface CmsNewsletterData {
 // ─── pages/home ───────────────────────────────────────────────────────────────
 
 export interface CmsHeroData {
-  backgroundImage: string;
+  photos: CmsCarouselImage[];
   headline: I18nField;
   subheadline: I18nField;
   ctaText: I18nField;
   ctaHref?: I18nField;
+  secondaryCtaText: I18nField;
+  secondaryCtaHref?: I18nField;
 }
 
 export interface CmsAboutData {
@@ -116,6 +118,25 @@ export interface CmsStatsData {
   items: CmsStatItem[];
 }
 
+export interface CmsPressItem {
+  outlet: string;
+  title: string;
+  url: string;
+}
+
+export interface CmsPartnerLogo {
+  src: string;
+  alt: string;
+  url?: string;
+}
+
+export interface CmsTrustData {
+  headline: I18nField;
+  subtitle: I18nField;
+  pressItems: CmsPressItem[];
+  partnerLogos: CmsPartnerLogo[];
+}
+
 // ─── pages/projects ───────────────────────────────────────────────────────────
 
 export interface CmsProject {
@@ -168,7 +189,15 @@ export interface ResolvedNewsletterData {
   headlineAccent: string;
   headline: string; description: string; buttonText: string; placeholderEmail: string;
 }
-export interface ResolvedHeroData    { backgroundImage: string; headline: string; subheadline: string; ctaText: string; ctaHref?: string }
+export interface ResolvedHeroData    {
+  photos: CmsCarouselImage[];
+  headline: string;
+  subheadline: string;
+  ctaText: string;
+  ctaHref?: string;
+  secondaryCtaText: string;
+  secondaryCtaHref?: string;
+}
 export interface ResolvedAboutData   {
   description: string;
 }
@@ -188,6 +217,7 @@ export interface ResolvedWaysToHelpCard {
 export interface ResolvedWaysToHelpData { headline: string; subtitle: string; cards: ResolvedWaysToHelpCard[] }
 export interface ResolvedStatItem    { value: string; label: string }
 export interface ResolvedStatsData   { items: ResolvedStatItem[] }
+export interface ResolvedTrustData   { headline: string; subtitle: string; pressItems: CmsPressItem[]; partnerLogos: CmsPartnerLogo[] }
 export interface ResolvedYoutubeVideo { id: string; title: string }
 export interface ResolvedProject {
   id: string; image: string; location: string; actionHref?: string;

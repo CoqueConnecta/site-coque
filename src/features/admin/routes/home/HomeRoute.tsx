@@ -6,6 +6,7 @@ import { YoutubeEditor } from './editors/YoutubeEditor';
 import { WaysToHelpEditor } from './editors/WaysToHelpEditor';
 import { StatsEditor } from './editors/StatsEditor';
 import { AboutEditor } from './editors/AboutEditor';
+import { TrustEditor } from './editors/TrustEditor';
 import type { AdminOutletContext } from '../types';
 
 const SECTIONS = [
@@ -15,6 +16,7 @@ const SECTIONS = [
   { key: 'pages.home.youtubeVideos', label: 'YouTube Videos'  },
   { key: 'pages.home.waysToHelp',    label: 'Como Ajudar'     },
   { key: 'pages.home.stats',         label: 'Estatísticas'    },
+  { key: 'pages.home.trust',         label: 'Confiança'       },
 ];
 
 export function HomeRoute() {
@@ -39,6 +41,10 @@ export function HomeRoute() {
               sectionKey={key}
               isFieldDirty={(path) => isFieldDirty(path, key)}
               onFieldChange={(path, value) => onFieldChange(key, path, value)}
+              onAddArrayItem={(path, defaultItem) => onAddArrayItem(key, path, defaultItem)}
+              onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
+              onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
+              onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
               renderImageField={(value, path, lbl, ph, ro) => renderImageField(key, value, path, lbl, ph, ro)}
             />
           )}
@@ -100,6 +106,19 @@ export function HomeRoute() {
               onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
               onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
               onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
+            />
+          )}
+          {key === 'pages.home.trust' && (
+            <TrustEditor
+              data={cmsData.pages.home.trust as any}
+              sectionKey={key}
+              isFieldDirty={(path) => isFieldDirty(path, key)}
+              onFieldChange={(path, value) => onFieldChange(key, path, value)}
+              onAddArrayItem={(path, defaultItem) => onAddArrayItem(key, path, defaultItem)}
+              onRemoveArrayItem={(path, index) => onRemoveArrayItem(key, path, index)}
+              onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
+              onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
+              renderImageField={(value, path, lbl, ph, ro) => renderImageField(key, value, path, lbl, ph, ro)}
             />
           )}
         </SectionCard>

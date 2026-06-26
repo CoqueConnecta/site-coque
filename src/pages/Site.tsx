@@ -5,6 +5,7 @@ import { VideosSection } from '../components/sections/VideosSection';
 import { CarouselSection } from '../components/sections/CarouselSection';
 import { WaysToHelpSection } from '../components/sections/WaysToHelpSection';
 import { StatsSection } from '../components/sections/StatsSection';
+import { TrustSection } from '../components/sections/TrustSection';
 import { useCmsLandingData } from '../hooks/useCmsLandingData';
 import type { PublicLayoutContextValue } from './PublicLayout';
 
@@ -22,6 +23,7 @@ function Site() {
         <VideosSection videos={data.youtubeVideos} />
         <CarouselSection images={data.carousel.images} />
         <WaysToHelpSection data={data.waysToHelp} />
+        <TrustSection data={data.trust} language={language} />
       </main>
     </>
   );

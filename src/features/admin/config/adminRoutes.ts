@@ -31,6 +31,7 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
       { key: 'pages.home.youtubeVideos', label: 'YouTube Videos' },
       { key: 'pages.home.waysToHelp',    label: 'Como Ajudar'    },
       { key: 'pages.home.stats',         label: 'Estatísticas'   },
+      { key: 'pages.home.trust',         label: 'Confiança'      },
     ],
   },
   {

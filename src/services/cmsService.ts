@@ -12,6 +12,7 @@ import type {
   CmsYoutubeData,
   CmsWaysToHelpData,
   CmsStatsData,
+  CmsTrustData,
   CmsProjectsData,
   CmsPrivacyData,
   CmsTransparencyData,
@@ -22,6 +23,7 @@ import type {
   ResolvedAboutData,
   ResolvedWaysToHelpData,
   ResolvedStatsData,
+  ResolvedTrustData,
   ResolvedYoutubeVideo,
   ResolvedProject,
   ResolvedPrivacyData,
@@ -102,14 +104,16 @@ export async function getCmsNewsletterData(language: CmsLanguage): Promise<Resol
 export async function getCmsHeroData(language: CmsLanguage): Promise<ResolvedHeroData> {
   const data = await fetchNode<CmsHeroData>(`${V3}/pages/home/hero`);
   if (!data) {
-    return { backgroundImage: '', headline: '', subheadline: '', ctaText: '' };
+    return { photos: [], headline: '', subheadline: '', ctaText: '', secondaryCtaText: '' };
   }
   return {
-    backgroundImage: data.backgroundImage ?? '',
-    headline:        pickLang(data.headline, language),
-    subheadline:     pickLang(data.subheadline, language),
-    ctaText:         pickLang(data.ctaText, language),
-    ctaHref:         data.ctaHref ? pickLang(data.ctaHref, language) : undefined,
+    photos:             data.photos ?? [],
+    headline:           pickLang(data.headline, language),
+    subheadline:        pickLang(data.subheadline, language),
+    ctaText:            pickLang(data.ctaText, language),
+    ctaHref:            data.ctaHref ? pickLang(data.ctaHref, language) : undefined,
+    secondaryCtaText:   data.secondaryCtaText ? pickLang(data.secondaryCtaText, language) : '',
+    secondaryCtaHref:   data.secondaryCtaHref ? pickLang(data.secondaryCtaHref, language) : undefined,
   };
 }
 
@@ -166,6 +170,17 @@ export async function getCmsStatsData(language: CmsLanguage): Promise<ResolvedSt
       value: item.value,
       label: pickLang(item.label, language),
     })),
+  };
+}
+
+export async function getCmsTrustData(language: CmsLanguage): Promise<ResolvedTrustData> {
+  const data = await fetchNode<CmsTrustData>(`${V3}/pages/home/trust`);
+  if (!data) return { headline: '', subtitle: '', pressItems: [], partnerLogos: [] };
+  return {
+    headline:     pickLang(data.headline, language),
+    subtitle:     pickLang(data.subtitle, language),
+    pressItems:   data.pressItems ?? [],
+    partnerLogos: data.partnerLogos ?? [],
   };
 }
 

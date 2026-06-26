@@ -10,6 +10,7 @@ export const RTDB_SECTION_PATHS: Record<string, string> = {
   'pages.home.youtubeVideos': 'cms/v3/pages/home/youtubeVideos',
   'pages.home.waysToHelp':    'cms/v3/pages/home/waysToHelp',
   'pages.home.stats':         'cms/v3/pages/home/stats',
+  'pages.home.trust':         'cms/v3/pages/home/trust',
   'pages.projects':           'cms/v3/pages/projects',
   'pages.privacy':            'cms/v3/pages/privacy',
   'pages.transparency':       'cms/v3/pages/transparency',

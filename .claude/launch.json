@@ -7,6 +7,20 @@
       "runtimeArgs": ["run", "dev"],
       "port": 5173,
       "autoPort": false
+    },
+    {
+      "name": "site-coque-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "5174"],
+      "port": 5174,
+      "autoPort": false
+    },
+    {
+      "name": "site-coque-storybook",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "storybook"],
+      "port": 6006,
+      "autoPort": false
     }
   ]
 }

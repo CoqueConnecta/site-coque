@@ -22,6 +22,7 @@ export type CmsAdminState = {
       youtubeVideos: CmsAdminData;
       waysToHelp: CmsAdminData;
       stats: CmsAdminData;
+      trust: CmsAdminData;
     };
     projects: CmsAdminData;
     privacy: CmsAdminData;
