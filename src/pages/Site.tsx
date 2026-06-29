@@ -1,8 +1,7 @@
 import { useOutletContext } from 'react-router-dom';
 import { HeroSection } from '../components/sections/HeroSection';
 import { AboutSection } from '../components/sections/AboutSection';
-import { VideosSection } from '../components/sections/VideosSection';
-import { CarouselSection } from '../components/sections/CarouselSection';
+import { CoqueEmAcaoSection } from '../components/sections/CoqueEmAcaoSection';
 import { WaysToHelpSection } from '../components/sections/WaysToHelpSection';
 import { StatsSection } from '../components/sections/StatsSection';
 import { TrustSection } from '../components/sections/TrustSection';
@@ -20,8 +19,7 @@ function Site() {
       <main>
         <StatsSection data={data.stats} />
         <AboutSection data={data.about} />
-        <VideosSection videos={data.youtubeVideos} />
-        <CarouselSection images={data.carousel.images} />
+        <CoqueEmAcaoSection videos={data.youtubeVideos} images={data.carousel.images} language={language} />
         <WaysToHelpSection data={data.waysToHelp} />
         <TrustSection data={data.trust} language={language} />
       </main>
