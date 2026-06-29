@@ -50,20 +50,20 @@ function setValueAtPath(
 
   const [head, ...rest] = path;
 
-  if (Array.isArray(source) && typeof head === 'number') {
-    const next = [...source];
+  // Quando o segmento intermediário ainda não existe no source (campo novo,
+  // nunca salvo no Firebase), cria o container certo em vez de abortar —
+  // senão a escrita é descartada silenciosamente e o input volta a ficar vazio.
+  if (typeof head === 'number') {
+    const next = Array.isArray(source) ? [...source] : [];
     next[head] = setValueAtPath(next[head], rest, value);
     return next;
   }
 
-  if (isRecord(source) && typeof head === 'string') {
-    return {
-      ...source,
-      [head]: setValueAtPath(source[head], rest, value),
-    };
-  }
-
-  return source;
+  const base = isRecord(source) ? source : {};
+  return {
+    ...base,
+    [head]: setValueAtPath(base[head], rest, value),
+  };
 }
 
 function buildEmptyFromTemplate(template: unknown): unknown {
