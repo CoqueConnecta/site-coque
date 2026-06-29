@@ -1,8 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
-import { uploadImageToStorage, subscribeToMediaLibrary } from '../../../services/storageService';
+import {
+  uploadImageToStorage,
+  subscribeToMediaLibrary,
+  deleteImageFromStorage,
+  subscribeToMediaCategories,
+  createMediaCategory,
+  updateImageMetadata,
+} from '../../../services/storageService';
 import { localImageCategories, localImageLibrary } from '../../../data/localImageLibrary';
 import type { CmsLanguage } from '../../../types/cms';
 import type { MediaAsset, PickerState } from '../types';
+
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
 
 export function useImagePicker() {
   const [rtdbAssets, setRtdbAssets] = useState<MediaAsset[]>([]);
@@ -14,9 +31,23 @@ export function useImagePicker() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  const [customCategories, setCustomCategories] = useState<Record<string, { label: string }>>({});
+
   useEffect(() => {
     return subscribeToMediaLibrary(setRtdbAssets);
   }, []);
+
+  useEffect(() => {
+    return subscribeToMediaCategories(setCustomCategories);
+  }, []);
+
+  const categories = useMemo(() => {
+    const customList = Object.entries(customCategories).map(([id, val]) => ({
+      id,
+      label: val.label,
+    }));
+    return [...localImageCategories, ...customList];
+  }, [customCategories]);
 
   const mediaAssets: MediaAsset[] = useMemo(
     () => [...localImageLibrary, ...rtdbAssets],
@@ -55,14 +86,23 @@ export function useImagePicker() {
     setSelectedMediaCategory('all');
   };
 
-  const handleUpload = async (file: File, category: string) => {
+  const handleUpload = async (file: File, category: string, title = '', alt = '') => {
     setIsUploading(true);
     setUploadProgress(0);
     try {
-      await uploadImageToStorage(file, category, setUploadProgress);
+      await uploadImageToStorage(file, category, setUploadProgress, title, alt);
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
+    }
+  };
+
+  const handleDelete = async (id: string, url: string) => {
+    try {
+      await deleteImageFromStorage(id, url);
+    } catch (err) {
+      console.error('[useImagePicker] Failed to delete image:', err);
+      throw err;
     }
   };
 
@@ -78,10 +118,20 @@ export function useImagePicker() {
     shouldApplyMetadata,
     setShouldApplyMetadata,
     filteredMediaAssets,
-    categories: localImageCategories,
+    categories,
     isUploading,
     uploadProgress,
     handleUpload,
+    handleDelete,
+    handleCreateCategory: async (label: string): Promise<string> => {
+      const id = generateSlug(label);
+      if (!id) throw new Error('Nome de categoria inválido.');
+      await createMediaCategory(id, label);
+      return id;
+    },
+    handleUpdateMetadata: async (id: string, title: string, alt: string, category?: string): Promise<void> => {
+      await updateImageMetadata(id, { title, alt, category });
+    },
     openImagePicker,
     closeImagePicker,
   };

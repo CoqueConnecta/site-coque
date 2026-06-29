@@ -26,6 +26,10 @@
       "library": {
         ".read": "auth != null",
         ".write": "auth != null"
+      },
+      "categories": {
+        ".read": "auth != null",
+        ".write": "auth != null"
       }
     },
     "locales": {

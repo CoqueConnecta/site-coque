@@ -10,13 +10,13 @@ import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
 import { Trash2 } from 'lucide-react';
-import { GallerySection } from '../../../../../components/sections/GallerySection';
+import { WaysToHelpSection } from '../../../../../components/sections/WaysToHelpSection';
 import { pickLang } from '../../../../../services/cmsService';
-import type { CmsLanguage, ResolvedGalleryData } from '../../../../../types/cms';
+import type { CmsLanguage, ResolvedWaysToHelpData } from '../../../../../types/cms';
 
 type I18nField = { pt?: string; en?: string };
 
-type GalleryCard = {
+type WaysToHelpCardType = {
   id?: string;
   image?: string;
   variant?: 'light' | 'dark';
@@ -25,8 +25,8 @@ type GalleryCard = {
   tags?: Array<{ pt?: string; en?: string }>;
 };
 
-type GalleryEditorProps = {
-  data: { headline?: I18nField; subtitle?: I18nField; cards?: GalleryCard[] };
+type WaysToHelpEditorProps = {
+  data: { headline?: I18nField; subtitle?: I18nField; cards?: WaysToHelpCardType[] };
   sectionKey: string;
   isFieldDirty: (path: Array<string | number>) => boolean;
   onFieldChange: (path: Array<string | number>, value: unknown) => void;
@@ -37,7 +37,7 @@ type GalleryEditorProps = {
   renderImageField: (value: string, path: Array<string | number>, label: string, placeholder?: string, readOnly?: boolean) => ReactNode;
 };
 
-function resolvePreviewData(data: GalleryEditorProps['data'], language: CmsLanguage): ResolvedGalleryData {
+function resolvePreviewData(data: WaysToHelpEditorProps['data'], language: CmsLanguage): ResolvedWaysToHelpData {
   const toI18nField = (field?: I18nField): { pt: string; en: string } => ({ pt: field?.pt ?? '', en: field?.en ?? '' });
 
   return {
@@ -54,7 +54,7 @@ function resolvePreviewData(data: GalleryEditorProps['data'], language: CmsLangu
   };
 }
 
-export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, renderImageField }: GalleryEditorProps) {
+export function WaysToHelpEditor({ data, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, renderImageField }: WaysToHelpEditorProps) {
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const cards = Array.isArray(data?.cards) ? data.cards : [];
 
@@ -141,7 +141,7 @@ export function GalleryEditor({ data, isFieldDirty, onFieldChange, onAddArrayIte
       <AdminAddButton onClick={() => onAddArrayItem(['cards'])}>Adicionar card</AdminAddButton>
 
       <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
-        <GallerySection data={resolvePreviewData(data, previewLang)} />
+        <WaysToHelpSection data={resolvePreviewData(data, previewLang)} />
       </AdminPreviewPanel>
     </div>
   );

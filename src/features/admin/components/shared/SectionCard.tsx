@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useDisclosure } from '../../hooks/useDisclosure';
 
 type SectionCardProps = {
   title: string;
@@ -14,13 +14,13 @@ export function SectionCard({
   defaultOpen = false,
   children,
 }: SectionCardProps) {
-  const [open, setOpen] = useState(defaultOpen);
+  const { isOpen: open, toggle } = useDisclosure(defaultOpen);
 
   return (
     <div className="bg-[var(--admin-surface)] rounded-lg shadow-sm border border-[var(--admin-border)] overflow-hidden border-l-[3px] border-l-[var(--admin-accent)]">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-[var(--admin-surface-2)] transition-colors"
       >
         <div className="flex items-center gap-3">

@@ -10,8 +10,9 @@ import type {
   CmsAboutData,
   CmsCarouselData,
   CmsYoutubeData,
-  CmsGalleryData,
+  CmsWaysToHelpData,
   CmsStatsData,
+  CmsTrustData,
   CmsProjectsData,
   CmsPrivacyData,
   CmsTransparencyData,
@@ -20,8 +21,9 @@ import type {
   ResolvedNewsletterData,
   ResolvedHeroData,
   ResolvedAboutData,
-  ResolvedGalleryData,
+  ResolvedWaysToHelpData,
   ResolvedStatsData,
+  ResolvedTrustData,
   ResolvedYoutubeVideo,
   ResolvedProject,
   ResolvedPrivacyData,
@@ -102,14 +104,16 @@ export async function getCmsNewsletterData(language: CmsLanguage): Promise<Resol
 export async function getCmsHeroData(language: CmsLanguage): Promise<ResolvedHeroData> {
   const data = await fetchNode<CmsHeroData>(`${V3}/pages/home/hero`);
   if (!data) {
-    return { backgroundImage: '', headline: '', subheadline: '', ctaText: '' };
+    return { photos: [], headline: '', subheadline: '', ctaText: '', secondaryCtaText: '' };
   }
   return {
-    backgroundImage: data.backgroundImage ?? '',
-    headline:        pickLang(data.headline, language),
-    subheadline:     pickLang(data.subheadline, language),
-    ctaText:         pickLang(data.ctaText, language),
-    ctaHref:         data.ctaHref ? pickLang(data.ctaHref, language) : undefined,
+    photos:             data.photos ?? [],
+    headline:           pickLang(data.headline, language),
+    subheadline:        pickLang(data.subheadline, language),
+    ctaText:            pickLang(data.ctaText, language),
+    ctaHref:            data.ctaHref ? pickLang(data.ctaHref, language) : undefined,
+    secondaryCtaText:   data.secondaryCtaText ? pickLang(data.secondaryCtaText, language) : '',
+    secondaryCtaHref:   data.secondaryCtaHref ? pickLang(data.secondaryCtaHref, language) : undefined,
   };
 }
 
@@ -136,8 +140,8 @@ export async function getCmsYoutubeData(language: CmsLanguage): Promise<Resolved
   return data.items.map((v) => ({ id: v.id, title: pickLang(v.title, language) }));
 }
 
-export async function getCmsGalleryData(language: CmsLanguage): Promise<ResolvedGalleryData> {
-  const data = await fetchNode<CmsGalleryData>(`${V3}/pages/home/gallery`);
+export async function getCmsWaysToHelpData(language: CmsLanguage): Promise<ResolvedWaysToHelpData> {
+  const data = await fetchNode<CmsWaysToHelpData>(`${V3}/pages/home/waysToHelp`);
   if (!data) return { headline: '', subtitle: '', cards: [] };
   return {
     headline: pickLang(data.headline, language),
@@ -149,6 +153,11 @@ export async function getCmsGalleryData(language: CmsLanguage): Promise<Resolved
       title:       pickLang(card.title, language),
       description: pickLang(card.description, language),
       tags:        (card.tags ?? []).map((tag) => tag[language] ?? tag.pt),
+      blockquote:  card.blockquote ? {
+        text: pickLang(card.blockquote.text, language),
+        authorName: card.blockquote.authorName,
+        authorAvatar: card.blockquote.authorAvatar,
+      } : undefined,
     })),
   };
 }
@@ -161,6 +170,17 @@ export async function getCmsStatsData(language: CmsLanguage): Promise<ResolvedSt
       value: item.value,
       label: pickLang(item.label, language),
     })),
+  };
+}
+
+export async function getCmsTrustData(language: CmsLanguage): Promise<ResolvedTrustData> {
+  const data = await fetchNode<CmsTrustData>(`${V3}/pages/home/trust`);
+  if (!data) return { headline: '', subtitle: '', pressItems: [], partnerLogos: [] };
+  return {
+    headline:     pickLang(data.headline, language),
+    subtitle:     pickLang(data.subtitle, language),
+    pressItems:   data.pressItems ?? [],
+    partnerLogos: data.partnerLogos ?? [],
   };
 }
 

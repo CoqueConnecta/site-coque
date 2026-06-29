@@ -53,11 +53,13 @@ export interface CmsNewsletterData {
 // ─── pages/home ───────────────────────────────────────────────────────────────
 
 export interface CmsHeroData {
-  backgroundImage: string;
+  photos: CmsCarouselImage[];
   headline: I18nField;
   subheadline: I18nField;
   ctaText: I18nField;
   ctaHref?: I18nField;
+  secondaryCtaText: I18nField;
+  secondaryCtaHref?: I18nField;
 }
 
 export interface CmsAboutData {
@@ -82,24 +84,29 @@ export interface CmsYoutubeData {
   items: CmsYoutubeVideo[];
 }
 
-export interface CmsGalleryTag {
+export interface CmsWaysToHelpTag {
   pt: string;
   en: string;
 }
 
-export interface CmsGalleryCard {
+export interface CmsWaysToHelpCard {
   id: string;
   image?: string;
   variant: 'light' | 'dark';
   title: I18nField;
   description: I18nField;
-  tags: CmsGalleryTag[];
+  tags: CmsWaysToHelpTag[];
+  blockquote?: {
+    text: I18nField;
+    authorName: string;
+    authorAvatar?: string;
+  };
 }
 
-export interface CmsGalleryData {
+export interface CmsWaysToHelpData {
   headline: I18nField;
   subtitle: I18nField;
-  cards: CmsGalleryCard[];
+  cards: CmsWaysToHelpCard[];
 }
 
 export interface CmsStatItem {
@@ -109,6 +116,25 @@ export interface CmsStatItem {
 
 export interface CmsStatsData {
   items: CmsStatItem[];
+}
+
+export interface CmsPressItem {
+  outlet: string;
+  title: string;
+  url: string;
+}
+
+export interface CmsPartnerLogo {
+  src: string;
+  alt: string;
+  url?: string;
+}
+
+export interface CmsTrustData {
+  headline: I18nField;
+  subtitle: I18nField;
+  pressItems: CmsPressItem[];
+  partnerLogos: CmsPartnerLogo[];
 }
 
 // ─── pages/projects ───────────────────────────────────────────────────────────
@@ -163,14 +189,35 @@ export interface ResolvedNewsletterData {
   headlineAccent: string;
   headline: string; description: string; buttonText: string; placeholderEmail: string;
 }
-export interface ResolvedHeroData    { backgroundImage: string; headline: string; subheadline: string; ctaText: string; ctaHref?: string }
+export interface ResolvedHeroData    {
+  photos: CmsCarouselImage[];
+  headline: string;
+  subheadline: string;
+  ctaText: string;
+  ctaHref?: string;
+  secondaryCtaText: string;
+  secondaryCtaHref?: string;
+}
 export interface ResolvedAboutData   {
   description: string;
 }
-export interface ResolvedGalleryCard { id: string; image?: string; variant: 'light'|'dark'; title: string; description: string; tags: string[] }
-export interface ResolvedGalleryData { headline: string; subtitle: string; cards: ResolvedGalleryCard[] }
+export interface ResolvedWaysToHelpCard {
+  id: string;
+  image?: string;
+  variant: 'light' | 'dark';
+  title: string;
+  description: string;
+  tags: string[];
+  blockquote?: {
+    text: string;
+    authorName: string;
+    authorAvatar?: string;
+  };
+}
+export interface ResolvedWaysToHelpData { headline: string; subtitle: string; cards: ResolvedWaysToHelpCard[] }
 export interface ResolvedStatItem    { value: string; label: string }
 export interface ResolvedStatsData   { items: ResolvedStatItem[] }
+export interface ResolvedTrustData   { headline: string; subtitle: string; pressItems: CmsPressItem[]; partnerLogos: CmsPartnerLogo[] }
 export interface ResolvedYoutubeVideo { id: string; title: string }
 export interface ResolvedProject {
   id: string; image: string; location: string; actionHref?: string;

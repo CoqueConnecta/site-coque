@@ -4,6 +4,7 @@ type AdminPageHeaderProps = {
   dirtyCount: number;
   onSave: () => void;
   onDiscard: () => void;
+  showActions?: boolean;
 };
 
 export function AdminPageHeader({
@@ -12,6 +13,7 @@ export function AdminPageHeader({
   dirtyCount,
   onSave,
   onDiscard,
+  showActions = true,
 }: AdminPageHeaderProps) {
   return (
     <div className="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 pt-4 lg:pt-8 pb-4 bg-[var(--admin-bg)]/95 backdrop-blur-sm border-b border-[var(--admin-border)] mb-6">
@@ -29,24 +31,26 @@ export function AdminPageHeader({
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <button
-            type="button"
-            onClick={onDiscard}
-            aria-label="Descartar alterações da página"
-            className="h-9 px-4 rounded-md border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] text-sm font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-surface-2)] transition-all"
-          >
-            Descartar
-          </button>
-          <button
-            type="button"
-            onClick={onSave}
-            aria-label="Salvar alterações da página"
-            className="h-9 px-5 rounded-md bg-[var(--admin-accent)] text-sm font-semibold text-white hover:opacity-90 shadow-sm transition-all"
-          >
-            Salvar página
-          </button>
-        </div>
+        {showActions && (
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              type="button"
+              onClick={onDiscard}
+              aria-label="Descartar alterações da página"
+              className="h-9 px-4 rounded-md border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] text-sm font-semibold text-[var(--admin-text-2)] hover:bg-[var(--admin-surface-2)] transition-all"
+            >
+              Descartar
+            </button>
+            <button
+              type="button"
+              onClick={onSave}
+              aria-label="Salvar alterações da página"
+              className="h-9 px-5 rounded-md bg-[var(--admin-accent)] text-sm font-semibold text-white hover:opacity-90 shadow-sm transition-all"
+            >
+              Salvar página
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

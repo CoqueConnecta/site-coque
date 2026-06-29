@@ -1,8 +1,10 @@
+import { useOutletContext } from 'react-router-dom';
 import { SectionCard } from '../../components/shared/SectionCard';
 import { ProjectsEditor } from './editors/ProjectsEditor';
-import type { AdminRouteProps } from '../types';
+import type { AdminOutletContext } from '../types';
 
-export function ProjectsRoute({ cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, renderImageField, sectionDirtyCount }: AdminRouteProps) {
+export function ProjectsRoute() {
+  const { cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, renderImageField, sectionDirtyCount } = useOutletContext<AdminOutletContext>();
   const sk = 'pages.projects';
   return (
     <SectionCard title="Projetos" dirtyCount={sectionDirtyCount(sk)} defaultOpen>

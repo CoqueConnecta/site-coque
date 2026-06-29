@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import {
-  adminFieldLabelClass,
-  adminSectionTitleClass,
-} from '../../../components/shared/adminEditorStyles';
+import { adminSectionTitleClass } from '../../../components/shared/adminEditorStyles';
 import { I18nTextField } from '../../../components/form/I18nTextField';
 import { I18nRichTextField } from '../../../components/form/I18nRichTextField';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
 import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
+import { CollapsiblePreview } from '../../../components/shared/CollapsiblePreview';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
 import { TransparencySection, TransparencyDocSection } from '../../../../../components/sections/TransparencySection';
 import { pickLang } from '../../../../../services/cmsService';
@@ -61,12 +59,9 @@ export function TransparencyEditor({ data, isFieldDirty, onFieldChange, onAddArr
           <I18nTextField label="Título" pathPt={['sections',index,'title','pt']} pathEn={['sections',index,'title','en']} valuePt={section.title?.pt ?? ''} valueEn={section.title?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
           <I18nRichTextField label="Conteúdo" pathPt={['sections',index,'bodyMd','pt']} pathEn={['sections',index,'bodyMd','en']} valuePt={section.bodyMd?.pt ?? ''} valueEn={section.bodyMd?.en ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
 
-          <div className="space-y-2">
-            <span className={adminFieldLabelClass}>Pré-visualização desta seção</span>
-            <div className="overflow-hidden border border-[var(--admin-border)] bg-[color:var(--color-surface-page)] p-6">
-              <TransparencyDocSection title={preview.sections[index].title} bodyMd={preview.sections[index].bodyMd} />
-            </div>
-          </div>
+          <CollapsiblePreview label="Pré-visualização desta seção">
+            <TransparencyDocSection title={preview.sections[index].title} bodyMd={preview.sections[index].bodyMd} />
+          </CollapsiblePreview>
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['sections'])}>Adicionar seção</AdminAddButton>

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { saveAdminFields } from '../services/cmsAdminService';
 import { ADMIN_ROUTES } from '../config/adminRoutes';
@@ -23,7 +24,9 @@ export function useAdminRoute(
   dirtyFields: Record<string, true>,
   setDirtyFields: React.Dispatch<React.SetStateAction<Record<string, true>>>,
 ) {
-  const [activeRouteId, setActiveRouteId] = useState<AdminRouteId>('home');
+  // Derive activeRouteId from the URL param instead of local state
+  const { routePath } = useParams<{ routePath: string }>();
+  const activeRouteId: AdminRouteId = (ADMIN_ROUTES.find((r) => r.path === routePath)?.id) ?? 'home';
   const [activeSectionKey, setActiveSectionKey] = useState<string>('pages.home.hero');
 
   const activeRoute = useMemo(
@@ -172,7 +175,6 @@ export function useAdminRoute(
 
   return {
     activeRouteId,
-    setActiveRouteId,
     activeRoute,
     activeSectionKey,
     setActiveSectionKey,

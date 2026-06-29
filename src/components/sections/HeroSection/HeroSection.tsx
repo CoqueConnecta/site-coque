@@ -1,52 +1,41 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../../../lib/cn';
 import { ROUTE_HASHES } from '../../../lib/constants';
 import type { ResolvedHeroData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { Button } from '../../ui/Button';
-
-const LazyHeroCanvas = lazy(async () => {
-  const module = await import('./HeroCanvas');
-  return { default: module.HeroCanvas };
-});
+import { HeroPhotoCarousel } from '../../composites/HeroPhotoCarousel';
 
 export interface HeroSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: ResolvedHeroData;
 }
 
 export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => {
-  const [shouldRenderCanvas, setShouldRenderCanvas] = useState(false);
-
-  useEffect(() => {
-    const loadCanvas = () => setShouldRenderCanvas(true);
-
-    if (typeof window.requestIdleCallback === 'function') {
-      const idleId = window.requestIdleCallback(loadCanvas, { timeout: 1200 });
-      return () => window.cancelIdleCallback(idleId);
-    }
-
-    const timeoutId = globalThis.setTimeout(loadCanvas, 180);
-    return () => globalThis.clearTimeout(timeoutId);
-  }, []);
-
   return (
     <section
       id="hero"
       className={cn(
-        'relative w-full overflow-hidden bg-[#ff6a1a]',
+        'relative w-full overflow-hidden',
         'flex flex-col justify-center',
         'min-h-[680px]',
         className
       )}
       {...props}
     >
-      <div className="absolute inset-0 z-0 pointer-events-none bg-[#ff6a1a]" aria-hidden="true" />
-      {shouldRenderCanvas ? (
-        <Suspense fallback={null}>
-          <LazyHeroCanvas />
-        </Suspense>
-      ) : null}
+      {data.photos.length > 0 ? (
+        <>
+          <HeroPhotoCarousel photos={data.photos} className="z-0" />
+          <div
+            className="absolute inset-0 z-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
+            aria-hidden="true"
+          />
+        </>
+      ) : (
+        <div
+          className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_32%_34%,rgba(255,70,0,0.35),transparent_35%),linear-gradient(130deg,#f8751b_0%,#ff4c0f_45%,#d35500_100%)]"
+          aria-hidden="true"
+        />
+      )}
 
       <Block className="relative z-10 py-12 pt-[140px]">
         <div className="max-w-3xl space-y-6">
@@ -79,15 +68,26 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
             </p>
           )}
 
-          {data.ctaText && (
-            <div className="animate-hero-in pt-2" style={{ animationDelay: '240ms' }}>
-              <Button
-                href={data.ctaHref ?? ROUTE_HASHES.contact}
-                variant="unstyled"
-                className="bg-[color:var(--color-accent-peach)] text-[color:var(--color-tag-bg)] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
-              >
-                {data.ctaText}
-              </Button>
+          {(data.ctaText || data.secondaryCtaText) && (
+            <div className="animate-hero-in flex flex-wrap items-center gap-3 pt-2" style={{ animationDelay: '240ms' }}>
+              {data.ctaText && (
+                <Button
+                  href={data.ctaHref ?? ROUTE_HASHES.waysToHelp}
+                  variant="unstyled"
+                  className="bg-[color:var(--color-accent-peach)] text-[color:var(--color-tag-bg)] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
+                >
+                  {data.ctaText}
+                </Button>
+              )}
+              {data.secondaryCtaText && (
+                <Button
+                  href={data.secondaryCtaHref ?? ROUTE_HASHES.waysToHelp}
+                  variant="secondary"
+                  size="lg"
+                >
+                  {data.secondaryCtaText}
+                </Button>
+              )}
             </div>
           )}
         </div>

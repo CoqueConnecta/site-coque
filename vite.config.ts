@@ -14,17 +14,6 @@ export default defineConfig({
             return;
           }
 
-          // Heavy visual stack used only by Hero shader.
-          if (
-            id.includes('@shadergradient/react')
-            || id.includes('three')
-            || id.includes('@react-three/fiber')
-            || id.includes('three-stdlib')
-            || id.includes('camera-controls')
-          ) {
-            return 'vendor-hero-shader';
-          }
-
           // Admin-only UI libraries and editor tooling.
           if (
             id.includes('@radix-ui/react-dialog')

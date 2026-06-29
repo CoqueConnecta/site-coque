@@ -1,8 +1,10 @@
+import { useOutletContext } from 'react-router-dom';
 import { SectionCard } from '../../components/shared/SectionCard';
 import { PrivacyEditor } from './editors/PrivacyEditor';
-import type { AdminRouteProps } from '../types';
+import type { AdminOutletContext } from '../types';
 
-export function PrivacyRoute({ cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, sectionDirtyCount }: AdminRouteProps) {
+export function PrivacyRoute() {
+  const { cmsData, isFieldDirty, onFieldChange, onAddArrayItem, onRemoveArrayItem, onMoveArrayItem, onDuplicateArrayItem, sectionDirtyCount } = useOutletContext<AdminOutletContext>();
   const sk = 'pages.privacy';
   return (
     <SectionCard title="Privacidade" dirtyCount={sectionDirtyCount(sk)} defaultOpen>

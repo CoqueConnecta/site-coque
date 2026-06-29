@@ -18,7 +18,11 @@ export function useArrayFieldActions(
   setCmsData: React.Dispatch<React.SetStateAction<CmsAdminState | null>>,
   markDirtyField: MarkDirtyField,
 ) {
-  const handleAddArrayItem = (sectionKey: string, path: Array<string | number>) => {
+  const handleAddArrayItem = (
+    sectionKey: string,
+    path: Array<string | number>,
+    defaultItem?: Record<string, unknown>,
+  ) => {
     setCmsData((prev) => {
       if (!prev) return prev;
       const next = JSON.parse(JSON.stringify(prev)) as CmsAdminState;
@@ -27,9 +31,14 @@ export function useArrayFieldActions(
       for (const seg of segments.slice(0, -1)) node = node[seg] as Record<string, unknown>;
       const lastSeg = segments[segments.length - 1];
       const sectionData = node[lastSeg];
-      const currentValue = getValueAtPath(sectionData, path);
-      if (!Array.isArray(currentValue)) return prev;
-      const templateSource = currentValue.length > 0 ? currentValue[0] : '';
+      const rawValue = getValueAtPath(sectionData, path);
+      // Campo de array recém-criado (ainda não existe no node do Firebase): trata como vazio
+      // em vez de abortar, senão o primeiro "Adicionar" desse campo nunca funciona.
+      const currentValue = Array.isArray(rawValue) ? rawValue : [];
+      // Sem item existente para copiar o formato, usa o defaultItem do editor (se vier) — garante
+      // que os campos certos (ex: src/alt) já existem, o que o auto-fill de metadata da biblioteca
+      // de imagens depende para funcionar no primeiro item.
+      const templateSource = currentValue.length > 0 ? currentValue[0] : (defaultItem ?? {});
       const newItem = buildEmptyFromTemplate(templateSource);
       const updatedArray = [...currentValue, newItem];
       node[lastSeg] = setValueAtPath(sectionData, path, updatedArray);
