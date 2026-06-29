@@ -1,9 +1,9 @@
 import { cn } from '../../../lib/cn';
-import type { GalleryData } from '../../../data/mockData';
+import type { ResolvedWaysToHelpCard } from '../../../types/cms';
 import { QuoteIcon, UserAvatarPlaceholderIcon } from '../../icons';
 
-export interface GalleryCardProps {
-  card: GalleryData['cards'][number];
+export interface WaysToHelpCardProps {
+  card: ResolvedWaysToHelpCard;
   bg: string;
   titleColor: string;
   bodyColor: string;
@@ -14,7 +14,7 @@ export interface GalleryCardProps {
   imageRight?: boolean;
 }
 
-export const GalleryCard = ({
+export const WaysToHelpCard = ({
   card,
   bg,
   titleColor,
@@ -24,7 +24,7 @@ export const GalleryCard = ({
   tagBg,
   tagText,
   imageRight = false,
-}: GalleryCardProps) => {
+}: WaysToHelpCardProps) => {
   return (
     <div
       key={card.id}
@@ -129,4 +129,4 @@ export const GalleryCard = ({
   );
 };
 
-GalleryCard.displayName = 'GalleryCard';
+WaysToHelpCard.displayName = 'WaysToHelpCard';

@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { optimizeImage, formatBytes } from '../../../../utils/imageOptimizer';
 
 type MediaAsset = {
   id: string;
@@ -23,14 +25,16 @@ type ImageLibraryModalProps = {
   mediaAssetsCount: number;
   mediaSearch: string;
   onMediaSearchChange: (value: string) => void;
-  categories: readonly ImageCategory[];
+  categories: ImageCategory[];
   selectedCategory: string;
   onSelectCategory: (categoryId: string) => void;
   filteredAssets: MediaAsset[];
   onSelectAsset: (asset: MediaAsset) => void;
   isUploading: boolean;
   uploadProgress: number;
-  onUpload: (file: File, category: string) => void;
+  onUpload: (file: File, category: string, title?: string, alt?: string) => Promise<void>;
+  onCategoryCreate: (label: string) => Promise<string>;
+  onUpdateMetadata: (id: string, title: string, alt: string, category?: string) => Promise<void>;
 };
 
 export function ImageLibraryModal({
@@ -50,21 +54,126 @@ export function ImageLibraryModal({
   isUploading,
   uploadProgress,
   onUpload,
+  onCategoryCreate,
+  onUpdateMetadata,
 }: ImageLibraryModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadCategory, setUploadCategory] = useState('gallery');
+  const [uploadCategory, setUploadCategory] = useState('');
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryLabel, setNewCategoryLabel] = useState('');
 
-  if (!isOpen) return null;
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [optimizationResult, setOptimizationResult] = useState<{
+    originalSize: string;
+    compressedSize: string;
+  } | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'optimizing' | 'uploading' | 'success' | 'error'>('idle');
 
-  const uploadCategories = categories.filter((c) => c.id !== 'all');
+  const [imageTitle, setImageTitle] = useState('');
+  const [imageAlt, setImageAlt] = useState('');
+
+  const [editingAsset, setEditingAsset] = useState<MediaAsset | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editAlt, setEditAlt] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+
+  const handleSaveNewCategory = async () => {
+    const label = newCategoryLabel.trim();
+    if (!label) {
+      toast.error('O nome da categoria não pode ser vazio.');
+      return;
+    }
+    try {
+      const createdId = await onCategoryCreate(label);
+      setUploadCategory(createdId);
+      setIsCreatingCategory(false);
+      setNewCategoryLabel('');
+      toast.success(`Categoria "${label}" criada com sucesso!`);
+    } catch (err) {
+      toast.error('Erro ao criar categoria.');
+      console.error(err);
+    }
+  };
+
+  const handleStartEdit = (asset: MediaAsset) => {
+    setEditingAsset(asset);
+    setEditTitle(asset.title || '');
+    setEditAlt(asset.alt || '');
+    setEditCategory(asset.category || '');
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingAsset) return;
+    setIsSavingEdit(true);
+    try {
+      await onUpdateMetadata(editingAsset.id, editTitle.trim(), editAlt.trim(), editCategory);
+      toast.success('Imagem atualizada com sucesso!');
+      setEditingAsset(null);
+    } catch (err) {
+      toast.error('Erro ao atualizar metadados.');
+      console.error(err);
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      onUpload(file, uploadCategory);
+      setSelectedFile(file);
+      setImageTitle(file.name.replace(/\.[^/.]+$/, ''));
+      setImageAlt('');
+      const url = URL.createObjectURL(file);
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setUploadStatus('idle');
+      setOptimizationResult(null);
       e.target.value = '';
     }
   };
+
+  const handleOptimizeAndSave = async () => {
+    if (!selectedFile) return;
+
+    setUploadStatus('optimizing');
+    try {
+      const result = await optimizeImage(selectedFile);
+      setUploadStatus('uploading');
+      setOptimizationResult({
+        originalSize: result.originalFormatted,
+        compressedSize: result.compressedFormatted,
+      });
+
+      await onUpload(result.file, uploadCategory, imageTitle.trim(), imageAlt.trim());
+
+      setUploadStatus('success');
+      setSelectedFile(null);
+      setUploadCategory('');
+      setImageTitle('');
+      setImageAlt('');
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
+
+      setTimeout(() => {
+        setUploadStatus('idle');
+        setOptimizationResult(null);
+      }, 5000);
+    } catch (err) {
+      setUploadStatus('error');
+      toast.error('Erro ao otimizar ou enviar imagem.');
+      console.error(err);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  const uploadCategories = categories.filter((c) => c.id !== 'all');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -90,19 +199,103 @@ export function ImageLibraryModal({
             <h4 className="text-sm font-bold uppercase tracking-wide text-gray-600">Enviar nova imagem</h4>
 
             <div className="space-y-3 rounded border border-gray-200 bg-white p-3">
-              <label className="block">
-                <span className="mb-1 block text-xs font-medium text-gray-600">Categoria</span>
-                <select
-                  value={uploadCategory}
-                  onChange={(e) => setUploadCategory(e.target.value)}
-                  disabled={isUploading}
-                  className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
-                >
-                  {uploadCategories.map((c) => (
-                    <option key={c.id} value={c.id}>{c.label}</option>
-                  ))}
-                </select>
-              </label>
+              {isCreatingCategory ? (
+                <div className="space-y-2 pt-1 animate-fade-in">
+                  <span className="block text-xs font-medium text-gray-600">Nova Categoria</span>
+                  <input
+                    type="text"
+                    value={newCategoryLabel}
+                    onChange={(e) => setNewCategoryLabel(e.target.value)}
+                    placeholder="Ex: Eventos"
+                    className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveNewCategory}
+                      className="flex-1 h-9 rounded bg-blue-600 px-3 text-xs font-semibold text-white hover:bg-blue-700 transition-colors"
+                    >
+                      Salvar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCreatingCategory(false);
+                        setNewCategoryLabel('');
+                        setUploadCategory('');
+                      }}
+                      className="flex-1 h-9 rounded bg-gray-100 border border-gray-200 px-3 text-xs font-semibold text-gray-700 hover:bg-gray-200 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label className="block">
+                  <span className="mb-1 block text-xs font-medium text-gray-600">Categoria</span>
+                  <select
+                    value={uploadCategory}
+                    onChange={(e) => {
+                      if (e.target.value === 'NEW_CATEGORY') {
+                        setIsCreatingCategory(true);
+                      } else {
+                        setUploadCategory(e.target.value);
+                      }
+                    }}
+                    disabled={isUploading}
+                    className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                  >
+                    <option value="" disabled>Selecione uma categoria...</option>
+                    {uploadCategories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.label}</option>
+                    ))}
+                    <option value="NEW_CATEGORY">+ Criar nova categoria...</option>
+                  </select>
+                </label>
+              )}
+
+              {selectedFile && (
+                <div className="space-y-3 rounded border border-gray-200 bg-gray-50 p-2.5">
+                  {previewUrl && (
+                    <div className="aspect-video w-full rounded overflow-hidden bg-gray-100 border border-gray-200">
+                      <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
+                    </div>
+                  )}
+                  <div className="text-xs space-y-1">
+                    <p className="font-semibold truncate text-gray-800" title={selectedFile.name}>
+                      {selectedFile.name}
+                    </p>
+                    <p className="text-gray-500">
+                      Tamanho: <span className="font-semibold text-gray-700">{formatBytes(selectedFile.size)}</span>
+                    </p>
+                  </div>
+
+                  <div className="space-y-2 border-t border-gray-200 pt-2">
+                    <label className="block">
+                      <span className="mb-0.5 block text-[10px] font-medium text-gray-600">Título da Imagem</span>
+                      <input
+                        type="text"
+                        value={imageTitle}
+                        onChange={(e) => setImageTitle(e.target.value)}
+                        placeholder="Ex: Crianças na horta"
+                        disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                        className="h-8 w-full rounded border border-gray-200 bg-white px-2 text-xs text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="mb-0.5 block text-[10px] font-medium text-gray-600">Texto Alternativo (Alt)</span>
+                      <input
+                        type="text"
+                        value={imageAlt}
+                        onChange={(e) => setImageAlt(e.target.value)}
+                        placeholder="Descrição para leitores de tela..."
+                        disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                        className="h-8 w-full rounded border border-gray-200 bg-white px-2 text-xs text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
 
               <input
                 ref={fileInputRef}
@@ -112,16 +305,56 @@ export function ImageLibraryModal({
                 onChange={handleFileChange}
               />
 
-              <button
-                type="button"
-                disabled={isUploading}
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-              >
-                {isUploading ? 'Enviando...' : 'Selecionar arquivo'}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  disabled={!uploadCategory || uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1 rounded border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-all disabled:opacity-50"
+                >
+                  {selectedFile ? 'Mudar imagem' : 'Selecionar arquivo'}
+                </button>
+                {selectedFile && (
+                  <button
+                    type="button"
+                    disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setImageTitle('');
+                      setImageAlt('');
+                      if (previewUrl) {
+                        URL.revokeObjectURL(previewUrl);
+                        setPreviewUrl(null);
+                      }
+                      setUploadStatus('idle');
+                    }}
+                    className="rounded bg-red-50 border border-red-100 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 transition-all disabled:opacity-50"
+                  >
+                    Remover
+                  </button>
+                )}
+              </div>
 
-              {isUploading && (
+              {selectedFile && (
+                <button
+                  type="button"
+                  disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+                  onClick={handleOptimizeAndSave}
+                  className="w-full rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                >
+                  {uploadStatus === 'optimizing' && 'Otimizando...'}
+                  {uploadStatus === 'uploading' && 'Enviando...'}
+                  {uploadStatus === 'idle' && 'Otimizar e Salvar Imagem'}
+                </button>
+              )}
+
+              {uploadStatus === 'optimizing' && (
+                <p className="text-center text-xs text-gray-600 font-semibold animate-pulse">
+                  ⚙️ Otimizando imagem...
+                </p>
+              )}
+
+              {uploadStatus === 'uploading' && (
                 <div className="space-y-1">
                   <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
                     <div
@@ -129,7 +362,17 @@ export function ImageLibraryModal({
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
-                  <p className="text-center text-xs text-gray-500">{uploadProgress}%</p>
+                  <p className="text-center text-xs text-gray-500">Enviando: {uploadProgress}%</p>
+                </div>
+              )}
+
+              {uploadStatus === 'success' && optimizationResult && (
+                <div className="rounded border border-green-200 bg-green-50 p-2.5 text-xs text-green-800 space-y-1">
+                  <p className="font-bold">✓ Upload efetuado com sucesso!</p>
+                  <p className="text-[10px]">
+                    Otimizada de <span className="font-bold">{optimizationResult.originalSize}</span> para{' '}
+                    <span className="font-bold">{optimizationResult.compressedSize}</span>.
+                  </p>
                 </div>
               )}
             </div>
@@ -198,13 +441,25 @@ export function ImageLibraryModal({
                         {asset.category ?? 'geral'}
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => onSelectAsset(asset)}
-                      className="w-full rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                    >
-                      Usar nesta seção
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onSelectAsset(asset)}
+                        className="flex-1 rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                      >
+                        Usar nesta seção
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleStartEdit(asset)}
+                        className="rounded bg-gray-100 border border-gray-200 p-2 text-gray-700 hover:bg-gray-200"
+                        title="Editar metadados"
+                      >
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -218,6 +473,74 @@ export function ImageLibraryModal({
           </div>
         </div>
       </div>
+
+      {/* Editing Modal */}
+      {editingAsset && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 animate-fade-in">
+          <div className="w-full max-w-md overflow-hidden rounded-lg bg-white shadow-2xl border border-gray-200 p-6 space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-gray-800">Editar Detalhes da Imagem</h3>
+              <p className="text-xs text-gray-500 mt-1.5 truncate">
+                {editingAsset.name}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Título</span>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Categoria</span>
+                <select
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                  className="h-9 w-full rounded border border-gray-200 bg-white px-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                >
+                  {uploadCategories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.label}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Texto Alternativo (Alt)</span>
+                <textarea
+                  value={editAlt}
+                  onChange={(e) => setEditAlt(e.target.value)}
+                  className="w-full rounded border border-gray-200 bg-white p-2 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-20 resize-none"
+                  placeholder="Descreva a imagem para acessibilidade..."
+                />
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={isSavingEdit}
+                onClick={() => setEditingAsset(null)}
+                className="h-9 px-4 rounded bg-gray-100 text-sm font-semibold text-gray-700 hover:bg-gray-200 transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={isSavingEdit}
+                onClick={handleSaveEdit}
+                className="h-9 px-4 rounded bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 shadow-sm transition-colors disabled:opacity-50"
+              >
+                {isSavingEdit ? 'Salvando...' : 'Salvar Alterações'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

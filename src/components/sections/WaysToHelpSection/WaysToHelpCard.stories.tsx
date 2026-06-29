@@ -1,18 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { mockDataPT } from '../../../data/mockData';
-import { GalleryCard } from './GalleryCard';
+import { WaysToHelpCard } from './WaysToHelpCard';
 
 const CARD_BG_LIGHT = '#f9b778';
 const CARD_BG_DARK = '#f58634';
 const TAG_BG = '#411409';
 const TAG_TEXT = '#fef7ee';
 
-const lightCard = mockDataPT.gallery.cards[0];
-const darkCard = mockDataPT.gallery.cards[1];
+const lightCard = mockDataPT.waysToHelp.cards[0];
+const darkCard = mockDataPT.waysToHelp.cards[1];
 
 const meta = {
-  title: 'Sections/GallerySection/GalleryCard',
-  component: GalleryCard,
+  title: 'Sections/WaysToHelpSection/WaysToHelpCard',
+  component: WaysToHelpCard,
   parameters: {
     layout: 'fullscreen',
   },
@@ -26,7 +26,7 @@ const meta = {
       </section>
     ),
   ],
-} satisfies Meta<typeof GalleryCard>;
+} satisfies Meta<typeof WaysToHelpCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

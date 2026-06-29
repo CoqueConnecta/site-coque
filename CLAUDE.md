@@ -76,6 +76,15 @@ gh pr merge --merge
 > **Por que `main` usa `--merge` e nunca `--squash`**: squash em `staging → main` cria um commit novo (SHA diferente) com o mesmo conteúdo que já existe na `staging`. Depois da primeira vez, `main` e `staging` deixam de compartilhar um ancestral comum real, e toda promoção seguinte gera conflitos "fantasma" — o Git tenta reaplicar mudanças que já estão lá, mesmo com o conteúdo já sincronizado (foi exatamente o que travou a PR #30 em 2026-06-25). Merge normal preserva a ancestralidade e elimina esse problema de vez. Squash em `feature → staging` continua seguro — a feature branch é descartada, então a quebra de ancestralidade ali não tem efeito.
 >
 > Se ainda aparecer conflito numa promoção `staging → main` (ex.: resíduo de squash antigo, de antes dessa correção): NÃO resolva direto na PR. Localmente, faça merge da `main` *dentro da* `staging` (`git checkout staging && git merge origin/main`) — não o contrário. Confirme antes com `git diff --stat origin/main origin/staging` que o conteúdo da `staging` já cobre tudo que está na `main` (se cobrir, é seguro manter o lado da `staging` em todo conflito). Resolva cada arquivo com `git checkout --ours <arquivo> && git add <arquivo>`; para `package-lock.json`, não edite os marcadores — delete o arquivo e regenere com `npm install --package-lock-only` depois que `package.json` já estiver resolvido. Dê push na `staging` e a PR fica mergeável.
+## Verificação visual da área logada (admin)
+
+As rotas `/admin/*` exigem login via Google OAuth (Firebase Auth). O Claude Code **não pode autenticar** nesse fluxo (entrar com credenciais é uma ação proibida) — então as ferramentas de preview próprias (`preview_start` e similares, que sobem um servidor Vite isolado e sem sessão logada) **não servem para verificar nada dentro do admin**. Elas continuam ok para o site público (`/`, `/transparencia`, etc.), que não exige login.
+
+Para conferir qualquer tela logada do admin (editores, biblioteca de mídia, etc.):
+- Use as ferramentas do **Chrome browser** (`mcp__Claude_in_Chrome__*`) apontando para a instância que o usuário já tem rodando (normalmente `http://localhost:5173`, já logada na sessão do navegador dele).
+- Nunca tente subir uma segunda instância do Vite só para isso — ela nunca vai estar autenticada.
+- Se o usuário não tiver o Chrome conectado, peça para ele logar manualmente e descrever/printar o que vê, em vez de tentar contornar o login.
+
 ## Skills Firebase instaladas
 
 - `firebase-basics` — setup, CLI e fluxos gerais

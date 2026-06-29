@@ -59,10 +59,10 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
         )}
         {...props}
       >
-        <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-visible rounded-[999px] bg-[rgba(244,212,194,0.94)] px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] sm:px-6 lg:gap-8 lg:px-8">
+        <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-visible rounded-[999px] bg-[rgba(244,212,194,0.94)] px-3 min-[380px]:px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] sm:px-6 lg:gap-8 lg:px-8">
           {/* Logo */}
           <a href="/" className="flex shrink-0 items-center" aria-label="Coque Connecta">
-            <CoqueConnectaWordmark className="h-8 w-auto text-[color:var(--color-tag-bg)] lg:h-9" />
+            <CoqueConnectaWordmark className="h-6 w-[130px] min-[360px]:w-[145px] md:h-8 md:w-auto text-[color:var(--color-tag-bg)] lg:h-9" />
           </a>
 
           {/* Desktop Navigation */}
@@ -87,17 +87,30 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden">
+          {/* Mobile Menu Button & CTA */}
+          <div className="flex md:hidden items-center gap-2 overflow-visible">
+            <Button
+              href={ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="unstyled"
+              className={cn(
+                'h-9 rounded-[50px] px-3 text-xs leading-none flex items-center justify-center font-medium min-[380px]:h-10 min-[380px]:px-4 min-[380px]:text-sm shrink-0',
+                ctaBg
+              )}
+            >
+              {ctaText}
+            </Button>
+
             <IconButton
               variant="ghost"
               size="md"
               label={showMobileMenu ? 'Fechar menu' : 'Abrir menu'}
-              className={iconColor}
+              className={cn(iconColor, 'h-9 w-9 min-[380px]:h-10 min-[380px]:w-10 shrink-0')}
               icon={showMobileMenu ? (
-                <CloseIcon className="h-6 w-6" />
+                <CloseIcon className="h-5 w-5 min-[380px]:h-6 min-[380px]:w-6" />
               ) : (
-                <MenuIcon className="h-6 w-6" />
+                <MenuIcon className="h-5 w-5 min-[380px]:h-6 min-[380px]:w-6" />
               )}
               onClick={onMobileMenuClick}
             />
