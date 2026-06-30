@@ -207,7 +207,7 @@ export const mockDataPT: LandingPageData = {
     ],
     quickLinks: [
       { label: "Sobre nós", href: "/#about" },
-      { label: "Como ajudar", href: "/#ways-to-help" },
+      { label: "Como ajudar", href: "/como-ajudar" },
       { label: "Como doar", href: "https://benfeitoria.com/projeto/coqueconnecta" },
       { label: "Transparência", href: "/transparencia" },
     ],
@@ -326,7 +326,7 @@ export const mockDataEN: LandingPageData = {
     ],
     quickLinks: [
       { label: "About us", href: "/#about" },
-      { label: "How to help", href: "/#ways-to-help" },
+      { label: "How to help", href: "/como-ajudar" },
       { label: "How to donate", href: "https://benfeitoria.com/projeto/coqueconnecta" },
       { label: "Transparency", href: "/transparencia" },
     ],

@@ -23,6 +23,7 @@ export type CmsAdminState = {
       waysToHelp: CmsAdminData;
       stats: CmsAdminData;
       trust: CmsAdminData;
+      whatWeDo: CmsAdminData;
     };
     projects: CmsAdminData;
     privacy: CmsAdminData;

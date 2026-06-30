@@ -5,6 +5,14 @@ export const ROUTE_HASHES = {
   waysToHelp: '#ways-to-help',
 } as const;
 
+export const ROUTES = {
+  about:        '/quem-somos',
+  waysToHelp:   '/como-ajudar',
+  whatWeDo:     '/nossos-projetos',
+  transparency: '/transparencia',
+  privacy:      '/privacidade',
+} as const;
+
 export const STORAGE_KEYS = {
   language: 'site-coque-language',
   adminTheme: 'admin-theme',

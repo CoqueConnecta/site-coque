@@ -15,6 +15,8 @@ const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TransparencyPage = lazy(() => import('./pages/TransparencyPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const WaysToHelpPage = lazy(() => import('./pages/WaysToHelpPage'));
 
 // Admin sub-routes (lazy)
 const HomeRoute = lazy(() => import('./features/admin/routes/home/HomeRoute').then(m => ({ default: m.HomeRoute })));
@@ -44,6 +46,14 @@ const router = createBrowserRouter([
       {
         path: "nossos-projetos",
         element: <ProjectsPage />,
+      },
+      {
+        path: "quem-somos",
+        element: <AboutPage />,
+      },
+      {
+        path: "como-ajudar",
+        element: <WaysToHelpPage />,
       },
       {
         path: "*",

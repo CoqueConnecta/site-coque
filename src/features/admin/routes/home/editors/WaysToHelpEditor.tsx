@@ -23,6 +23,8 @@ type WaysToHelpCardType = {
   title?: I18nField;
   description?: I18nField;
   tags?: Array<{ pt?: string; en?: string }>;
+  ctaLabel?: I18nField;
+  ctaHref?: I18nField;
 };
 
 type WaysToHelpEditorProps = {
@@ -49,7 +51,9 @@ function resolvePreviewData(data: WaysToHelpEditorProps['data'], language: CmsLa
       variant: card.variant ?? 'light',
       title: pickLang(toI18nField(card.title), language),
       description: pickLang(toI18nField(card.description), language),
-      tags: (card.tags ?? []).map((tag) => pickLang(toI18nField(tag), language)),
+      tags:     (card.tags ?? []).map((tag) => pickLang(toI18nField(tag), language)),
+      ctaLabel: card.ctaLabel ? pickLang(toI18nField(card.ctaLabel), language) : undefined,
+      ctaHref:  card.ctaHref  ? pickLang(toI18nField(card.ctaHref),  language) : undefined,
     })),
   };
 }
@@ -134,6 +138,21 @@ export function WaysToHelpEditor({ data, isFieldDirty, onFieldChange, onAddArray
                   <Trash2 className="h-3 w-3" />
                 </button>
               </div>
+            ))}
+          </div>
+          {/* CTA por card */}
+          <div className={adminPanelGridClass}>
+            {(['pt', 'en'] as const).map((lang) => (
+              <AdminEditorCard key={lang} title={`CTA ${lang === 'pt' ? '(PT)' : '(EN)'}`}>
+                <label className="block">
+                  <span className={adminFieldLabelClass}>Texto do botão</span>
+                  <input type="text" value={card.ctaLabel?.[lang] ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'ctaLabel', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'ctaLabel', lang]))} placeholder="Ex: Saiba como doar" />
+                </label>
+                <label className="block">
+                  <span className={adminFieldLabelClass}>URL do botão</span>
+                  <input type="text" value={card.ctaHref?.[lang] ?? ''} onChange={(e) => onFieldChange(['cards', cardIndex, 'ctaHref', lang], e.target.value)} className={getAdminInputClass(isFieldDirty(['cards', cardIndex, 'ctaHref', lang]))} placeholder="https://... ou /rota" />
+                </label>
+              </AdminEditorCard>
             ))}
           </div>
         </CollapsibleItem>

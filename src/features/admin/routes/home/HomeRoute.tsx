@@ -7,6 +7,7 @@ import { WaysToHelpEditor } from './editors/WaysToHelpEditor';
 import { StatsEditor } from './editors/StatsEditor';
 import { AboutEditor } from './editors/AboutEditor';
 import { TrustEditor } from './editors/TrustEditor';
+import { WhatWeDoEditor } from './editors/WhatWeDoEditor';
 import type { AdminOutletContext } from '../types';
 
 const SECTIONS = [
@@ -119,6 +120,14 @@ export function HomeRoute() {
               onMoveArrayItem={(path, index, direction) => onMoveArrayItem(key, path, index, direction)}
               onDuplicateArrayItem={(path, index) => onDuplicateArrayItem(key, path, index)}
               renderImageField={(value, path, lbl, ph, ro) => renderImageField(key, value, path, lbl, ph, ro)}
+            />
+          )}
+          {key === 'pages.home.whatWeDo' && (
+            <WhatWeDoEditor
+              data={cmsData.pages.home.whatWeDo as any}
+              sectionKey={key}
+              isFieldDirty={(path) => isFieldDirty(path, key)}
+              onFieldChange={(path, value) => onFieldChange(key, path, value)}
             />
           )}
         </SectionCard>

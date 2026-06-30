@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { CmsLanguage, ResolvedHeroData, ResolvedAboutData, ResolvedWaysToHelpData, ResolvedStatsData, ResolvedTrustData, ResolvedYoutubeVideo } from '../types/cms';
+import type { CmsLanguage, ResolvedHeroData, ResolvedAboutData, ResolvedWaysToHelpData, ResolvedStatsData, ResolvedTrustData, ResolvedYoutubeVideo, ResolvedWhatWeDoData } from '../types/cms';
 import type { CmsCarouselData } from '../types/cms';
 import {
   getCmsHeroData,
@@ -9,6 +9,7 @@ import {
   getCmsWaysToHelpData,
   getCmsStatsData,
   getCmsTrustData,
+  getCmsWhatWeDoData,
 } from '../services/cmsService';
 
 export interface CmsHomeData {
@@ -19,6 +20,7 @@ export interface CmsHomeData {
   waysToHelp: ResolvedWaysToHelpData;
   stats: ResolvedStatsData;
   trust: ResolvedTrustData;
+  whatWeDo: ResolvedWhatWeDoData;
 }
 
 const EMPTY_HOME: CmsHomeData = {
@@ -29,6 +31,7 @@ const EMPTY_HOME: CmsHomeData = {
   waysToHelp:    { headline: '', subtitle: '', cards: [] },
   stats:         { items: [] },
   trust:         { headline: '', subtitle: '', pressItems: [], partnerLogos: [] },
+  whatWeDo:      { headline: '', subtitle: '' },
 };
 
 const inMemoryCache: Partial<Record<CmsLanguage, CmsHomeData>> = {};
@@ -56,9 +59,10 @@ export function useCmsLandingData(language: CmsLanguage) {
       getCmsWaysToHelpData(language),
       getCmsStatsData(language),
       getCmsTrustData(language),
-    ]).then(([hero, about, carousel, youtubeVideos, waysToHelp, stats, trust]) => {
+      getCmsWhatWeDoData(language),
+    ]).then(([hero, about, carousel, youtubeVideos, waysToHelp, stats, trust, whatWeDo]) => {
       if (!isMounted) return;
-      const resolved: CmsHomeData = { hero, about, carousel, youtubeVideos, waysToHelp, stats, trust };
+      const resolved: CmsHomeData = { hero, about, carousel, youtubeVideos, waysToHelp, stats, trust, whatWeDo };
       inMemoryCache[language] = resolved;
       setData(resolved);
       setIsLoading(false);

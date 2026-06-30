@@ -1,6 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../../../lib/cn';
-import { ROUTE_HASHES } from '../../../lib/constants';
+import { ROUTES } from '../../../lib/constants';
 import type { ResolvedHeroData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { Button } from '../../ui/Button';
@@ -72,7 +72,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
             <div className="animate-hero-in flex flex-wrap items-center gap-3 pt-2" style={{ animationDelay: '240ms' }}>
               {data.ctaText && (
                 <Button
-                  href={data.ctaHref ?? ROUTE_HASHES.waysToHelp}
+                  href={data.ctaHref ?? ROUTES.waysToHelp}
                   variant="unstyled"
                   className="bg-[color:var(--color-accent-peach)] text-[color:var(--color-tag-bg)] hover:brightness-95 px-6 py-3 text-base sm:text-lg h-12"
                 >
@@ -81,7 +81,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
               )}
               {data.secondaryCtaText && (
                 <Button
-                  href={data.secondaryCtaHref ?? ROUTE_HASHES.waysToHelp}
+                  href={data.secondaryCtaHref ?? ROUTES.waysToHelp}
                   variant="secondary"
                   size="lg"
                 >

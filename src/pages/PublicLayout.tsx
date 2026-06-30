@@ -55,7 +55,6 @@ export default function PublicLayout() {
       />
 
       <LanguageBar language={language} onLanguageChange={setLanguage} isFixed />
-
       <HeaderBar
         navLinks={navLinks}
         activeLink={activeLink}
@@ -64,6 +63,7 @@ export default function PublicLayout() {
         onNavClick={handleNavClick}
         onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         showMobileMenu={mobileMenuOpen}
+        isFixed
       />
 
       <Outlet context={{ language, setLanguage } satisfies PublicLayoutContextValue} />
