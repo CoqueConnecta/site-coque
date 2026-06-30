@@ -41,7 +41,7 @@ export const CoqueEmAcaoSection = ({
       {...props}
     >
       <Block>
-        <FadeIn className="mb-10 flex flex-col gap-4">
+        <FadeIn className="mb-6 flex flex-col gap-4">
           <h3
             style={{
               fontFamily: "'Figtree', sans-serif",
@@ -72,7 +72,7 @@ export const CoqueEmAcaoSection = ({
         </FadeIn>
       </Block>
 
-      <div className="space-y-10 md:space-y-12">
+      <div className="space-y-6 md:space-y-8">
         <VideosSection videos={videos} className="py-0" />
         <CarouselSection images={images} className="py-0" />
       </div>

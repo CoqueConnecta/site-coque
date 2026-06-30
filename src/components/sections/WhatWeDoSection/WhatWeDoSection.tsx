@@ -30,7 +30,7 @@ export const WhatWeDoSection = ({
   return (
     <section
       id="what-we-do"
-      className={cn('w-full bg-white py-12 sm:py-16', className)}
+      className={cn('w-full bg-[color:var(--color-surface-page)] py-12 sm:py-16', className)}
       {...props}
     >
       <Block>

@@ -24,11 +24,11 @@ function Site() {
       <main>
         <StatsSection data={data.stats} />
         <AboutSection data={data.about} />
-        <div className="w-full bg-white pb-12 sm:pb-16">
+        <div className="w-full bg-[color:var(--color-tag-bg)] pb-16 sm:pb-24">
           <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
             <Link
               to={ROUTES.about}
-              className="text-sm font-semibold text-[color:var(--color-tag-bg)] hover:underline"
+              className="text-sm font-semibold text-[color:var(--color-accent-peach)] hover:text-[color:var(--color-text-cream)] hover:underline"
             >
               {ABOUT_LINK[language] ?? ABOUT_LINK.pt}
             </Link>

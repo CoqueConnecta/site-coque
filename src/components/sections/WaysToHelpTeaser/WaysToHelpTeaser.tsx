@@ -19,20 +19,20 @@ export const WaysToHelpTeaser = ({ data, language, className, ...props }: WaysTo
   return (
     <section
       id="ways-to-help"
-      className={cn('w-full bg-white py-12 sm:py-16', className)}
+      className={cn('w-full bg-[color:var(--color-surface-orange)] py-20 sm:py-28', className)}
       {...props}
     >
       <Block>
-        <FadeIn className="flex flex-col gap-6">
-          <div className="flex flex-col gap-4">
+        <FadeIn className="flex flex-col items-center gap-6 text-center">
+          <div className="flex flex-col items-center gap-4">
             <h3
               style={{
                 fontFamily: "'Figtree', sans-serif",
                 fontSize: 'clamp(34px, 4.2vw, 50px)',
                 fontWeight: 700,
-                color: 'var(--color-text-primary)',
+                color: 'var(--color-tag-bg)',
                 lineHeight: '1.1',
-                margin: 0,
+                margin: '0 auto',
                 letterSpacing: '-0.8px',
                 maxWidth: '640px',
                 textWrap: 'balance',
@@ -46,16 +46,22 @@ export const WaysToHelpTeaser = ({ data, language, className, ...props }: WaysTo
                   fontFamily: "'Figtree', sans-serif",
                   fontSize: 'clamp(17px, 2vw, 20px)',
                   lineHeight: '1.5',
-                  color: 'var(--color-text-secondary)',
+                  color: 'var(--color-tag-bg)',
                   maxWidth: '60ch',
-                  margin: 0,
+                  margin: '0 auto',
+                  opacity: 0.8,
                 }}
               >
                 {data.subtitle}
               </p>
             )}
           </div>
-          <Button href={ROUTES.waysToHelp} variant="primary" size="lg">
+          <Button
+            href={ROUTES.waysToHelp}
+            variant="unstyled"
+            size="lg"
+            className="bg-[color:var(--color-tag-bg)] text-[color:var(--color-accent-peach)] hover:brightness-110 px-8 py-3 h-12 text-base font-semibold rounded-md"
+          >
             {CTA_LABEL[language]}
           </Button>
         </FadeIn>
