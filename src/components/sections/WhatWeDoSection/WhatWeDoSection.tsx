@@ -5,6 +5,7 @@ import { FadeIn } from '../../ui/FadeIn';
 import { Button } from '../../ui/Button';
 import { ProjectCard } from '../../composites/ProjectCard';
 import { ProjectGrid } from '../../composites/ProjectGrid';
+import { SectionHeading } from '../../composites/SectionHeading';
 import { ROUTES } from '../../../lib/constants';
 import { useCmsProjectsData } from '../../../hooks/useCmsProjectsData';
 
@@ -34,36 +35,12 @@ export const WhatWeDoSection = ({
       {...props}
     >
       <Block>
-        <FadeIn className="mb-10 flex flex-col gap-4">
-          <h3
-            style={{
-              fontFamily: "'Figtree', sans-serif",
-              fontSize: 'clamp(34px, 4.2vw, 50px)',
-              fontWeight: 700,
-              color: 'var(--color-text-primary)',
-              lineHeight: '1.1',
-              margin: 0,
-              letterSpacing: '-0.8px',
-              maxWidth: '640px',
-              textWrap: 'balance',
-            } as React.CSSProperties}
-          >
-            {data.headline || (language === 'pt' ? 'O que Fazemos' : 'What We Do')}
-          </h3>
-          {data.subtitle && (
-            <p
-              style={{
-                fontFamily: "'Figtree', sans-serif",
-                fontSize: 'clamp(17px, 2vw, 20px)',
-                lineHeight: '1.5',
-                color: 'var(--color-text-secondary)',
-                maxWidth: '60ch',
-                margin: 0,
-              }}
-            >
-              {data.subtitle}
-            </p>
-          )}
+        <FadeIn className="mb-10">
+          <SectionHeading
+            headline={data.headline || (language === 'pt' ? 'O que Fazemos' : 'What We Do')}
+            subtitle={data.subtitle}
+            size="md"
+          />
         </FadeIn>
 
         {preview.length > 0 && (

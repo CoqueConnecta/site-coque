@@ -19,7 +19,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
+    <div className="flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] bg-white shadow-[var(--shadow-soft)]">
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
         <img

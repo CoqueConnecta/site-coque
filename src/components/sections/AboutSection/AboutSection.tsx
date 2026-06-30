@@ -35,7 +35,8 @@ export const AboutSection = ({
             <div className="min-w-0">
               <Typography
                 variant="body"
-                className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px] text-[color:var(--color-text-cream)]"
+                tone="onDark"
+                className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
               >
                 {data.description}
               </Typography>

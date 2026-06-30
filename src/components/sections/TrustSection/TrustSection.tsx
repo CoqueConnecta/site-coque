@@ -4,6 +4,7 @@ import { cn } from '../../../lib/cn';
 import type { CmsLanguage, ResolvedTrustData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { FadeIn } from '../../ui/FadeIn';
+import { SectionHeading } from '../../composites/SectionHeading';
 
 export interface TrustSectionProps extends React.HTMLAttributes<HTMLElement> {
   data: ResolvedTrustData;
@@ -25,34 +26,8 @@ export const TrustSection = ({ data, language, className, ...props }: TrustSecti
       {...props}
     >
       <Block>
-        <FadeIn className="mb-10 flex flex-col gap-4">
-          <h3
-            style={{
-              fontFamily: "'Figtree', sans-serif",
-              fontSize: 'clamp(34px, 4.2vw, 50px)',
-              fontWeight: 700,
-              color: 'var(--color-text-primary)',
-              lineHeight: '1.1',
-              margin: 0,
-              letterSpacing: '-0.8px',
-              maxWidth: '640px',
-              textWrap: 'balance',
-            } as React.CSSProperties}
-          >
-            {data.headline}
-          </h3>
-          <p
-            style={{
-              fontFamily: "'Figtree', sans-serif",
-              fontSize: 'clamp(17px, 2vw, 20px)',
-              lineHeight: '1.5',
-              color: 'var(--color-text-secondary)',
-              maxWidth: '60ch',
-              margin: 0,
-            }}
-          >
-            {data.subtitle}
-          </p>
+        <FadeIn className="mb-10">
+          <SectionHeading headline={data.headline} subtitle={data.subtitle} size="sm" />
         </FadeIn>
 
         {data.pressItems.length > 0 && (
