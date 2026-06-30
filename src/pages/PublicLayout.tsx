@@ -56,7 +56,7 @@ export default function PublicLayout() {
 
       <div className="sticky top-0 z-50">
         <LanguageBar language={language} onLanguageChange={setLanguage} />
-        <div className="flex justify-center px-4 pt-3 pb-0">
+        <div className="flex justify-center px-4">
           <HeaderBar
             navLinks={navLinks}
             activeLink={activeLink}
