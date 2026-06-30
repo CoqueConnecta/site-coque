@@ -37,6 +37,7 @@ export const HeroPhotoCarousel = ({
           src={photo.src}
           alt={photo.alt}
           loading={index === 0 ? 'eager' : 'lazy'}
+          style={{ objectPosition: photo.objectPosition || 'center' }}
           className={cn(
             'absolute inset-0 h-full w-full object-cover',
             // Reduced motion: mantém o ciclo automático (não é o tipo de movimento contínuo

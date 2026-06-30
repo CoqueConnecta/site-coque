@@ -1,6 +1,7 @@
 import { cn } from '../../../lib/cn';
 import type { ResolvedWaysToHelpCard } from '../../../types/cms';
 import { QuoteIcon, UserAvatarPlaceholderIcon } from '../../icons';
+import { Button } from '../../ui/Button';
 
 export interface WaysToHelpCardProps {
   card: ResolvedWaysToHelpCard;
@@ -83,6 +84,18 @@ export const WaysToHelpCard = ({
               </span>
             ))}
           </div>
+
+          {card.ctaHref && card.ctaLabel && (
+            <Button
+              href={card.ctaHref}
+              variant="unstyled"
+              className="mt-2 h-10 rounded-[50px] px-5 text-sm font-semibold"
+              style={{ backgroundColor: tagBg, color: tagText }}
+              {...(card.ctaHref.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              {card.ctaLabel}
+            </Button>
+          )}
         </div>
       </div>
 

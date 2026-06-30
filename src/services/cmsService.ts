@@ -28,6 +28,8 @@ import type {
   ResolvedProject,
   ResolvedPrivacyData,
   ResolvedTransparencyData,
+  CmsWhatWeDoData,
+  ResolvedWhatWeDoData,
 } from '../types/cms';
 
 const V3 = 'cms/v3';
@@ -153,6 +155,8 @@ export async function getCmsWaysToHelpData(language: CmsLanguage): Promise<Resol
       title:       pickLang(card.title, language),
       description: pickLang(card.description, language),
       tags:        (card.tags ?? []).map((tag) => tag[language] ?? tag.pt),
+      ctaLabel:    card.ctaLabel ? pickLang(card.ctaLabel, language) : undefined,
+      ctaHref:     card.ctaHref  ? pickLang(card.ctaHref,  language) : undefined,
       blockquote:  card.blockquote ? {
         text: pickLang(card.blockquote.text, language),
         authorName: card.blockquote.authorName,
@@ -181,6 +185,15 @@ export async function getCmsTrustData(language: CmsLanguage): Promise<ResolvedTr
     subtitle:     pickLang(data.subtitle, language),
     pressItems:   data.pressItems ?? [],
     partnerLogos: data.partnerLogos ?? [],
+  };
+}
+
+export async function getCmsWhatWeDoData(language: CmsLanguage): Promise<ResolvedWhatWeDoData> {
+  const data = await fetchNode<CmsWhatWeDoData>(`${V3}/pages/home/whatWeDo`);
+  if (!data) return { headline: '', subtitle: '' };
+  return {
+    headline: pickLang(data.headline, language),
+    subtitle: pickLang(data.subtitle, language),
   };
 }
 

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { AdminEditorCard } from '../../../components/shared/AdminEditorCard';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
-import { adminPanelGridClass } from '../../../components/shared/adminEditorStyles';
+import { adminPanelGridClass, adminFieldLabelClass, getAdminSelectClass } from '../../../components/shared/adminEditorStyles';
 import { AdminInputField } from '../../../components/form/AdminInputField';
 import { AdminTextareaField } from '../../../components/form/AdminTextareaField';
 import { AdminAddButton } from '../../../components/shared/AdminAddButton';
@@ -18,7 +18,7 @@ type HeroEditorProps = {
     ctaHref?: { pt?: string; en?: string };
     secondaryCtaText?: { pt?: string; en?: string };
     secondaryCtaHref?: { pt?: string; en?: string };
-    photos?: Array<{ src?: string; alt?: string }>;
+    photos?: Array<{ src?: string; alt?: string; objectPosition?: string }>;
   };
   sectionKey: string;
   isFieldDirty: (path: Array<string | number>) => boolean;
@@ -38,8 +38,8 @@ function resolvePreviewData(data: HeroEditorProps['data'], language: CmsLanguage
 
   return {
     photos: (data.photos ?? [])
-      .filter((photo): photo is { src: string; alt?: string } => Boolean(photo.src))
-      .map((photo) => ({ src: photo.src, alt: photo.alt ?? '' })),
+      .filter((photo): photo is { src: string; alt?: string; objectPosition?: string } => Boolean(photo.src))
+      .map((photo) => ({ src: photo.src, alt: photo.alt ?? '', objectPosition: photo.objectPosition })),
     headline: pickLang(toI18nField(data.headline), language),
     subheadline: pickLang(toI18nField(data.subheadline), language),
     ctaText: pickLang(toI18nField(data.ctaText), language),
@@ -146,9 +146,25 @@ export function HeroEditor({
               isFieldDirty={isFieldDirty}
               onFieldChange={onFieldChange}
             />
+            <label className="block">
+              <span className={adminFieldLabelClass}>Ponto focal (recorte)</span>
+              <select
+                value={photo.objectPosition ?? ''}
+                onChange={(e) => onFieldChange(['photos', index, 'objectPosition'], e.target.value || undefined)}
+                className={getAdminSelectClass(isFieldDirty(['photos', index, 'objectPosition']))}
+              >
+                <option value="">Centro (padrão)</option>
+                <option value="top">Topo</option>
+                <option value="bottom">Baixo</option>
+                <option value="center 25%">Centro superior</option>
+                <option value="center 75%">Centro inferior</option>
+                <option value="left top">Esquerda superior</option>
+                <option value="right top">Direita superior</option>
+              </select>
+            </label>
           </CollapsibleItem>
         ))}
-        <AdminAddButton onClick={() => onAddArrayItem(['photos'], { src: '', alt: '' })}>Adicionar foto</AdminAddButton>
+        <AdminAddButton onClick={() => onAddArrayItem(['photos'], { src: '', alt: '', objectPosition: '' })}>Adicionar foto</AdminAddButton>
       </div>
 
       <AdminPreviewPanel language={previewLang} onLanguageChange={setPreviewLang}>
