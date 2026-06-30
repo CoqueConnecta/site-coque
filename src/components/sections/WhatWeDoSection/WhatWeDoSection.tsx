@@ -25,7 +25,7 @@ export const WhatWeDoSection = ({
   ...props
 }: WhatWeDoSectionProps) => {
   const { data: projects } = useCmsProjectsData(language);
-  const preview = projects.slice(0, 3);
+  const preview = projects.slice(0, 2);
 
   return (
     <section
