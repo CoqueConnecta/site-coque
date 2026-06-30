@@ -3,6 +3,7 @@ import { Modal } from '../Modal';
 import { Typography } from '../../ui/Typography';
 import { Play } from 'lucide-react';
 import { useDelayedState } from '../../../hooks/useDelayedState';
+import { cn } from '../../../lib/cn';
 import type { ResolvedYoutubeVideo } from '../../../types/cms';
 
 const mockVideos: ResolvedYoutubeVideo[] = [
@@ -35,30 +36,38 @@ export const YouTubeFeed = ({ videos, showTitle = true }: YouTubeFeedProps) => {
     <>
       {showTitle && <Typography variant="h2" className="mb-8">Vídeos</Typography>}
 
-      {/* Grid de Thumbnails */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {visibleVideos.map((video) => (
-            <div 
-              key={video.id} 
-              className="group relative cursor-pointer overflow-hidden rounded-[var(--radius-sm)] bg-gray-200 aspect-video"
-              onClick={() => openVideo(video.id)}
-            >
-              {/* Imagem de Capa do Youtube */}
-              <img 
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {visibleVideos.map((video, index) => (
+          <div
+            key={video.id}
+            className={cn(
+              'group cursor-pointer',
+              // Centraliza o último item quando a contagem é ímpar no layout 2-col (sm)
+              visibleVideos.length % 2 !== 0 &&
+                index === visibleVideos.length - 1 &&
+                'sm:col-span-2 sm:max-w-[calc(50%-12px)] sm:mx-auto lg:col-span-1 lg:max-w-full'
+            )}
+            onClick={() => openVideo(video.id)}
+          >
+            <div className="relative overflow-hidden rounded-[var(--radius-sm)] bg-gray-200 aspect-video">
+              <img
                 src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
-                alt={video.title} 
+                alt={video.title}
+                loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              
-              {/* Overlay com botão de Play (Fica visível no hover) */}
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/40">
                 <div className="rounded-[var(--radius-pill)] bg-[color:var(--color-surface-orange)] p-4 text-[color:var(--color-tag-bg)] shadow-lg transition-transform group-hover:scale-110">
                   <Play fill="currentColor" size={24} />
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+            <p className="mt-2 text-sm font-semibold text-[color:var(--color-text-primary)] line-clamp-2">
+              {video.title}
+            </p>
+          </div>
+        ))}
+      </div>
 
       {/* O Nosso Modal Reutilizável */}
       <Modal 
