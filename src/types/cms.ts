@@ -96,6 +96,8 @@ export interface CmsWaysToHelpCard {
   title: I18nField;
   description: I18nField;
   tags: CmsWaysToHelpTag[];
+  ctaLabel?: I18nField;
+  ctaHref?: I18nField;
   blockquote?: {
     text: I18nField;
     authorName: string;
@@ -208,6 +210,8 @@ export interface ResolvedWaysToHelpCard {
   title: string;
   description: string;
   tags: string[];
+  ctaLabel?: string;
+  ctaHref?: string;
   blockquote?: {
     text: string;
     authorName: string;
@@ -219,6 +223,8 @@ export interface ResolvedStatItem    { value: string; label: string }
 export interface ResolvedStatsData   { items: ResolvedStatItem[] }
 export interface ResolvedTrustData   { headline: string; subtitle: string; pressItems: CmsPressItem[]; partnerLogos: CmsPartnerLogo[] }
 export interface ResolvedYoutubeVideo { id: string; title: string }
+export interface CmsWhatWeDoData { headline: I18nField; subtitle: I18nField }
+export interface ResolvedWhatWeDoData { headline: string; subtitle: string }
 export interface ResolvedProject {
   id: string; image: string; location: string; actionHref?: string;
   title: string; bodyMd: string; actionLabel: string;

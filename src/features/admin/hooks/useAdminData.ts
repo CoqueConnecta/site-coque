@@ -40,6 +40,7 @@ export function useAdminData(): UseAdminDataReturn {
               waysToHelp:    (home.waysToHelp    as Record<string, unknown>) ?? {},
               stats:         (home.stats         as Record<string, unknown>) ?? {},
               trust:         (home.trust         as Record<string, unknown>) ?? {},
+              whatWeDo:      (home.whatWeDo      as Record<string, unknown>) ?? {},
             },
             projects,
             privacy,
