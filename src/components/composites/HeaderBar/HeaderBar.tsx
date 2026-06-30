@@ -59,7 +59,7 @@ export const HeaderBar = forwardRef<HTMLElement, HeaderBarProps>(
         )}
         {...props}
       >
-        <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-visible rounded-[999px] bg-[rgba(244,212,194,0.94)] px-3 min-[380px]:px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] sm:px-6 lg:gap-8 lg:px-8">
+        <div className="mx-auto flex h-[84px] w-full items-center justify-between gap-4 overflow-visible rounded-[999px] bg-[rgba(244,212,194,0.82)] px-3 min-[380px]:px-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] backdrop-blur-md sm:px-6 lg:gap-8 lg:px-8">
           {/* Logo */}
           <a href="/" className="flex shrink-0 items-center" aria-label="Coque Connecta">
             <CoqueConnectaWordmark className="h-6 w-[130px] min-[360px]:w-[145px] md:h-8 md:w-auto text-[color:var(--color-tag-bg)] lg:h-9" />
