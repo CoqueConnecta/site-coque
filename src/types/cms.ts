@@ -69,6 +69,7 @@ export interface CmsAboutData {
 export interface CmsCarouselImage {
   src: string;
   alt: string;
+  objectPosition?: string;
 }
 
 export interface CmsCarouselData {
