@@ -11,7 +11,7 @@ export interface SectionHeadingProps {
   subtitle?: string;
   size?: 'sm' | 'md' | 'lg';
   centered?: boolean;
-  tone?: 'default' | 'on-orange';
+  tone?: 'default' | 'on-orange' | 'on-dark';
   className?: string;
 }
 
@@ -24,9 +24,13 @@ export const SectionHeading = ({
   className,
 }: SectionHeadingProps) => {
   const headlineColor =
-    tone === 'on-orange' ? 'var(--color-tag-bg)' : 'var(--color-text-primary)';
+    tone === 'on-orange' ? 'var(--color-tag-bg)'
+    : tone === 'on-dark' ? 'var(--color-text-cream)'
+    : 'var(--color-text-primary)';
   const subtitleColor =
-    tone === 'on-orange' ? 'var(--color-tag-bg)' : 'var(--color-text-secondary)';
+    tone === 'on-orange' ? 'var(--color-tag-bg)'
+    : tone === 'on-dark' ? 'var(--color-text-cream)'
+    : 'var(--color-text-secondary)';
 
   return (
     <div className={cn('flex flex-col gap-4', centered && 'items-center text-center', className)}>
@@ -54,7 +58,7 @@ export const SectionHeading = ({
             color: subtitleColor,
             maxWidth: centered ? '55ch' : '60ch',
             margin: centered ? '0 auto' : 0,
-            opacity: tone === 'on-orange' ? 0.8 : 1,
+            opacity: tone === 'on-orange' ? 0.8 : tone === 'on-dark' ? 0.7 : 1,
           }}
         >
           {subtitle}
