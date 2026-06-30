@@ -15,14 +15,18 @@ export interface CoqueEmAcaoSectionProps extends React.HTMLAttributes<HTMLElemen
 // Heading fixo (não-CMS) que une 2 seções de mídia independentes sob 1 narrativa só —
 // mesmo motivo do label de Transparência em TrustSection: é moldura editorial, não
 // conteúdo dinâmico, não justifica um campo i18n próprio no CMS.
-const HEADING: Record<CmsLanguage, { title: string; description: string }> = {
+const HEADING: Record<CmsLanguage, { title: string; description: string; youtubeLabel: string; photosLabel: string }> = {
   pt: {
     title: 'Coque em ação',
     description: 'Um retrato em vídeo e fotos do que a comunidade constrói todos os dias.',
+    youtubeLabel: 'Ver canal no YouTube',
+    photosLabel: 'Fotos',
   },
   en: {
     title: 'Coque in action',
     description: 'A look in video and photos at what the community builds every day.',
+    youtubeLabel: 'View YouTube channel',
+    photosLabel: 'Photos',
   },
 };
 
@@ -47,10 +51,27 @@ export const CoqueEmAcaoSection = ({
         </FadeIn>
       </Block>
 
-      <div className="space-y-6 md:space-y-8">
-        <VideosSection videos={videos} className="py-0" />
-        <CarouselSection images={images} className="py-0" />
-      </div>
+      <VideosSection videos={videos} className="py-0" showTitle={false} />
+
+      <Block className="mt-6 md:mt-8">
+        <div className="flex flex-col gap-5">
+          <a
+            href="https://www.youtube.com/@CoqueConnecta"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-accent-peach)] hover:text-[color:var(--color-tag-bg)] hover:underline"
+          >
+            {copy.youtubeLabel} →
+          </a>
+          <div className="flex items-center gap-3 border-t border-[color:var(--color-border-subtle)] pt-5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[color:var(--color-text-secondary)]">
+              {copy.photosLabel}
+            </span>
+          </div>
+        </div>
+      </Block>
+
+      <CarouselSection images={images} className="mt-4 py-0" />
     </section>
   );
 };

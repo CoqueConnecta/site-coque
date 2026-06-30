@@ -6,10 +6,12 @@ import type { ResolvedYoutubeVideo } from '../../../types/cms';
 
 export interface VideosSectionProps extends React.HTMLAttributes<HTMLElement> {
   videos?: ResolvedYoutubeVideo[];
+  showTitle?: boolean;
 }
 
 export const VideosSection = ({
   videos,
+  showTitle,
   className,
   ...props
 }: VideosSectionProps) => {
@@ -21,7 +23,7 @@ export const VideosSection = ({
     >
       <Block>
         <FadeIn>
-          <YouTubeFeed videos={videos} />
+          <YouTubeFeed videos={videos} showTitle={showTitle} />
         </FadeIn>
       </Block>
     </section>

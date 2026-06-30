@@ -12,9 +12,10 @@ const mockVideos: ResolvedYoutubeVideo[] = [
 
 interface YouTubeFeedProps {
   videos?: ResolvedYoutubeVideo[];
+  showTitle?: boolean;
 }
 
-export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
+export const YouTubeFeed = ({ videos, showTitle = true }: YouTubeFeedProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoId, setCurrentVideoIdNow, setCurrentVideoIdDelayed] = useDelayedState<string | null>(null);
   const visibleVideos = videos && videos.length > 0 ? videos : mockVideos;
@@ -32,10 +33,10 @@ export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
 
   return (
     <>
-      <Typography variant="h2" className="mb-8">Vídeos</Typography>
+      {showTitle && <Typography variant="h2" className="mb-8">Vídeos</Typography>}
 
       {/* Grid de Thumbnails */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {visibleVideos.map((video) => (
             <div 
               key={video.id} 
@@ -51,7 +52,7 @@ export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
               
               {/* Overlay com botão de Play (Fica visível no hover) */}
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/40">
-                <div className="rounded-[var(--radius-pill)] bg-red-600 p-4 text-white shadow-lg transition-transform group-hover:scale-110">
+                <div className="rounded-[var(--radius-pill)] bg-[color:var(--color-surface-orange)] p-4 text-[color:var(--color-tag-bg)] shadow-lg transition-transform group-hover:scale-110">
                   <Play fill="currentColor" size={24} />
                 </div>
               </div>
