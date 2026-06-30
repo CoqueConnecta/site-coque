@@ -18,7 +18,6 @@ function Site() {
 
   return (
     <>
-      <div className="w-full bg-[color:var(--color-tag-bg)] h-3" aria-hidden="true" />
       <HeroSection data={data.hero} />
 
       <main>

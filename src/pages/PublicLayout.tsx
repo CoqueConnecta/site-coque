@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { cn } from '../lib/cn';
 import { HeaderBar } from '../components/composites/HeaderBar';
 import { MobileMenuOverlay } from '../components/composites/MobileMenuOverlay';
 import { NewsletterSection } from '../components/sections/NewsletterSection';
@@ -25,6 +26,13 @@ export default function PublicLayout() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeLink, setActiveLink } = useScrollAnchor();
+  const [isAtTop, setIsAtTop] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => setIsAtTop(window.scrollY < 10);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEYS.language, language);
@@ -54,7 +62,7 @@ export default function PublicLayout() {
         onLanguageChange={setLanguage}
       />
 
-      <div className="sticky top-0 z-50">
+      <div className={cn('sticky top-0 z-50', isAtTop && 'bg-[color:var(--color-tag-bg)]')}>
         <LanguageBar language={language} onLanguageChange={setLanguage} />
         <div className="flex justify-center px-4 py-3">
           <HeaderBar
