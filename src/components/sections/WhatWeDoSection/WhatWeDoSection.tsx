@@ -2,9 +2,9 @@ import { cn } from '../../../lib/cn';
 import type { CmsLanguage, ResolvedWhatWeDoData } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { FadeIn } from '../../ui/FadeIn';
-import { Button } from '../../ui/Button';
 import { ProjectCard } from '../../composites/ProjectCard';
 import { ProjectGrid } from '../../composites/ProjectGrid';
+import { SectionCTA } from '../../composites/SectionCTA/SectionCTA';
 import { SectionHeading } from '../../composites/SectionHeading';
 import { ROUTES } from '../../../lib/constants';
 import { useCmsProjectsData } from '../../../hooks/useCmsProjectsData';
@@ -15,8 +15,8 @@ export interface WhatWeDoSectionProps extends React.HTMLAttributes<HTMLElement> 
 }
 
 const SEE_ALL_LABEL: Record<CmsLanguage, string> = {
-  pt: 'Ver todos os projetos →',
-  en: 'See all projects →',
+  pt: 'Ver todos os projetos',
+  en: 'See all projects',
 };
 
 export const WhatWeDoSection = ({
@@ -54,9 +54,7 @@ export const WhatWeDoSection = ({
         )}
 
         <div className="mt-8">
-          <Button href={ROUTES.whatWeDo} variant="primary">
-            {SEE_ALL_LABEL[language]}
-          </Button>
+          <SectionCTA href={ROUTES.whatWeDo} label={SEE_ALL_LABEL[language]} />
         </div>
       </Block>
     </section>

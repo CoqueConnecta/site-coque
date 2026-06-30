@@ -2,6 +2,7 @@ import { cn } from '../../../lib/cn';
 import type { CmsCarouselImage, CmsLanguage, ResolvedYoutubeVideo } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { FadeIn } from '../../ui/FadeIn';
+import { SectionCTA } from '../../composites/SectionCTA/SectionCTA';
 import { SectionHeading } from '../../composites/SectionHeading';
 import { VideosSection } from '../VideosSection';
 import { CarouselSection } from '../CarouselSection';
@@ -55,14 +56,7 @@ export const CoqueEmAcaoSection = ({
 
       <Block className="mt-6 md:mt-8">
         <div className="flex flex-col gap-5">
-          <a
-            href="https://www.youtube.com/@CoqueConnecta"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-accent-peach)] hover:text-[color:var(--color-tag-bg)] hover:underline"
-          >
-            {copy.youtubeLabel} →
-          </a>
+          <SectionCTA href="https://www.youtube.com/@CoqueConnecta" label={copy.youtubeLabel} className="self-start" />
           <div className="flex items-center gap-3 border-t border-[color:var(--color-border-subtle)] pt-5">
             <span className="text-xs font-semibold uppercase tracking-wider text-[color:var(--color-text-secondary)]">
               {copy.photosLabel}
