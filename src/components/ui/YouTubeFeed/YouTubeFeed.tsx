@@ -39,7 +39,7 @@ export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
           {visibleVideos.map((video) => (
             <div 
               key={video.id} 
-              className="group relative cursor-pointer overflow-hidden rounded-xl bg-gray-200 aspect-video"
+              className="group relative cursor-pointer overflow-hidden rounded-[var(--radius-sm)] bg-gray-200 aspect-video"
               onClick={() => openVideo(video.id)}
             >
               {/* Imagem de Capa do Youtube */}
@@ -51,7 +51,7 @@ export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
               
               {/* Overlay com botão de Play (Fica visível no hover) */}
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/40">
-                <div className="rounded-full bg-red-600 p-4 text-white shadow-lg transition-transform group-hover:scale-110">
+                <div className="rounded-[var(--radius-pill)] bg-red-600 p-4 text-white shadow-lg transition-transform group-hover:scale-110">
                   <Play fill="currentColor" size={24} />
                 </div>
               </div>
@@ -66,7 +66,7 @@ export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
         className="max-w-5xl"
       >
         {/* Usamos 'aspect-video' do Tailwind para manter a proporção 16:9 perfeita em qualquer tamanho de tela */}
-        <div className="aspect-video w-full overflow-hidden rounded-lg bg-black shadow-2xl">
+        <div className="aspect-video w-full overflow-hidden rounded-[var(--radius-sm)] bg-black shadow-2xl">
           {currentVideoId && (
             <iframe
               className="h-full w-full border-0"

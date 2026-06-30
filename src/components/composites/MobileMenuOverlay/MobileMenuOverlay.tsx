@@ -70,7 +70,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
               onClick={onClose}
               variant="ghost"
               size="sm"
-              className="rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+              className="rounded-[var(--radius-sm)] text-gray-500 hover:bg-gray-100 hover:text-gray-900"
               icon={<CloseIcon className="h-6 w-6" />}
               label="Fechar menu"
             />
@@ -94,7 +94,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
                   onClose?.();
                 }}
                 className={cn(
-                  'block rounded-md px-3 py-2 text-base font-semibold transition-colors',
+                  'block rounded-[var(--radius-sm)] px-3 py-2 text-base font-semibold transition-colors',
                   activeLink === link.href
                     ? 'bg-orange-50 text-orange-600'
                     : 'text-gray-900 hover:bg-gray-50'
@@ -114,7 +114,7 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
                 onNavClick?.(ctaHref);
                 onClose?.();
               }}
-              className="block w-full rounded-lg bg-orange-600 px-4 py-2 text-center font-semibold text-white transition-colors hover:bg-orange-700"
+              className="block w-full rounded-[var(--radius-pill)] bg-orange-600 px-4 py-2 text-center font-semibold text-white transition-colors hover:bg-orange-700"
             >
               {ctaText}
             </Button>
@@ -130,14 +130,14 @@ export const MobileMenuOverlay = forwardRef<HTMLDivElement, MobileMenuOverlayPro
                 <Input
                   type="email"
                   placeholder="seu@email.com"
-                  className="rounded-md px-3 py-2 text-sm"
+                  className="rounded-[var(--radius-pill)] px-3 py-2 text-sm"
                   aria-label="Email para newsletter"
                 />
                 <Button
                   type="submit"
                   variant="unstyled"
                   fullWidth
-                  className="rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+                  className="rounded-[var(--radius-pill)] bg-gray-900 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
                 >
                   Inscrever
                 </Button>
