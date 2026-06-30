@@ -54,7 +54,7 @@ export default function PublicLayout() {
         onLanguageChange={setLanguage}
       />
 
-      <div className="sticky top-0 z-50 bg-[color:var(--color-tag-bg)]">
+      <div className="sticky top-0 z-50">
         <LanguageBar language={language} onLanguageChange={setLanguage} />
         <div className="flex justify-center px-4 py-3">
           <HeaderBar
