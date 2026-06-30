@@ -10,7 +10,7 @@ export interface PageShellProps {
 
 export function PageShell({ children, className }: PageShellProps) {
   return (
-    <main className="min-h-screen bg-[#fafafa] pb-24 pt-34">
+    <main className="min-h-screen bg-[#fafafa] pb-24 pt-16">
       <Block className={cn(className)}>{children}</Block>
     </main>
   );

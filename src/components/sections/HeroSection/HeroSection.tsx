@@ -37,7 +37,7 @@ export const HeroSection = ({ data, className, ...props }: HeroSectionProps) => 
         />
       )}
 
-      <Block className="relative z-10 py-12 pt-[140px]">
+      <Block className="relative z-10 py-16 sm:py-20">
         <div className="max-w-3xl space-y-6">
           <h1
             className="animate-hero-in whitespace-pre-line text-[color:var(--color-text-cream)] leading-tight [text-wrap:balance]"

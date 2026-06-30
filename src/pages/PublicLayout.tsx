@@ -54,17 +54,21 @@ export default function PublicLayout() {
         onLanguageChange={setLanguage}
       />
 
-      <LanguageBar language={language} onLanguageChange={setLanguage} isFixed />
-
-      <HeaderBar
-        navLinks={navLinks}
-        activeLink={activeLink}
-        ctaText={ctaLabel}
-        ctaHref={ctaHref}
-        onNavClick={handleNavClick}
-        onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        showMobileMenu={mobileMenuOpen}
-      />
+      <div className="sticky top-0 z-50">
+        <LanguageBar language={language} onLanguageChange={setLanguage} />
+        <div className="flex justify-center px-4 py-3">
+          <HeaderBar
+            navLinks={navLinks}
+            activeLink={activeLink}
+            ctaText={ctaLabel}
+            ctaHref={ctaHref}
+            onNavClick={handleNavClick}
+            onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            showMobileMenu={mobileMenuOpen}
+            isFixed={false}
+          />
+        </div>
+      </div>
 
       <Outlet context={{ language, setLanguage } satisfies PublicLayoutContextValue} />
 
