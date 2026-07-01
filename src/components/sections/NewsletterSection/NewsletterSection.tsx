@@ -14,7 +14,7 @@ export interface NewsletterSectionProps extends React.HTMLAttributes<HTMLElement
 }
 
 const fieldBase =
-  'h-[54px] w-full rounded-full border border-[color:var(--color-border-subtle)] bg-[#fafafa] px-6 text-[16px] text-[color:var(--color-text-primary)] placeholder:text-gray-500 [font-family:var(--font-body)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-brown)] focus-visible:ring-offset-1';
+  'h-[54px] w-full rounded-[var(--radius-pill)] border border-[color:var(--color-border-subtle)] bg-[#fafafa] px-6 text-[16px] text-[color:var(--color-text-primary)] placeholder:text-gray-500 [font-family:var(--font-body)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-brown)] focus-visible:ring-offset-1';
 
 export const NewsletterSection = ({ data, previewMode, className, ...props }: NewsletterSectionProps) => {
   const [loading, setLoading] = useState(false);
@@ -168,7 +168,7 @@ export const NewsletterSection = ({ data, previewMode, className, ...props }: Ne
                 <button
                   type="submit"
                   disabled={loading || !formData.consent}
-                  className="mt-4 h-[54px] w-full sm:w-auto self-center rounded-full bg-[color:var(--color-accent-peach)] px-10 text-[18px] font-semibold tracking-tight text-[color:var(--color-accent-brown)] [font-family:var(--font-body)] transition-transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-brown)] focus-visible:ring-offset-2"
+                  className="mt-4 h-[54px] w-full sm:w-auto self-center rounded-[var(--radius-pill)] bg-[color:var(--color-accent-peach)] px-10 text-[18px] font-semibold tracking-tight text-[color:var(--color-accent-brown)] [font-family:var(--font-body)] transition-transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-brown)] focus-visible:ring-offset-2"
                 >
                   {loading ? 'ENVIANDO...' : data.buttonText || 'RECEBER'}
                 </button>

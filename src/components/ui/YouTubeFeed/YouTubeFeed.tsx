@@ -3,6 +3,7 @@ import { Modal } from '../Modal';
 import { Typography } from '../../ui/Typography';
 import { Play } from 'lucide-react';
 import { useDelayedState } from '../../../hooks/useDelayedState';
+import { cn } from '../../../lib/cn';
 import type { ResolvedYoutubeVideo } from '../../../types/cms';
 
 const mockVideos: ResolvedYoutubeVideo[] = [
@@ -12,9 +13,10 @@ const mockVideos: ResolvedYoutubeVideo[] = [
 
 interface YouTubeFeedProps {
   videos?: ResolvedYoutubeVideo[];
+  showTitle?: boolean;
 }
 
-export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
+export const YouTubeFeed = ({ videos, showTitle = true }: YouTubeFeedProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoId, setCurrentVideoIdNow, setCurrentVideoIdDelayed] = useDelayedState<string | null>(null);
   const visibleVideos = videos && videos.length > 0 ? videos : mockVideos;
@@ -32,32 +34,44 @@ export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
 
   return (
     <>
-      <Typography variant="h2" className="mb-8">Vídeos</Typography>
+      {showTitle && <Typography variant="h2" className="mb-8">Vídeos</Typography>}
 
-      {/* Grid de Thumbnails */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {visibleVideos.map((video) => (
-            <div 
-              key={video.id} 
-              className="group relative cursor-pointer overflow-hidden rounded-xl bg-gray-200 aspect-video"
-              onClick={() => openVideo(video.id)}
-            >
-              {/* Imagem de Capa do Youtube */}
-              <img 
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {visibleVideos.map((video, index) => (
+          <button
+            key={video.id}
+            onClick={() => openVideo(video.id)}
+            aria-label={`Reproduzir: ${video.title}`}
+            className={cn(
+              'group cursor-pointer border-0 p-0 bg-transparent block w-full text-left',
+              visibleVideos.length % 2 !== 0 &&
+                index === visibleVideos.length - 1 &&
+                'sm:col-span-2 sm:max-w-[calc(50%-12px)] sm:mx-auto lg:col-span-1 lg:max-w-full'
+            )}
+          >
+            <div className="relative overflow-hidden rounded-[var(--radius-sm)] bg-gray-200 aspect-video">
+              <img
                 src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
-                alt={video.title} 
+                alt={video.title}
+                loading="lazy"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
+                }}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              
-              {/* Overlay com botão de Play (Fica visível no hover) */}
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/40">
-                <div className="rounded-full bg-red-600 p-4 text-white shadow-lg transition-transform group-hover:scale-110">
+                <div className="rounded-[var(--radius-pill)] bg-[color:var(--color-surface-orange)] p-4 text-[color:var(--color-tag-bg)] shadow-lg transition-transform group-hover:scale-110">
                   <Play fill="currentColor" size={24} />
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+            <p className="mt-2 text-sm font-semibold text-[color:var(--color-text-primary)] line-clamp-2">
+              {video.title}
+            </p>
+          </button>
+        ))}
+      </div>
 
       {/* O Nosso Modal Reutilizável */}
       <Modal 
@@ -66,7 +80,7 @@ export const YouTubeFeed = ({ videos }: YouTubeFeedProps) => {
         className="max-w-5xl"
       >
         {/* Usamos 'aspect-video' do Tailwind para manter a proporção 16:9 perfeita em qualquer tamanho de tela */}
-        <div className="aspect-video w-full overflow-hidden rounded-lg bg-black shadow-2xl">
+        <div className="aspect-video w-full overflow-hidden rounded-[var(--radius-sm)] bg-black shadow-2xl">
           {currentVideoId && (
             <iframe
               className="h-full w-full border-0"

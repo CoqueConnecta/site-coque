@@ -16,7 +16,7 @@ export const AboutSection = ({
   return (
     <section
       id="about"
-      className={cn('w-full bg-white pt-16 pb-0 md:pt-24 md:pb-0', className)}
+      className={cn('w-full bg-[color:var(--color-tag-bg)] py-20 sm:py-28', className)}
       {...props}
     >
       <Block>
@@ -35,7 +35,7 @@ export const AboutSection = ({
             <div className="min-w-0">
               <Typography
                 variant="body"
-                tone="muted"
+                tone="onDark"
                 className="text-[18px] leading-relaxed sm:text-[20px] lg:text-[22px]"
               >
                 {data.description}

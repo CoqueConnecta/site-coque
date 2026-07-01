@@ -19,7 +19,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
+    <div className="flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] bg-white shadow-[var(--shadow-soft)]">
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
         <img
@@ -55,9 +55,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <Button
               href={project.actionHref || '#'}
               variant="primary"
-              className="h-9 px-6 py-2 text-[11px] font-bold uppercase tracking-wider"
+              className="h-9 px-6 py-2 text-[11px] font-bold tracking-wider"
             >
-              {project.actionLabel || 'SAIBA MAIS'}
+              {project.actionLabel || 'Saiba mais'}
             </Button>
           </div>
         )}
