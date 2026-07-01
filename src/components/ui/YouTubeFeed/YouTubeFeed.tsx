@@ -38,22 +38,26 @@ export const YouTubeFeed = ({ videos, showTitle = true }: YouTubeFeedProps) => {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {visibleVideos.map((video, index) => (
-          <div
+          <button
             key={video.id}
+            onClick={() => openVideo(video.id)}
+            aria-label={`Reproduzir: ${video.title}`}
             className={cn(
-              'group cursor-pointer',
-              // Centraliza o último item quando a contagem é ímpar no layout 2-col (sm)
+              'group cursor-pointer border-0 p-0 bg-transparent block w-full text-left',
               visibleVideos.length % 2 !== 0 &&
                 index === visibleVideos.length - 1 &&
                 'sm:col-span-2 sm:max-w-[calc(50%-12px)] sm:mx-auto lg:col-span-1 lg:max-w-full'
             )}
-            onClick={() => openVideo(video.id)}
           >
             <div className="relative overflow-hidden rounded-[var(--radius-sm)] bg-gray-200 aspect-video">
               <img
                 src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
                 alt={video.title}
                 loading="lazy"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
+                }}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/40">
@@ -65,7 +69,7 @@ export const YouTubeFeed = ({ videos, showTitle = true }: YouTubeFeedProps) => {
             <p className="mt-2 text-sm font-semibold text-[color:var(--color-text-primary)] line-clamp-2">
               {video.title}
             </p>
-          </div>
+          </button>
         ))}
       </div>
 
