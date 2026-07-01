@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { saveAdminFields } from '../services/cmsAdminService';
 import { ADMIN_ROUTES } from '../config/adminRoutes';
@@ -24,9 +24,11 @@ export function useAdminRoute(
   dirtyFields: Record<string, true>,
   setDirtyFields: React.Dispatch<React.SetStateAction<Record<string, true>>>,
 ) {
-  // Derive activeRouteId from the URL param instead of local state
-  const { routePath } = useParams<{ routePath: string }>();
-  const activeRouteId: AdminRouteId = (ADMIN_ROUTES.find((r) => r.path === routePath)?.id) ?? 'home';
+  // Derive activeRouteId from the current pathname instead of local state.
+  // useMatch (not useParams) because the router declares admin children as literal
+  // paths (no ":routePath" segment) — useParams would always return undefined here.
+  const match = useMatch('/admin/:routePath');
+  const activeRouteId: AdminRouteId = (ADMIN_ROUTES.find((r) => r.path === match?.params.routePath)?.id) ?? 'home';
   const [activeSectionKey, setActiveSectionKey] = useState<string>('pages.home.hero');
 
   const activeRoute = useMemo(

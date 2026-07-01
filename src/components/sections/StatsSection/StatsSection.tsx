@@ -15,7 +15,7 @@ export const StatsSection = ({ data, className, ...props }: StatsSectionProps) =
       {...props}
     >
       <Block className="py-16 sm:py-20">
-        <div className="grid grid-cols-1 gap-x-[60px] gap-y-[60px] sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-16 sm:grid-cols-2 lg:grid-cols-4">
           {data.items.map((stat, index) => (
             <FadeIn key={index} delay={index * 100} className="flex flex-col items-center gap-3 text-center">
               <p

@@ -2,6 +2,8 @@ import { cn } from '../../../lib/cn';
 import type { CmsCarouselImage, CmsLanguage, ResolvedYoutubeVideo } from '../../../types/cms';
 import { Block } from '../../ui/Block';
 import { FadeIn } from '../../ui/FadeIn';
+import { SectionCTA } from '../../composites/SectionCTA/SectionCTA';
+import { SectionHeading } from '../../composites/SectionHeading';
 import { VideosSection } from '../VideosSection';
 import { CarouselSection } from '../CarouselSection';
 
@@ -14,14 +16,18 @@ export interface CoqueEmAcaoSectionProps extends React.HTMLAttributes<HTMLElemen
 // Heading fixo (não-CMS) que une 2 seções de mídia independentes sob 1 narrativa só —
 // mesmo motivo do label de Transparência em TrustSection: é moldura editorial, não
 // conteúdo dinâmico, não justifica um campo i18n próprio no CMS.
-const HEADING: Record<CmsLanguage, { title: string; description: string }> = {
+const HEADING: Record<CmsLanguage, { title: string; description: string; youtubeLabel: string; photosLabel: string }> = {
   pt: {
     title: 'Coque em ação',
     description: 'Um retrato em vídeo e fotos do que a comunidade constrói todos os dias.',
+    youtubeLabel: 'Ver perfil no Instagram',
+    photosLabel: 'Fotos',
   },
   en: {
     title: 'Coque in action',
     description: 'A look in video and photos at what the community builds every day.',
+    youtubeLabel: 'Check Instagram profile',
+    photosLabel: 'Photos',
   },
 };
 
@@ -41,41 +47,25 @@ export const CoqueEmAcaoSection = ({
       {...props}
     >
       <Block>
-        <FadeIn className="mb-10 flex flex-col gap-4">
-          <h3
-            style={{
-              fontFamily: "'Figtree', sans-serif",
-              fontSize: 'clamp(34px, 4.2vw, 50px)',
-              fontWeight: 700,
-              color: 'var(--color-text-primary)',
-              lineHeight: '1.1',
-              margin: 0,
-              letterSpacing: '-0.8px',
-              maxWidth: '640px',
-              textWrap: 'balance',
-            } as React.CSSProperties}
-          >
-            {copy.title}
-          </h3>
-          <p
-            style={{
-              fontFamily: "'Figtree', sans-serif",
-              fontSize: 'clamp(17px, 2vw, 20px)',
-              lineHeight: '1.5',
-              color: 'var(--color-text-secondary)',
-              maxWidth: '60ch',
-              margin: 0,
-            }}
-          >
-            {copy.description}
-          </p>
+        <FadeIn className="mb-6">
+          <SectionHeading headline={copy.title} subtitle={copy.description} size="sm" />
         </FadeIn>
       </Block>
 
-      <div className="space-y-10 md:space-y-12">
-        <VideosSection videos={videos} className="py-0" />
-        <CarouselSection images={images} className="py-0" />
-      </div>
+      <VideosSection videos={videos} className="py-0" showTitle={false} />
+
+      <Block className="mt-6 md:mt-8">
+        <div className="flex flex-col gap-5">
+          <SectionCTA href="https://www.instagram.com/coqueconnecta" label={copy.youtubeLabel} className="self-start" />
+          <div className="flex items-center gap-3 border-t border-[color:var(--color-border-subtle)] pt-5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[color:var(--color-text-secondary)]">
+              {copy.photosLabel}
+            </span>
+          </div>
+        </div>
+      </Block>
+
+      <CarouselSection images={images} className="mt-4 py-0" />
     </section>
   );
 };
