@@ -20,13 +20,13 @@ const HEADING: Record<CmsLanguage, { title: string; description: string; youtube
   pt: {
     title: 'Coque em ação',
     description: 'Um retrato em vídeo e fotos do que a comunidade constrói todos os dias.',
-    youtubeLabel: 'Ver canal no YouTube',
+    youtubeLabel: 'Ver perfil no Instagram',
     photosLabel: 'Fotos',
   },
   en: {
     title: 'Coque in action',
     description: 'A look in video and photos at what the community builds every day.',
-    youtubeLabel: 'View YouTube channel',
+    youtubeLabel: 'Check Instagram profile',
     photosLabel: 'Photos',
   },
 };
@@ -56,7 +56,7 @@ export const CoqueEmAcaoSection = ({
 
       <Block className="mt-6 md:mt-8">
         <div className="flex flex-col gap-5">
-          <SectionCTA href="https://www.youtube.com/@CoqueConnecta" label={copy.youtubeLabel} className="self-start" />
+          <SectionCTA href="https://www.instagram.com/coqueconnecta" label={copy.youtubeLabel} className="self-start" />
           <div className="flex items-center gap-3 border-t border-[color:var(--color-border-subtle)] pt-5">
             <span className="text-xs font-semibold uppercase tracking-wider text-[color:var(--color-text-secondary)]">
               {copy.photosLabel}
