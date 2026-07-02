@@ -109,6 +109,10 @@ export function MediaLibraryRoute() {
 
   const handleOptimizeAndSave = async () => {
     if (!selectedFile) return;
+    if (!imageTitle.trim() || !imageAlt.trim()) {
+      toast.error('Preencha o título e o texto alternativo antes de enviar.');
+      return;
+    }
 
     setUploadStatus('optimizing');
     try {
@@ -256,26 +260,44 @@ export function MediaLibraryRoute() {
 
               <div className="space-y-2 border-t border-[var(--admin-border-sub)] pt-2">
                 <label className="block">
-                  <span className="mb-0.5 block text-[10px] font-semibold text-[var(--admin-text-3)]">Título da Imagem</span>
+                  <span className="mb-0.5 block text-[10px] font-semibold text-[var(--admin-text-3)]">
+                    Título da Imagem<span className="ml-0.5 text-rose-500">*</span>
+                  </span>
                   <input
                     type="text"
                     value={imageTitle}
                     onChange={(e) => setImageTitle(e.target.value)}
                     placeholder="Ex: Crianças na horta"
                     disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
-                    className="h-8 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-xs text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)] disabled:opacity-50"
+                    className={`h-8 w-full rounded border bg-[var(--admin-input-bg)] px-2 text-xs text-[var(--admin-text-1)] outline-none focus:ring-1 disabled:opacity-50 ${
+                      imageTitle.trim() === ''
+                        ? 'border-rose-400 focus:ring-rose-400/40'
+                        : 'border-[var(--admin-input-bd)] focus:ring-[var(--admin-accent)]'
+                    }`}
                   />
+                  {imageTitle.trim() === '' && (
+                    <span className="mt-0.5 block text-[10px] text-rose-500">Campo obrigatório</span>
+                  )}
                 </label>
                 <label className="block">
-                  <span className="mb-0.5 block text-[10px] font-semibold text-[var(--admin-text-3)]">Texto Alternativo (Alt)</span>
+                  <span className="mb-0.5 block text-[10px] font-semibold text-[var(--admin-text-3)]">
+                    Texto Alternativo (Alt)<span className="ml-0.5 text-rose-500">*</span>
+                  </span>
                   <input
                     type="text"
                     value={imageAlt}
                     onChange={(e) => setImageAlt(e.target.value)}
                     placeholder="Descrição para leitores de tela..."
                     disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
-                    className="h-8 w-full rounded border border-[var(--admin-input-bd)] bg-[var(--admin-input-bg)] px-2 text-xs text-[var(--admin-text-1)] outline-none focus:ring-1 focus:ring-[var(--admin-accent)] disabled:opacity-50"
+                    className={`h-8 w-full rounded border bg-[var(--admin-input-bg)] px-2 text-xs text-[var(--admin-text-1)] outline-none focus:ring-1 disabled:opacity-50 ${
+                      imageAlt.trim() === ''
+                        ? 'border-rose-400 focus:ring-rose-400/40'
+                        : 'border-[var(--admin-input-bd)] focus:ring-[var(--admin-accent)]'
+                    }`}
                   />
+                  {imageAlt.trim() === '' && (
+                    <span className="mt-0.5 block text-[10px] text-rose-500">Campo obrigatório</span>
+                  )}
                 </label>
               </div>
             </div>
@@ -322,7 +344,7 @@ export function MediaLibraryRoute() {
           {selectedFile && (
             <button
               type="button"
-              disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading'}
+              disabled={uploadStatus === 'optimizing' || uploadStatus === 'uploading' || !imageTitle.trim() || !imageAlt.trim()}
               onClick={handleOptimizeAndSave}
               className="w-full rounded bg-[var(--admin-accent)] px-3 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 shadow-sm transition-all"
             >
