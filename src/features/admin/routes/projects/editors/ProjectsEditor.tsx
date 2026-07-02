@@ -11,6 +11,7 @@ import { CollapsibleItem } from '../../../components/shared/CollapsibleItem';
 import { AdminPreviewPanel } from '../../../components/shared/AdminPreviewPanel';
 import { ProjectsSection } from '../../../../../components/sections/ProjectsSection';
 import { pickLang } from '../../../../../services/cmsService';
+import { slugify, uniqueSlug } from '../../../utils/slugify';
 import type { CmsLanguage, ResolvedProject } from '../../../../../types/cms';
 
 type I18nField = { pt?: string; en?: string };
@@ -55,6 +56,18 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
   const [previewLang, setPreviewLang] = useState<CmsLanguage>('pt');
   const items = Array.isArray(data?.items) ? data.items : [];
 
+  // O ID não é editável diretamente — equipe não-técnica não sabe o que colocar
+  // ali. Ele é derivado do Título (PT) a cada alteração, então nunca fica
+  // dessincronizado do conteúdo que representa.
+  const handleTitlePtChange = (index: number, value: string) => {
+    onFieldChange(['items', index, 'title', 'pt'], value);
+    const siblingIds = items
+      .filter((_, i) => i !== index)
+      .map((p) => p.id ?? '')
+      .filter(Boolean);
+    onFieldChange(['items', index, 'id'], uniqueSlug(slugify(value), siblingIds));
+  };
+
   return (
     <div className="space-y-4">
       {items.length === 0 && (
@@ -62,7 +75,7 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
       )}
       {items.map((project, index) => (
         <CollapsibleItem
-          key={project.id ?? index}
+          key={index}
           label={`Projeto ${index + 1}`}
           summary={project.title?.pt || ''}
           onRemove={() => onRemoveArrayItem(['items'], index)}
@@ -70,22 +83,18 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
           onMoveUp={index > 0 ? () => onMoveArrayItem(['items'], index, 'up') : undefined}
           onMoveDown={index < items.length - 1 ? () => onMoveArrayItem(['items'], index, 'down') : undefined}
         >
-          {/* Global fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <AdminInputField label="ID" path={['items', index, 'id']} value={project.id ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
-            <AdminInputField label="Localização" path={['items', index, 'location']} value={project.location ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
-            <div className="col-span-full">
-              <AdminInputField label="URL da ação (actionHref)" path={['items', index, 'actionHref']} value={project.actionHref ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
-            </div>
-          </div>
-
-          {renderImageField(project.image ?? '', ['items', index, 'image'], 'Imagem do projeto', '/placeholder-image.png')}
-
           {/* i18n fields */}
           <div className={adminPanelGridClass}>
             {(['pt', 'en'] as const).map((lang) => (
               <AdminEditorCard key={lang} title={lang === 'pt' ? 'Português (PT)' : 'Inglês (EN)'}>
-                <AdminInputField label="Título" path={['items', index, 'title', lang]} value={project.title?.[lang] ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
+                <AdminInputField
+                  label="Título"
+                  required
+                  path={['items', index, 'title', lang]}
+                  value={project.title?.[lang] ?? ''}
+                  isFieldDirty={isFieldDirty}
+                  onFieldChange={lang === 'pt' ? (_path, value) => handleTitlePtChange(index, value as string) : onFieldChange}
+                />
                 <div className="block">
                   <span className={adminFieldLabelClass}>Descrição (Markdown)</span>
                   <RichTextEditor
@@ -99,6 +108,24 @@ export function ProjectsEditor({ data, isFieldDirty, onFieldChange, onAddArrayIt
               </AdminEditorCard>
             ))}
           </div>
+
+          <AdminInputField label="URL da ação (actionHref)" path={['items', index, 'actionHref']} value={project.actionHref ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
+
+          {/* Global fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AdminInputField
+              label="ID"
+              disabled
+              helpText="Gerado automaticamente a partir do Título (PT)"
+              path={['items', index, 'id']}
+              value={project.id ?? ''}
+              isFieldDirty={isFieldDirty}
+              onFieldChange={onFieldChange}
+            />
+            <AdminInputField label="Localização" path={['items', index, 'location']} value={project.location ?? ''} isFieldDirty={isFieldDirty} onFieldChange={onFieldChange} />
+          </div>
+
+          {renderImageField(project.image ?? '', ['items', index, 'image'], 'Imagem do projeto', '/placeholder-image.png')}
         </CollapsibleItem>
       ))}
       <AdminAddButton onClick={() => onAddArrayItem(['items'])}>Adicionar projeto</AdminAddButton>
