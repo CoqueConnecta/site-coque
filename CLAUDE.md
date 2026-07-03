@@ -58,14 +58,10 @@ Comandos CLI completos:
 git fetch origin
 git switch -c feature/nome-da-feature origin/staging
 
-# Abrir PR → staging
-gh pr create --base staging --title "feat: descrição"
+# … commitar normalmente …
 
-# Mergear em staging + deletar branch (sem proteção, roda imediatamente)
-gh pr merge --squash --delete-branch
-
-# Após validar em staging.coqueconnecta.ong.br, abrir PR → main
-gh pr create --base main --title "feat: descrição"
+# Promover: abre PR → staging (squash + deleta branch) e PR → main de uma vez
+./scripts/promote.sh "feat: descrição" "## Summary\n- o que mudou"
 
 # Após aprovação no GitHub, mergear em main — merge normal, NUNCA squash (ver nota abaixo)
 gh pr merge --merge

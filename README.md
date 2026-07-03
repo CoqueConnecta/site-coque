@@ -61,32 +61,35 @@ npm run dev
 - `staging` → homologação. Push gera preview automático na Vercel.
 - `feature/*` ou `fix/*` → branches de trabalho, criadas a partir de `origin/staging`.
 
-Fluxo completo via CLI:
+Fluxo via script (caminho padrão):
 
 ```bash
-# 1. Criar branch a partir de origin/staging (evita divergência ao abrir PR)
+# 1. Criar branch a partir de origin/staging
 git fetch origin
 git switch -c feature/nome-da-feature origin/staging
 
 # 2. Trabalhar, commitar normalmente
 
-# 3. Abrir PR → staging
-gh pr create --base staging --title "feat: descrição"
+# 3. Promover: abre PR → staging, mergeia, deleta branch e abre PR → main
+./scripts/promote.sh "feat: descrição" "## Summary\n- o que mudou"
 
-# 4. Mergear em staging e deletar a branch (staging não tem proteção)
-gh pr merge --squash --delete-branch
+# 4. Validar em staging.coqueconnecta.ong.br
 
-# 5. Validar em staging.coqueconnecta.ong.br
-
-# 6. Abrir PR → main (requer aprovação na UI do GitHub)
-gh pr create --base main --title "feat: descrição"
-
-# 7. Após aprovação, mergear em main
-gh pr merge --squash --delete-branch
+# 5. Aprovar e mergear o PR staging → main na UI do GitHub
 ```
 
-> `--squash` condensa os commits da branch em um único commit limpo no histórico.
-> `--delete-branch` remove a branch local e remota automaticamente após o merge.
+Fluxo manual (referência):
+
+```bash
+gh pr create --base staging --title "feat: descrição"
+gh pr merge --squash --delete-branch   # feature → staging
+git checkout staging && git pull origin staging
+gh pr create --base main --title "feat: descrição"
+gh pr merge --merge                    # staging → main (NUNCA --squash, veja nota abaixo)
+```
+
+> **Importante:** o merge de `staging → main` deve ser sempre `--merge`, nunca `--squash`. Squash cria um SHA diferente e quebra a ancestralidade, gerando conflitos fantasma em todas as promoções seguintes. Ver nota completa em `CLAUDE.md`.
+> `--delete-branch` só se usa no merge de feature → staging. A `staging` é permanente — nunca deletar.
 ## Deploy
 
 O projeto é deployado pela **Vercel** (conta `coqueconnecta@gmail.com`).
