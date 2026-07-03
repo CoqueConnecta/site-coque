@@ -202,7 +202,7 @@ export async function getCmsWhatWeDoData(language: CmsLanguage): Promise<Resolve
 export async function getCmsProjectsData(language: CmsLanguage): Promise<ResolvedProject[]> {
   const data = await fetchNode<CmsProjectsData>(`${V3}/pages/projects`);
   if (!data?.items) return [];
-  return data.items.map((p) => ({
+  return data.items.filter((p) => !p.archived).map((p) => ({
     id:          p.id,
     image:       p.image,
     location:    p.location,

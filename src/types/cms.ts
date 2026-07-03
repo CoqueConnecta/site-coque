@@ -147,6 +147,7 @@ export interface CmsProject {
   image: string;
   location: string;
   actionHref?: string;
+  archived?: boolean;
   title: I18nField;
   bodyMd: I18nField;
   actionLabel: I18nField;

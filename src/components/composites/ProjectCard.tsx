@@ -56,6 +56,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
               href={project.actionHref || '#'}
               variant="primary"
               className="h-9 px-6 py-2 text-[11px] font-bold tracking-wider"
+              {...(/^https?:\/\//.test(project.actionHref ?? '') && {
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              })}
             >
               {project.actionLabel || 'Saiba mais'}
             </Button>
