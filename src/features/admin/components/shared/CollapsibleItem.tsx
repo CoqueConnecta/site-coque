@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ChevronDown, ChevronUp, Copy, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, ArrowDown, ArrowUp, ChevronDown, ChevronUp, Copy, Trash2 } from 'lucide-react';
 import { useDisclosure } from '../../hooks/useDisclosure';
 
 type CollapsibleItemProps = {
@@ -8,11 +8,13 @@ type CollapsibleItemProps = {
   onDuplicate?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
+  onArchive?: () => void;
+  isArchived?: boolean;
   children: React.ReactNode;
   defaultOpen?: boolean;
 };
 
-export function CollapsibleItem({ label, summary, onRemove, onDuplicate, onMoveUp, onMoveDown, children, defaultOpen = false }: CollapsibleItemProps) {
+export function CollapsibleItem({ label, summary, onRemove, onDuplicate, onMoveUp, onMoveDown, onArchive, isArchived = false, children, defaultOpen = false }: CollapsibleItemProps) {
   const { isOpen: open, toggle } = useDisclosure(defaultOpen);
   return (
     <div className="rounded-md border border-[var(--admin-border-sub)] bg-[var(--admin-surface)] shadow-sm overflow-hidden">
@@ -58,6 +60,18 @@ export function CollapsibleItem({ label, summary, onRemove, onDuplicate, onMoveU
             className="text-[var(--admin-text-4)] hover:text-[var(--admin-text-1)] transition-colors shrink-0"
           >
             <Copy className="h-3.5 w-3.5" />
+          </button>
+        )}
+        {onArchive && (
+          <button
+            type="button"
+            onClick={onArchive}
+            aria-label={isArchived ? 'Reativar projeto' : 'Arquivar projeto'}
+            className="text-amber-400 hover:text-amber-600 transition-colors shrink-0"
+          >
+            {isArchived
+              ? <ArchiveRestore className="h-3.5 w-3.5" />
+              : <Archive className="h-3.5 w-3.5" />}
           </button>
         )}
         <button
