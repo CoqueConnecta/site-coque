@@ -233,3 +233,30 @@ export interface ResolvedProject {
 }
 export interface ResolvedPrivacyData { title: string; updatedAt: string; intro: string; sections: Array<{ title: string; bodyMd: string }> }
 export interface ResolvedTransparencyData { title: string; intro: string; sections: Array<{ title: string; bodyMd: string }> }
+
+// ─── Blog ─────────────────────────────────────────────────────────────────────
+
+export interface CmsBlogPost {
+  id: string;
+  slug: string;
+  title: I18nField;
+  excerpt: I18nField;
+  content: I18nField;
+  coverImage: string;
+  author: string;
+  published: boolean;
+  publishedAt: string;
+}
+
+export interface ResolvedBlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  author: string;
+  published: boolean;
+  publishedAt: string;
+}
+

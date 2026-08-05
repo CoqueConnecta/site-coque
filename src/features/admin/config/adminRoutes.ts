@@ -8,7 +8,7 @@ export interface AdminSectionConfig {
 }
 
 export interface AdminRouteConfig {
-  id: 'home' | 'privacy' | 'transparency' | 'projects' | 'settings' | 'media';
+  id: 'home' | 'privacy' | 'transparency' | 'projects' | 'settings' | 'media' | 'blog';
   /** URL slug used in /admin/:routePath */
   path: string;
   label: string;
@@ -83,6 +83,14 @@ export const ADMIN_ROUTES: AdminRouteConfig[] = [
     label: 'Biblioteca',
     description: 'Biblioteca e galeria de imagens',
     icon: Image,
+    sections: [],
+  },
+  {
+    id: 'blog',
+    path: 'blog',
+    label: 'Blog',
+    description: 'Gerenciar postagens do blog',
+    icon: FileText,
     sections: [],
   },
 ];
