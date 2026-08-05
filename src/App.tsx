@@ -17,6 +17,8 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const WaysToHelpPage = lazy(() => import('./pages/WaysToHelpPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
 
 // Admin sub-routes (lazy)
 const HomeRoute = lazy(() => import('./features/admin/routes/home/HomeRoute').then(m => ({ default: m.HomeRoute })));
@@ -25,6 +27,7 @@ const PrivacyRoute = lazy(() => import('./features/admin/routes/privacy/PrivacyR
 const TransparencyRoute = lazy(() => import('./features/admin/routes/transparency/TransparencyRoute').then(m => ({ default: m.TransparencyRoute })));
 const SettingsRoute = lazy(() => import('./features/admin/routes/settings/SettingsRoute').then(m => ({ default: m.SettingsRoute })));
 const MediaLibraryRoute = lazy(() => import('./features/admin/routes/media/MediaLibraryRoute').then(m => ({ default: m.MediaLibraryRoute })));
+const BlogRoute = lazy(() => import('./features/admin/routes/blog/BlogRoute').then(m => ({ default: m.BlogRoute })));
 
 const router = createBrowserRouter([
   {
@@ -56,6 +59,14 @@ const router = createBrowserRouter([
         element: <WaysToHelpPage />,
       },
       {
+        path: "blog",
+        element: <BlogPage />,
+      },
+      {
+        path: "blog/:slug",
+        element: <BlogPostPage />,
+      },
+      {
         path: "*",
         element: <NotFoundPage />,
       },
@@ -80,6 +91,7 @@ const router = createBrowserRouter([
       { path: 'transparencia',    element: <TransparencyRoute /> },
       { path: 'configuracoes',    element: <SettingsRoute /> },
       { path: 'biblioteca',       element: <MediaLibraryRoute /> },
+      { path: 'blog',             element: <BlogRoute /> },
     ],
   },
 ]);

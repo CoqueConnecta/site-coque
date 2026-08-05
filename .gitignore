@@ -37,3 +37,6 @@ ui-debug.log
 .env
 .env.local
 .env.*.local
+
+# Graphify outputs
+.graphify/
