@@ -11,6 +11,7 @@ export const ROUTES = {
   whatWeDo:     '/nossos-projetos',
   transparency: '/transparencia',
   privacy:      '/privacidade',
+  blog:         '/blog',
 } as const;
 
 export const STORAGE_KEYS = {

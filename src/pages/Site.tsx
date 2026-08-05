@@ -7,6 +7,7 @@ import { WaysToHelpTeaser } from '../components/sections/WaysToHelpTeaser';
 import { StatsSection } from '../components/sections/StatsSection';
 import { TrustSection } from '../components/sections/TrustSection';
 import { WhatWeDoSection } from '../components/sections/WhatWeDoSection';
+import { BlogTeaserSection } from '../components/sections/BlogTeaserSection/BlogTeaserSection';
 import { ROUTES } from '../lib/constants';
 import { useCmsLandingData } from '../hooks/useCmsLandingData';
 import type { PublicLayoutContextValue } from './PublicLayout';
@@ -32,6 +33,8 @@ function Site() {
         </div>
         <CoqueEmAcaoSection videos={data.youtubeVideos} images={data.carousel.images} language={language} />
         <WhatWeDoSection data={data.whatWeDo} language={language} />
+
+        <BlogTeaserSection language={language} />
 
         <WaysToHelpTeaser data={data.waysToHelp} language={language} />
         <TrustSection data={data.trust} language={language} />

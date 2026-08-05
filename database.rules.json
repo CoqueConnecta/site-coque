@@ -19,6 +19,10 @@
         "shared": {
           ".read": true,
           ".write": "auth != null"
+        },
+        "blog": {
+          ".read": true,
+          ".write": "auth != null"
         }
       }
     },
