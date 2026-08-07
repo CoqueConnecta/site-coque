@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { Plus, Edit2, Trash2, ArrowLeft, Image as ImageIcon, Globe } from 'lucide-react';
+import { Plus, Edit2, Trash2, ArrowLeft, Image as ImageIcon, Globe, Sparkles } from 'lucide-react';
 import type { AdminOutletContext } from '../types';
 import type { CmsBlogPost } from '../../../../types/cms';
 import { fetchAdminPosts, saveBlogPost, deleteBlogPost } from '../../../../services/blogService';
 import { RichTextEditor } from '../../components/shared/RichTextEditor';
 import { ImageLibraryModal } from '../../components/layout/ImageLibraryModal';
+import { translateText, translateMarkdown } from '../../../../services/translationService';
 
 function generateSlug(text: string): string {
   return text
@@ -48,6 +49,52 @@ export function BlogRoute() {
 
   // Active form tab: 'pt' | 'en'
   const [formTab, setFormTab] = useState<'pt' | 'en'>('pt');
+
+  // Translation state
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [translationProgress, setTranslationProgress] = useState(0);
+
+  const handleTranslateAll = async () => {
+    if (!titlePt.trim()) {
+      toast.error('Escreva o título em português antes de traduzir.');
+      return;
+    }
+
+    setIsTranslating(true);
+    setTranslationProgress(0);
+
+    try {
+      // 1. Translate Title
+      const tEn = await translateText(titlePt);
+      setTitleEn(tEn);
+      setTranslationProgress(15);
+
+      // 2. Translate Excerpt
+      if (excerptPt.trim()) {
+        const eEn = await translateText(excerptPt);
+        setExcerptEn(eEn);
+      }
+      setTranslationProgress(30);
+
+      // 3. Translate Content
+      if (contentPt.trim()) {
+        const cEn = await translateMarkdown(contentPt, (percent) => {
+          const overallPercent = 30 + Math.round((percent * 70) / 100);
+          setTranslationProgress(overallPercent);
+        });
+        setContentEn(cEn);
+      } else {
+        setTranslationProgress(100);
+      }
+
+      toast.success('Tradução automática concluída com sucesso!');
+    } catch (err) {
+      toast.error('Erro na tradução automática. Algumas partes podem não ter sido traduzidas.');
+      console.error('[BlogRoute] Translation error:', err);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   const loadPosts = async () => {
     setIsLoading(true);
@@ -312,29 +359,53 @@ export function BlogRoute() {
         <div className="lg:col-span-2 space-y-6">
           <div className="rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 shadow-sm space-y-6">
             {/* Tabs Headers */}
-            <div className="flex border-b border-[var(--admin-border)]">
-              <button
-                type="button"
-                onClick={() => setFormTab('pt')}
-                className={`flex items-center gap-2 border-b-2 px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
-                  formTab === 'pt'
-                    ? 'border-[var(--admin-accent)] text-[var(--admin-accent)]'
-                    : 'border-transparent text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)]'
-                }`}
-              >
-                🇧🇷 Português
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormTab('en')}
-                className={`flex items-center gap-2 border-b-2 px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
-                  formTab === 'en'
-                    ? 'border-[var(--admin-accent)] text-[var(--admin-accent)]'
-                    : 'border-transparent text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)]'
-                }`}
-              >
-                🇺🇸 English
-              </button>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[var(--admin-border)] pb-2 sm:pb-0 gap-2">
+              <div className="flex">
+                <button
+                  type="button"
+                  onClick={() => setFormTab('pt')}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
+                    formTab === 'pt'
+                      ? 'border-[var(--admin-accent)] text-[var(--admin-accent)]'
+                      : 'border-transparent text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)]'
+                  }`}
+                >
+                  🇧🇷 Português
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormTab('en')}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
+                    formTab === 'en'
+                      ? 'border-[var(--admin-accent)] text-[var(--admin-accent)]'
+                      : 'border-transparent text-[var(--admin-text-3)] hover:text-[var(--admin-text-1)]'
+                  }`}
+                >
+                  🇺🇸 English
+                </button>
+              </div>
+
+              {/* Botão de Tradução automática */}
+              {formTab === 'en' && (
+                <button
+                  type="button"
+                  onClick={handleTranslateAll}
+                  disabled={isTranslating || !titlePt.trim()}
+                  className="inline-flex items-center justify-center gap-1.5 rounded bg-[var(--admin-active-bg)] px-3 py-1.5 text-xs font-semibold text-[var(--admin-active-text)] hover:opacity-90 disabled:opacity-40 transition-all cursor-pointer mr-2"
+                >
+                  {isTranslating ? (
+                    <>
+                      <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--admin-active-text)] border-t-transparent" />
+                      <span>Traduzindo... ({translationProgress}%)</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Traduzir do Português</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Tab content PT */}
@@ -379,7 +450,15 @@ export function BlogRoute() {
 
             {/* Tab content EN */}
             {formTab === 'en' && (
-              <div className="space-y-4 animate-fade-in">
+              <div className="space-y-4 animate-fade-in relative min-h-[300px]">
+                {isTranslating && (
+                  <div className="absolute inset-0 bg-white/70 dark:bg-black/50 z-20 flex flex-col items-center justify-center rounded-md gap-3">
+                    <span className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--admin-accent)] border-t-transparent" />
+                    <span className="text-sm font-semibold text-[var(--admin-text-1)]">
+                      Traduzindo conteúdo... {translationProgress}%
+                    </span>
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-semibold text-[var(--admin-text-2)] mb-1">
                     Título (EN)
