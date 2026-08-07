@@ -41,12 +41,21 @@ Documentos historicos:
 - Documentacao sincronizada com estado atual; `docs/backlog.md` e issue template de imagens atualizados.
 - Config Firebase migrada para variaveis de ambiente (`import.meta.env.VITE_*`); Vercel configurada com todas as envs.
 
-## Pendencias imediatas
+## Delta recente (ago/2026)
 
-- Configurar protecao de branch `main` no GitHub com a conta `coqueconnecta@gmail.com`:
-  Settings → Branches → Add rule → `main` → "Require a pull request before merging" (1 approval).
+- Criado sistema de Blog Interno completo e nativo:
+  - Serviço Firebase RTDB `src/services/blogService.ts` sob o nó `cms/v3/blog/posts`.
+  - Página de CRUD administrativo no painel em `src/features/admin/routes/blog/BlogRoute.tsx` com editor Tiptap (Markdown) e integração à biblioteca de mídias existente.
+  - Páginas públicas `/blog` (listagem com skeletons e cards responsivos) e `/blog/:slug` (detalhes renderizando Markdown e contendo CTA de doação).
+  - Componente de destaque `<BlogTeaserSection />` integrado no rodapé da Home.
+  - Regras de segurança do Firebase atualizadas no `database.rules.json` para o nó `cms/v3/blog` (leitura pública, escrita autenticada) e deployado via CLI.
+- Implementada funcionalidade de Tradução Automática no editor de postagens do Admin:
+  - Serviço `src/services/translationService.ts` integrando com a API MyMemory.
+  - Divisão de conteúdo Markdown em parágrafos e processamento paralelo controlado (limite de 3 requisições simultâneas para evitar rate limit) preservando elementos estruturais (listas, títulos e imagens).
+  - Botão de acionamento dinâmico na aba "English" com overlay de progresso (0-100%) e bloqueio de tela temporário.
 
 ## Proximo passo objetivo
 
-- Iniciar novas features via branches `feature/*` abertas a partir de `origin/staging`, com PR → staging → main.
+- Validar a branch `staging` com as novas features de Blog e Tradução Automática na Vercel.
+- Abrir Pull Request de `staging` -> `main` para promover as alterações para o ambiente de produção.
 - Manter `docs/project-context.md` como fonte de verdade tecnica apos mudancas estruturais.

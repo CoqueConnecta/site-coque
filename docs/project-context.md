@@ -22,7 +22,7 @@ O projeto é o site institucional da ONG Coque Connecta, com:
 - área pública em React + Vite;
 - conteúdo gerenciado via Firebase Realtime Database em `cms/v3`;
 - painel `/admin` protegido por autenticação Firebase;
-- páginas públicas: Home, Nossos Projetos, Privacidade e Transparência.
+- páginas públicas: Home, Nossos Projetos, Privacidade, Transparência e Blog.
 
 ## Stack atual
 
@@ -51,8 +51,10 @@ Rotas públicas:
 - `/` -> Home
 - `/privacidade` -> página de privacidade
 - `/transparencia` -> página de transparência
-- `*` -> fallback 404 dentro do layout público
 - `/nossos-projetos` -> página de projetos
+- `/blog` -> listagem de posts do blog
+- `/blog/:slug` -> visualização de um post do blog
+- `*` -> fallback 404 dentro do layout público
 
 Rotas internas:
 
@@ -100,6 +102,7 @@ Fonte de verdade atual de conteúdo (`cms/v3`):
 - `cms/v3/pages/projects/items` — array único com campos globais e i18n inline
 - `cms/v3/pages/privacy`
 - `cms/v3/pages/transparency`
+- `cms/v3/blog/posts` — coleção de postagens do blog estruturadas em Markdown e i18n inline
 
 Convenção v3 de i18n por campo:
 
@@ -143,6 +146,7 @@ Rotas do admin:
 - Privacy
 - Transparency
 - Configurações Globais (nav, footer, newsletter)
+- Blog (gerenciamento de posts com Tiptap + Tradução automática PT/EN)
 
 Base técnica do admin:
 
@@ -152,9 +156,10 @@ Base técnica do admin:
 - `src/features/admin/hooks/useAdminRoute.tsx` — motor de salvamento; payload sempre escreve no path do campo diretamente (sem distinção "global" vs "local")
 - `src/features/admin/hooks/useAdminData.ts` — carrega `cms/v3/shared` e `cms/v3/pages` em `Promise.all`
 - `src/features/admin/hooks/useDirtyFields.ts` — rastreamento de campos alterados
-- `src/features/admin/routes/` — organização por rota pública (`home/`, `projects/`, `privacy/`, `transparency/`, `settings/`)
+- `src/features/admin/routes/` — organização por rota pública (`home/`, `projects/`, `privacy/`, `transparency/`, `settings/`, `blog/`)
 - `src/features/admin/shared/` — componentes de formulário reutilizáveis (`ImageField`, `AdminEditorCard`, etc.)
 - `src/features/admin/layout/` — casca do painel (`AdminLayout`, `AdminPageHeader`)
+- `src/services/translationService.ts` — serviço de tradução automática PT-EN usando MyMemory com concorrência limitada (limite 3) e preservação de Markdown
 
 Comportamento atual do admin:
 
@@ -193,7 +198,7 @@ src/
   components/
     composites/      # ProjectCard, ProjectGrid, etc.
     icons/
-    sections/        # Seções públicas (Hero, About, etc.)
+    sections/        # Seções públicas (Hero, About, BlogTeaserSection, etc.)
     ui/              # Átomos: Button, FadeIn, Modal, etc.
   data/
   features/
@@ -208,12 +213,13 @@ src/
           editors/   # ProjectsEditor
         privacy/
         transparency/
+        blog/        # BlogRoute.tsx (CRUD de posts)
       shared/        # Componentes de formulário reutilizáveis
       types.ts
       utils/
   hooks/             # useCmsLandingData, useCmsProjectsData
-  pages/
-  services/
+  pages/             # BlogPage.tsx, BlogPostPage.tsx
+  services/          # blogService.ts, translationService.ts
   types/
 docs/
   project-context.md
