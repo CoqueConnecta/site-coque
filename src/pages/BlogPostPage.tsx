@@ -161,7 +161,7 @@ export default function BlogPostPage() {
           <Typography variant="h2" className="text-2xl sm:text-3xl font-extrabold text-[color:var(--color-accent-peach)]">
             {t.ctaTitle}
           </Typography>
-          <Typography variant="body" className="text-sm sm:text-base opacity-90 leading-relaxed">
+          <Typography variant="body" tone="onDark" className="text-sm sm:text-base opacity-90 leading-relaxed">
             {t.ctaDesc}
           </Typography>
           <div className="pt-4">
