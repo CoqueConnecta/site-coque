@@ -1,3 +1,10 @@
 {
+  "redirects": [
+    {
+      "source": "/nossos-projetos/fuxiqueiras",
+      "destination": "https://fuxiqueiras-do-coque.tmdigital.workers.dev/",
+      "permanent": false
+    }
+  ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
